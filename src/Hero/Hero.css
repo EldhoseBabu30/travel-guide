@@ -1,0 +1,15 @@
+.container {
+    position: relative;
+    width: 300vh; /* Set width to 200% of viewport height */
+    height: 100vh; /* Full viewport height */
+    overflow: hidden;
+    text-align: right; /* Align text content to the right */
+  }
+  
+  .hero-img {
+    width: 100%; /* Fill the container horizontally */
+    height: 100%; /* Fill the container vertically */
+    object-fit: cover; /* Cover the container maintaining aspect ratio */
+    object-position: center; /* Center the image within the container */
+  }
+  

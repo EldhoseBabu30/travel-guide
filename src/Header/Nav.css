@@ -1,0 +1,30 @@
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
+    z-index: 100; 
+  }
+  
+  .nav-links-container {
+    display: flex;
+    gap: 20px; 
+  }
+  
+  .nav-link {
+    color: #fff;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+  }
+  
+  .nav-link:hover,
+  .nav-link.active {
+    border-bottom: 2px solid #fff; 
+  }
+  
