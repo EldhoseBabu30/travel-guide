@@ -1,15 +1,14 @@
 import React from 'react';
-import hero from '../assets/hero.jpeg'; // Import the image file
+import video from '../assets/hero.mp4';
 
 const Hero = () => {
   return (
     <div style={{ position: 'relative', width: '100%', height: '100vh', overflow: 'hidden' }}>
-      <img
-        src={hero} 
-        alt='Hero Image'
-        style={{ width: '100%', height: '80vh', objectFit: 'cover' }}
-      />
-       <div className="bg-white rounded-md max-w-6xl w-full mx-auto">
+      
+     <video src={video} type="mp4" autoPlay loop muted className="w-full h-full object-cover">
+  
+</video>
+     <div className="bg-white rounded-md max-w-6xl w-full mx-auto">
       <form  className="flex flex-col md:flex-row">
       <div className="py-1.5 px-2.5 flex-1 border-r-2">
             <p>Where to?</p>
