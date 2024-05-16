@@ -1,18 +1,68 @@
 import React from 'react';
-import './Hero.css';
 import hero from '../assets/hero.jpeg'; // Import the image file
 
 const Hero = () => {
   return (
-    <div className='container'>
-       
-      <div className='hero-img'>
-        <img
-       
-          src={hero} 
-          alt='Hero Image'
-        />
-      </div>        
+    <div style={{ position: 'relative', width: '100%', height: '100vh', overflow: 'hidden' }}>
+      <img
+        src={hero} 
+        alt='Hero Image'
+        style={{ width: '100%', height: '80vh', objectFit: 'cover' }}
+      />
+       <div className="bg-white rounded-md max-w-6xl w-full mx-auto">
+      <form  className="flex flex-col md:flex-row">
+      <div className="py-1.5 px-2.5 flex-1 border-r-2">
+            <p>Where to?</p>
+            <div className="flex flex-row">
+            <input
+              type="text"
+              className="outline-none px-2 py-2 w-full date"
+              name="destination"
+              required
+            />
+             
+            </div>
+          </div>
+          <div className="py-1.5 px-2.5 flex-1 border-r-2">
+            <p>Budget</p>
+            <select
+                className="outline-none px-2 py-2 w-full"
+                name="budget"
+                required
+              >
+                <option value="" hidden>
+                  Please Select
+                </option>
+                <option>1000-10000</option>
+                <option>10001-20000</option>
+                <option>20001-30000</option>
+                <option>30001-40000</option>
+                <option>40001-50000</option>
+              </select>
+          </div>
+          <div className="py-1.5 px-2.5 flex-1 border-r-2">
+            <p>Duration</p>
+            <select
+                className="outline-none px-2 py-2 w-full"
+                name="budget"
+                required
+              >
+                <option value="" hidden>
+                  Please Select
+                </option>
+                <option>1</option>
+                <option>3</option>
+                <option>5</option>
+                <option>7</option>
+                <option>10</option>
+              </select>
+          </div>
+          <button
+            className="inline-flex items-center bg-indigo-500 text-white px-8 py-1 space-x-2"
+            type="submit"
+          >Book Now</button>
+      </form>
+    </div>
     </div>
   );
 };
