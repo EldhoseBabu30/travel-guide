@@ -1,7 +1,7 @@
 import React from "react";
 import video from "../assets/hero.mp4";
 import './Hero.css';
-import Popular from "./Popular";
+import Popular from "./SearchBar";
 
 const Hero = () => {
   return (
@@ -29,59 +29,7 @@ const Hero = () => {
           </div>
           <Popular/>
 
-          {/* <div className="bg-white rounded-full max-w-md sm:max-w-lg md:max-w-2xl w-full mx-auto mt-8 md:mt-[21rem] p-4">
-            <form className="flex flex-col sm:flex-row md:flex-row items-center">
-              <div className="w-full mb-4 sm:mb-0 sm:mr-2 md:mb-0 md:mr-2">
-                <div className="bg-white rounded-xl px-2.5 py-2.5 shadow-md">
-                  <input
-                    type="text"
-                    placeholder="Where to?"
-                    className="outline-none rounded-xl px-4 py-2 w-full"
-                    name="destination"
-                    required
-                  />
-                </div>
-              </div>
-              <div className="w-full mb-4 sm:mb-0 sm:mr-2 md:mb-0 md:mr-2">
-                <div className="bg-white rounded-xl px-2.5 py-2.5 shadow-md">
-                  <select
-                    className="outline-none rounded-xl px-2 py-2 w-full"
-                    name="budget"
-                    required
-                  >
-                    <option value="" hidden>Budget</option>
-                    <option>1000-10000</option>
-                    <option>10001-20000</option>
-                    <option>20001-30000</option>
-                    <option>30001-40000</option>
-                    <option>40001-50000</option>
-                  </select>
-                </div>
-              </div>
-              <div className="w-full mb-4 sm:mb-0 sm:mr-2 md:mb-0 md:mr-2">
-                <div className="bg-white rounded-xl px-2.5 py-2.5 shadow-md">
-                  <select
-                    className="outline-none rounded-xl px-2 py-2 w-full"
-                    name="duration"
-                    required
-                  >
-                    <option value="" hidden>Duration</option>
-                    <option>1</option>
-                    <option>3</option>
-                    <option>5</option>
-                    <option>7</option>
-                    <option>10</option>
-                  </select>
-                </div>
-              </div>
-              <button
-                className="inline-flex rounded-full items-center h-12 bg-indigo-500 text-white px-8 py-3 mt-4 sm:mt-0 sm:ml-2 md:mt-0 md:ml-2"
-                type="submit"
-              >
-                Explore Now
-              </button>
-            </form>
-          </div> */}
+        
           <p className="absolute left-1/2 transform -translate-x-1/2 bottom-12 text-white opacity-50 font-thin sm:static sm:text-center md:left-24">
             Popular places: Munnar, Lakshadweep, Ooty
           </p>
