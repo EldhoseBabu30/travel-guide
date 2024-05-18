@@ -26,7 +26,7 @@ const Hero = () => {
             and unforgettable memories.
           </p>
           </div>
-          <div className="bg-white rounded-full h-16 max-w-3xl w-full mx-auto ml-20 mt-96"> 
+          <div className="bg-white rounded-full h-16 max-w-3xl w-full mx-auto ml-20 mt-[21rem]"> 
             <form className="flex flex-col md:flex-row">
               <div className="justify-center px-2.5 flex-1">
                 <div className="flex py-1 flex-row">
