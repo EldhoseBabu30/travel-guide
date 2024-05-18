@@ -1,7 +1,7 @@
 import React from "react";
 import video from "../assets/hero.mp4";
 import './Hero.css';
-import ActionAreaCard from "./Popular";
+import Popular from "./Popular";
 
 const Hero = () => {
   return (
@@ -27,7 +27,9 @@ const Hero = () => {
               and unforgettable memories.
             </p>
           </div>
-          <div className="bg-white rounded-full max-w-md sm:max-w-lg md:max-w-2xl w-full mx-auto mt-8 md:mt-[21rem] p-4">
+          <Popular/>
+
+          {/* <div className="bg-white rounded-full max-w-md sm:max-w-lg md:max-w-2xl w-full mx-auto mt-8 md:mt-[21rem] p-4">
             <form className="flex flex-col sm:flex-row md:flex-row items-center">
               <div className="w-full mb-4 sm:mb-0 sm:mr-2 md:mb-0 md:mr-2">
                 <div className="bg-white rounded-xl px-2.5 py-2.5 shadow-md">
@@ -79,7 +81,7 @@ const Hero = () => {
                 Explore Now
               </button>
             </form>
-          </div>
+          </div> */}
           <p className="absolute left-1/2 transform -translate-x-1/2 bottom-12 text-white opacity-50 font-thin sm:static sm:text-center md:left-24">
             Popular places: Munnar, Lakshadweep, Ooty
           </p>
@@ -102,6 +104,13 @@ const Hero = () => {
           </div>
         </div>
       </div>
+
+
+
+
+
+
+
     </div>
 
   );
