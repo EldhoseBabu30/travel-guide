@@ -27,12 +27,18 @@ const Hero = () => {
               and unforgettable memories.
             </p>
           </div>
+          <div className="absolute bottom-20 left-14">
           <Popular/>
+          </div>
+
+          <div className="absolute bottom-16 left-60">
 
         
-          <p className="absolute left-1/2 transform -translate-x-1/2 bottom-12 text-white opacity-50 font-thin sm:static sm:text-center md:left-24">
+          <p className="absolute  transform -translate-x-1/2 text-white opacity-50 font-thin sm:static sm:text-center md:left-24">
             Popular places: Munnar, Lakshadweep, Ooty
           </p>
+          </div>
+        
         </div>
       </div>
       <div className="relative w-full h-screen overflow-scroll">
