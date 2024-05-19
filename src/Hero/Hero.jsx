@@ -1,7 +1,7 @@
 import React from "react";
 import video from "../assets/hero.mp4";
 import './Hero.css';
-import Popular from "./SearchBar";
+import SearchBar from "./SearchBar";
 
 const Hero = () => {
   return (
@@ -17,7 +17,7 @@ const Hero = () => {
       <div className="relative top-0 left-0 w-full h-full bg-black/50 z-20">
         <div className="flex items-center justify-center w-full h-full relative z-30 flex-col">
           <div className="my-20 text-center sm:text-left">
-            <h1 className="text-white text-4xl sm:text-5xl md:text-5xl lg:text-7xl font-bold mb-4 sm:static md:absolute md:top-48 md:left-20">
+            <h1 className="text-white text-3xl sm:text-5xl md:text-5xl lg:text-7xl font-bold mb-4 sm:static md:absolute md:top-48 md:left-20">
               Discover Mesmerizing India <br />
               with NjanSanchari
             </h1>
@@ -28,7 +28,7 @@ const Hero = () => {
             </p>
           </div>
           <div className="absolute bottom-20 left-14">
-          <Popular/>
+          <SearchBar/>
           </div>
 
           <div className="absolute bottom-16 left-60">
