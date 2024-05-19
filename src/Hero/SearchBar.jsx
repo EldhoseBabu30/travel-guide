@@ -1,25 +1,18 @@
 import React, { useState } from 'react';
 
 function SearchBar() {
-  const [whereTerm, setWhereTerm] = useState("");
-  const [budget, setBudget] = useState("");
-  const [days, setDays] = useState("");
 
-  const handleWhereChange = (event) => {
-    setWhereTerm(event.target.value);
-  };
+  const [travelData, setTravelData] = useState({
+    whereTerm: "",
+    budget: "",
+    days: "",
+  });
 
-  const handleBudgetChange = (event) => {
-    setBudget(event.target.value);
-  };
 
-  const handleDaysChange = (event) => {
-    setDays(event.target.value);
-  };
 
   return (
     <div className="flex justify-center w-full p-4">
-      <div className="w-full max-w-4xl bg-white shadow-lg p-4 flex flex-col lg:flex-row lg:items-center space-y-4 lg:space-y-0 lg:space-x-4 rounded-lg lg:rounded-full">
+      <div style={{zIndex: 1000}} className="w-full max-w-4xl bg-white shadow-lg p-4 flex flex-col lg:flex-row lg:items-center space-y-4 lg:space-y-0 lg:space-x-4 rounded-lg lg:rounded-full">
         {/* Where to input */}
         <div className="flex-grow">
           <input
@@ -28,8 +21,8 @@ function SearchBar() {
             id="where"
             placeholder="Where to?"
             className="w-full bg-white rounded-lg lg:rounded-full px-4 py-2.5 shadow-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-            onChange={handleWhereChange}
-            value={whereTerm}
+            onChange={(e)=>{setTravelData({...travelData, whereTerm: e.target.value})}}
+            value={travelData.whereTerm}
           />
         </div>
         {/* Budget dropdown */}
@@ -37,8 +30,8 @@ function SearchBar() {
           <select
             className="w-full bg-white rounded-lg lg:rounded-full px-4 py-2.5 shadow-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-indigo-500"
             name="budget"
-            onChange={handleBudgetChange}
-            value={budget}
+            onChange={(e)=>{setTravelData({...travelData, budget: e.target.value})}}
+            value={travelData.budget}
             required
           >
             <option value="" hidden>Budget</option>
@@ -54,8 +47,8 @@ function SearchBar() {
           <select
             className="w-full bg-white rounded-lg lg:rounded-full px-4 py-2.5 shadow-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-indigo-500"
             name="duration"
-            onChange={handleDaysChange}
-            value={days}
+            onChange={(e)=>{setTravelData({...travelData, days: e.target.value})}}
+            value={travelData.days}
             required
           >
             <option value="" hidden>Duration</option>
