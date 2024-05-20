@@ -38,7 +38,7 @@ const DestinationCard = ({ image, title, description, price, rating, isActive })
 
 const NextArrow = ({ onClick }) => (
   <button
-    className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-lg hover:bg-gray-300 transition-colors duration-200"
+    className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-lg hover:bg-gray-300 transition-colors duration-200 z-10"
     onClick={onClick}
   >
     <svg
@@ -54,7 +54,7 @@ const NextArrow = ({ onClick }) => (
 
 const PrevArrow = ({ onClick }) => (
   <button
-    className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-lg hover:bg-gray-300 transition-colors duration-200"
+    className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-lg hover:bg-gray-300 transition-colors duration-200 z-10"
     onClick={onClick}
   >
     <svg
