@@ -31,12 +31,11 @@ const Nav = () => {
         <div className="relative ">
           <NavLink
             to=""
-            className="nav-link relative text-white font-bold transition duration-300 ease-in-out transform hover:text-yellow-500 hover:scale-110 hover:shadow-lg"
+            className="nav-link relative text-white font-bold transition duration-300 ease-in-out transform hover:text-orange-400 hover:scale-110 hover:shadow-lg"
             activeClassName="active"
             onClick={() => toggleDropdown(1)}
           >
             Destinations
-            <span className="absolute left-0 bottom-0 w-full h-0.5 bg-yellow-500 transform scale-x-0 transition-transform duration-300 ease-in-out hover:scale-x-100"></span>
           </NavLink>
           {dropdownOpen[1] && (
             <div className="absolute mt-2 w-full md:w-48 bg-white text-black rounded shadow-lg z-50">
@@ -49,12 +48,11 @@ const Nav = () => {
         <div className="relative">
         <NavLink
             to=""
-            className="nav-link relative text-white font-bold transition duration-300 ease-in-out transform hover:text-yellow-500 hover:scale-110 hover:shadow-lg"
+            className="nav-link relative text-white font-bold transition duration-300 ease-in-out transform hover:text-orange-400 hover:scale-110 hover:shadow-lg"
             activeClassName="active"
             onClick={() => toggleDropdown(2)}
           >
             Hotels
-            <span className="absolute left-0 bottom-0 w-full h-0.5 bg-yellow-500 transform scale-x-0 transition-transform duration-300 ease-in-out hover:scale-x-100"></span>
           </NavLink>
           {dropdownOpen[2] && (
             <div className="absolute mt-2 w-full md:w-48 bg-white text-black rounded shadow-lg z-50">
@@ -67,12 +65,11 @@ const Nav = () => {
         <div className="relative">
         <NavLink
             to=""
-            className="nav-link relative text-white font-bold transition duration-300 ease-in-out transform hover:text-yellow-500 hover:scale-110 hover:shadow-lg"
+            className="nav-link relative text-white font-bold transition duration-300 ease-in-out transform hover:text-orange-400 hover:scale-110 hover:shadow-lg"
             activeClassName="active"
             onClick={() => toggleDropdown(3)}
           >
             Food Spots
-            <span className="absolute left-0 bottom-0 w-full h-0.5 bg-yellow-500 transform scale-x-0 transition-transform duration-300 ease-in-out hover:scale-x-100"></span>
           </NavLink>
           {dropdownOpen[3] && (
             <div className="absolute mt-2 w-full md:w-48 bg-white text-black rounded shadow-lg z-50">
@@ -85,12 +82,11 @@ const Nav = () => {
         <div className="relative">
         <NavLink
             to=""
-            className="nav-link relative text-white font-bold transition duration-300 ease-in-out transform hover:text-yellow-500 hover:scale-110 hover:shadow-lg"
+            className="nav-link relative text-white font-bold transition duration-300 ease-in-out transform hover:text-orange-400 hover:scale-110 hover:shadow-lg"
             activeClassName="active"
             onClick={() => toggleDropdown(4)}
           >
             Community
-            <span className="absolute left-0 bottom-0 w-full h-0.5 bg-yellow-500 transform scale-x-0 transition-transform duration-300 ease-in-out hover:scale-x-100"></span>
           </NavLink>
           {dropdownOpen[4] && (
             <div className="absolute mt-2 w-full md:w-48 bg-white text-black rounded shadow-lg z-50">

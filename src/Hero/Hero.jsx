@@ -19,7 +19,9 @@ const Hero = () => {
           <div className="my-20 text-center sm:text-left w-full px-4 md:px-20">
             <h1 className="text-white text-3xl sm:text-5xl md:text-5xl lg:text-7xl font-bold mb-4 mt-24 sm:mt-0">
               Discover Mesmerizing India <br />
-              with NjanSanchari
+              with{" "} 
+              <span>Njan</span>
+              <span className="text-orange-400">Sanchari</span>
             </h1>
             <p className="text-white opacity-50 text-lg sm:text-xl md:text-xl lg:text-2xl font-thin mb-8 mt-4 hidden md:block">
               Tailored Tours, Hidden Gems, and Culinary Delights in South India and Lakshadweep.<br />

@@ -12,7 +12,7 @@ function SearchBar() {
 
   return (
     <div className="flex justify-center w-full p-4">
-      <div style={{zIndex: 1000}} className="w-full max-w-4xl bg-white shadow-lg p-4 flex flex-col lg:flex-row lg:items-center space-y-4 lg:space-y-0 lg:space-x-4 rounded-lg lg:rounded-full">
+      <div style={{ zIndex: 1000 }} className="w-full max-w-4xl bg-white shadow-lg p-4 flex flex-col lg:flex-row lg:items-center space-y-4 lg:space-y-0 lg:space-x-4 rounded-lg lg:rounded-full">
         {/* Where to input */}
         <div className="flex-grow">
           <input
@@ -21,7 +21,7 @@ function SearchBar() {
             id="where"
             placeholder="Where to?"
             className="w-full bg-white rounded-lg lg:rounded-full px-4 py-2.5 shadow-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-            onChange={(e)=>{setTravelData({...travelData, whereTerm: e.target.value})}}
+            onChange={(e) => { setTravelData({ ...travelData, whereTerm: e.target.value }) }}
             value={travelData.whereTerm}
           />
         </div>
@@ -30,7 +30,7 @@ function SearchBar() {
           <select
             className="w-full bg-white rounded-lg lg:rounded-full px-4 py-2.5 shadow-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-indigo-500"
             name="budget"
-            onChange={(e)=>{setTravelData({...travelData, budget: e.target.value})}}
+            onChange={(e) => { setTravelData({ ...travelData, budget: e.target.value }) }}
             value={travelData.budget}
             required
           >
@@ -47,7 +47,7 @@ function SearchBar() {
           <select
             className="w-full bg-white rounded-lg lg:rounded-full px-4 py-2.5 shadow-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-indigo-500"
             name="duration"
-            onChange={(e)=>{setTravelData({...travelData, days: e.target.value})}}
+            onChange={(e) => { setTravelData({ ...travelData, days: e.target.value }) }}
             value={travelData.days}
             required
           >
@@ -63,7 +63,9 @@ function SearchBar() {
         <div className="w-full lg:w-auto flex justify-center lg:justify-end">
           <button
             type="button"
-            className="w-full lg:w-auto rounded-lg lg:rounded-full border border-black bg-black py-2 px-4 text-white transition-all hover:bg-white hover:text-black text-center text-sm font-inter flex items-center justify-center"
+            className="w-full lg:w-auto rounded-lg lg:rounded-full 
+            border border-orange-400 bg-orange-400 py-2 px-4 text-white transition-all 
+            hover:bg-white hover:text-orange-400 text-center text-sm font-inter flex items-center justify-center"
           >
             Explore Now
           </button>
