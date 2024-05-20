@@ -27,11 +27,15 @@ const Hero = () => {
               and unforgettable memories.
             </p>
           </div>
-          <div className="flex flex-col items-center w-full px-4 md:absolute md:bottom-20 md:left-20">
-            <SearchBar />
-            <p className="text-white opacity-50 font-thin text-center mt-4">
-              Popular places: Munnar, Lakshadweep, Ooty
-            </p>
+          <div className="w-full px-4 md:w-auto md:absolute md:bottom-20 md:left-12">
+            <div className="flex flex-col items-center md:items-start">
+              <SearchBar />
+             <div className="w-full px-4 md:w-auto md:absolute md:top-24 md:left-12">
+                <p className="text-white opacity-50 font-thin text-center md:text-left ">
+                  Popular places: Munnar, Lakshadweep, Ooty
+                </p>
+             </div>
+            </div>
           </div>
         </div>
       </div>
@@ -39,4 +43,4 @@ const Hero = () => {
   );
 };
 
-export default Hero;
+export default Hero;
