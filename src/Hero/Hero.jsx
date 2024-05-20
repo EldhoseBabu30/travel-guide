@@ -2,10 +2,11 @@ import React from "react";
 import video from "../assets/hero.mp4";
 import './Hero.css';
 import SearchBar from "./SearchBar";
+import ExploreCards from "../components/cards/ExploreCards";
 
 const Hero = () => {
   return (
-    <div className="relative w-full h-screen overflow-hidden">
+    <div className="relative w-full h-screen overflow-y-scroll overflow-x-hidden">
       <video
         src={video}
         type="mp4"
@@ -41,6 +42,7 @@ const Hero = () => {
           </div>
         </div>
       </div>
+      <ExploreCards/>
     </div>
   );
 };
