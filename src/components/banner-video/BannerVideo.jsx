@@ -3,7 +3,7 @@ import video from '../../assets/banner-video.mp4';
 
 const App = () => {
   return (
-    <div className="relative h-screen w-full bg-gray-100 flex justify-center items-center">
+    <div className="relative h-screen w-full">
       {/* Background Video */}
       <video
         className="absolute inset-0 w-full h-full object-cover"
@@ -14,11 +14,12 @@ const App = () => {
       ></video>
 
       {/* Overlay Content */}
-      <div className="relative z-10 flex flex-col items-center justify-center h-full w-full bg-black bg-opacity-50">
-        <h1 className="text-2xl font-serif  md:text-5xl lg:text-7xl text-white font-semibold mb-4 text-center">
+      <div className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50">
+        <h1 className="text-transparent bg-clip-text bg-gradient-to-b from-white to-orange-300 font-tusker text-center uppercase tracking-widest drop-shadow-lg text-xl sm:text-2xl md:text-4xl lg:text-[80px] leading-relaxed sm:leading-relaxed md:leading-tight whitespace-normal px-4 sm:px-6 md:px-8">
           Discover the Untouched Paradise
         </h1>
-        <button className="bg-white text-black text-lg px-6 py-3 rounded-md shadow-md">
+
+        <button className="mt-8 shadow-md rounded-md px-6 py-3 bg-orange-400 text-white hover:bg-white hover:text-orange-400 transition-all text-sm font-inter flex items-center justify-center">
           View All Packages
         </button>
       </div>

@@ -101,11 +101,11 @@ const App = () => {
   return (
     <div className="bg-gray-100 min-h-screen py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900 text-center">Places to <span className="text-black">Stay</span></h1>
+        <h1 className="text-3xl font-bold text-gray-900 text-center">Places to <span className="text-orange-400">Stay</span></h1>
         <div className="flex flex-col items-center mt-2 space-y-4">
           <div className="flex flex-wrap justify-center space-x-4">
-            <div>
-              <label className="text-gray-600">Check-in</label>
+            <div className="flex flex-col items-center">
+              <label className="text-gray-600 mb-1">Check-in</label>
               <DatePicker
                 selected={startDate}
                 onChange={(date) => setStartDate(date)}
@@ -115,8 +115,8 @@ const App = () => {
                 className="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm mt-1"
               />
             </div>
-            <div>
-              <label className="text-gray-600">Check-out</label>
+            <div className="flex flex-col items-center">
+              <label className="text-gray-600 mb-1">Check-out</label>
               <DatePicker
                 selected={endDate}
                 onChange={(date) => setEndDate(date)}
@@ -127,8 +127,8 @@ const App = () => {
                 className="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm mt-1"
               />
             </div>
-            <div>
-              <label className="text-gray-600">Guests</label>
+            <div className="flex flex-col items-center">
+              <label className="text-gray-600 mb-1">Guests</label>
               <select
                 value={numAdults}
                 onChange={(e) => setNumAdults(e.target.value)}
