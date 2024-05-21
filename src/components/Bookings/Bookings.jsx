@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import 'react-responsive-carousel/lib/styles/carousel.min.css'; // Import carousel styles
-import { Carousel } from 'react-responsive-carousel';
-import conoor from "../../assets/conoor.jpg";
-import ekm from "../../assets/ekm.jpg";
-import kodai from "../../assets/kodaikanal.jpg";
-import varkala from "../../assets/varkala_cliff.jpg";
-import wayanad from "../../assets/wayanad.jpg";
+import 'react-multi-carousel/lib/styles.css';
+import Carousel from 'react-multi-carousel';
+import conoor from '../../assets/conoor.jpg';
+import ekm from '../../assets/ekm.jpg';
+import kodai from '../../assets/kodaikanal.jpg';
+import varkala from '../../assets/varkala_cliff.jpg';
+import wayanad from '../../assets/wayanad.jpg';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -91,17 +91,38 @@ const App = () => {
 
   const filteredStays = stays.filter(
     (stay) =>
-      stay.type === selectedTab &&
+      (selectedTab === 'Entire homes' || stay.type === selectedTab) &&
       (filters.priceRange ? stay.price <= parseInt(filters.priceRange) : true) &&
-      (filters.available ? stay.available === filters.available : true) &&
-      (filters.pool ? stay.pool === filters.pool : true) &&
-      (filters.jungleRooms ? stay.jungleRooms === filters.jungleRooms : true)
+      (!filters.available || stay.available) &&
+      (!filters.pool || stay.pool) &&
+      (!filters.jungleRooms || stay.jungleRooms)
   );
+
+  const responsive = {
+    superLargeDesktop: {
+      breakpoint: { max: 4000, min: 3000 },
+      items: 5,
+    },
+    desktop: {
+      breakpoint: { max: 3000, min: 1024 },
+      items: 3,
+    },
+    tablet: {
+      breakpoint: { max: 1024, min: 464 },
+      items: 2,
+    },
+    mobile: {
+      breakpoint: { max: 464, min: 0 },
+      items: 1,
+    },
+  };
 
   return (
     <div className="bg-gray-100 min-h-screen py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900 text-center">Places to <span className="text-orange-400">Stay</span></h1>
+        <h1 className="text-3xl font-bold text-gray-900 text-center">
+          Places to <span className="text-orange-400">Stay</span>
+        </h1>
         <div className="flex flex-col items-center mt-2 space-y-4">
           <div className="flex flex-wrap justify-center space-x-4">
             <div className="flex flex-col items-center">
@@ -131,7 +152,7 @@ const App = () => {
               <label className="text-gray-600 mb-1">Guests</label>
               <select
                 value={numAdults}
-                onChange={(e) => setNumAdults(e.target.value)}
+                onChange={(e) => setNumAdults(parseInt(e.target.value))}
                 className="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm mt-1"
               >
                 {[...Array(10).keys()].map((num) => (
@@ -146,7 +167,7 @@ const App = () => {
             {tabs.map((tab) => (
               <button
                 key={tab}
-                className={`py-2 px-4 rounded-full ${selectedTab === tab ? 'bg-black text-white' : 'bg-white text-gray-700'}`}
+                className={`py-2 px-4 rounded-full ${selectedTab === tab ? 'bg-orange-400 text-white' : 'bg-white text-gray-700'}`}
                 onClick={() => setSelectedTab(tab)}
               >
                 {tab}
@@ -161,7 +182,6 @@ const App = () => {
           </div>
         </div>
 
-        {/* Advanced Filter Modal */}
         {isAdvancedFilterOpen && (
           <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg p-8 shadow-lg relative w-full max-w-lg m-4">
@@ -233,11 +253,16 @@ const App = () => {
           </div>
         )}
 
-        {/* Carousel */}
         <div className="mt-10">
-          <Carousel showThumbs={false} showStatus={false} infiniteLoop autoPlay>
+          <Carousel
+            responsive={responsive}
+            infinite
+            autoPlay
+            showDots={filteredStays.length > 3}
+            arrows={filteredStays.length > 3}
+          >
             {filteredStays.map((stay) => (
-              <div key={stay.id} className="inline-block p-4">
+              <div key={stay.id} className="p-4">
                 <div className="relative bg-white rounded-lg overflow-hidden shadow-lg w-80 h-96">
                   <img className="w-full h-56 object-cover" src={stay.image} alt={stay.name} />
                   <div className="absolute top-4 right-4">

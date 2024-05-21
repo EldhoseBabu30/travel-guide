@@ -5,16 +5,18 @@ import SearchBar from "./SearchBar";
 import ExploreCards from "../components/cards/ExploreCards";
 import BannerVideo from "../components/banner-video/BannerVideo";
 import Bookings from "../components/Bookings/Bookings";
+import ChooseUs from "../components/ChooseUs/ChooseUs";
 
 const Hero = () => {
   return (
     <div className="relative w-full h-screen overflow-y-scroll overflow-x-hidden">
       <video
         src={video}
-        type="mp4"
+        type="video/mp4"
         autoPlay
         loop
         muted
+        playsInline
         className="absolute top-0 left-0 w-full h-full object-cover z-10"
       />
       <div className="relative top-0 left-0 w-full h-full bg-black/50 z-20">
@@ -35,18 +37,21 @@ const Hero = () => {
           <div className="w-full px-4 md:w-auto md:absolute md:bottom-20 md:left-12">
             <div className="flex flex-col items-center md:items-start">
               <SearchBar />
-             <div className="w-full px-4 md:w-auto md:absolute md:top-24 md:left-12">
+              <div className="w-full px-4 md:w-auto md:absolute md:top-24 md:left-12">
                 <p className="text-white opacity-50 font-thin text-center md:text-left ">
                   Popular places: Munnar, Lakshadweep, Ooty
                 </p>
-             </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <ExploreCards/>
-      <BannerVideo/>
-      <Bookings/>
+      <div className="mb-8 md:mb-16">
+        <ExploreCards />
+      </div>
+      <BannerVideo />
+      <Bookings />
+      <ChooseUs />
     </div>
   );
 };
