@@ -3,6 +3,8 @@ import video from "../assets/hero.mp4";
 import './Hero.css';
 import SearchBar from "./SearchBar";
 import ExploreCards from "../components/cards/ExploreCards";
+import BannerVideo from "../components/banner-video/BannerVideo";
+import Bookings from "../components/Bookings/Bookings";
 
 const Hero = () => {
   return (
@@ -43,6 +45,8 @@ const Hero = () => {
         </div>
       </div>
       <ExploreCards/>
+      <BannerVideo/>
+      <Bookings/>
     </div>
   );
 };
