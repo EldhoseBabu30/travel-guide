@@ -124,20 +124,20 @@ const App = () => {
           Places to <span className="text-orange-400">Stay</span>
         </h1>
         <div className="flex flex-col items-center mt-2 space-y-4">
-          <div className="flex flex-wrap justify-center space-x-4">
-            <div className="flex flex-col items-center">
-              <label className="text-gray-600 mb-1">Check-in</label>
+          <div className="flex flex-col md:flex-row flex-wrap justify-center md:space-x-4 space-y-4 md:space-y-0">
+            <div className="flex items-center space-x-2">
+              <label className="text-gray-600">Check-in</label>
               <DatePicker
                 selected={startDate}
                 onChange={(date) => setStartDate(date)}
                 selectsStart
                 startDate={startDate}
                 endDate={endDate}
-                className="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm mt-1"
+                className="block px-4 py-2 border border-gray-300 rounded-md shadow-sm"
               />
             </div>
-            <div className="flex flex-col items-center">
-              <label className="text-gray-600 mb-1">Check-out</label>
+            <div className="flex items-center space-x-2">
+              <label className="text-gray-600">Check-out</label>
               <DatePicker
                 selected={endDate}
                 onChange={(date) => setEndDate(date)}
@@ -145,15 +145,15 @@ const App = () => {
                 startDate={startDate}
                 endDate={endDate}
                 minDate={startDate}
-                className="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm mt-1"
+                className="block px-4 py-2 border border-gray-300 rounded-md shadow-sm"
               />
             </div>
-            <div className="flex flex-col items-center">
-              <label className="text-gray-600 mb-1">Guests</label>
+            <div className="flex items-center space-x-2">
+              <label className="text-gray-600">Guests</label>
               <select
                 value={numAdults}
                 onChange={(e) => setNumAdults(parseInt(e.target.value))}
-                className="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm mt-1"
+                className="block px-4 py-2 border border-gray-300 rounded-md shadow-sm"
               >
                 {[...Array(10).keys()].map((num) => (
                   <option key={num + 1} value={num + 1}>
@@ -163,12 +163,15 @@ const App = () => {
               </select>
             </div>
           </div>
-          <div className="mt-6 flex flex-wrap justify-center space-x-4">
+          <div className="mt-6 flex flex-wrap justify-center space-x-2 space-y-2 md:space-y-0 md:flex-nowrap">
             {tabs.map((tab) => (
               <button
                 key={tab}
-                className={`py-2 px-4 rounded-full ${selectedTab === tab ? 'bg-orange-400 text-white' : 'bg-white text-gray-700'}`}
+                className={`flex-1 py-2 px-4 rounded-full text-center ${
+                  selectedTab === tab ? 'bg-orange-400 text-white' : 'bg-white text-gray-700'
+                }`}
                 onClick={() => setSelectedTab(tab)}
+                style={{ padding: '8px 16px', flex: '1 0 auto' }} // Ensuring consistent padding and flexible sizing
               >
                 {tab}
               </button>
@@ -176,6 +179,7 @@ const App = () => {
             <button
               className="py-2 px-4 bg-white text-gray-700 rounded-full border border-gray-300"
               onClick={() => setIsAdvancedFilterOpen(!isAdvancedFilterOpen)}
+              style={{ padding: '8px 16px', flex: '1 0 auto' }} // Ensuring consistent padding and flexible sizing
             >
               Advanced filter
             </button>
@@ -253,41 +257,43 @@ const App = () => {
           </div>
         )}
 
-        <div className="mt-10">
-          <Carousel
-            responsive={responsive}
-            infinite
-            autoPlay
-            showDots={filteredStays.length > 3}
-            arrows={filteredStays.length > 3}
-          >
-            {filteredStays.map((stay) => (
-              <div key={stay.id} className="p-4">
-                <div className="relative bg-white rounded-lg overflow-hidden shadow-lg w-80 h-96">
-                  <img className="w-full h-56 object-cover" src={stay.image} alt={stay.name} />
-                  <div className="absolute top-4 right-4">
-                    <button className="bg-white rounded-full p-2 shadow-md">
-                      <svg
-                        className="h-6 w-6 text-gray-900"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                  <div className="p-4">
-                    <h2 className="text-xl font-bold">{stay.name}</h2>
-                    <p className="text-gray-600 mt-1">₦ {stay.price.toLocaleString()}</p>
+        <div className="mt-10 flex justify-center items-center">
+          <div className="w-full max-w-5xl">
+            <Carousel
+              responsive={responsive}
+              infinite
+              autoPlay
+              showDots={filteredStays.length > 3}
+              arrows={filteredStays.length > 3}
+            >
+              {filteredStays.map((stay) => (
+                <div key={stay.id} className="p-4">
+                  <div className="relative bg-white rounded-lg overflow-hidden shadow-lg w-80 h-96 mx-auto">
+                    <img className="w-full h-56 object-cover" src={stay.image} alt={stay.name} />
+                    <div className="absolute top-4 right-4">
+                      <button className="bg-white rounded-full p-2 shadow-md">
+                        <svg
+                          className="h-6 w-6 text-gray-900"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                    <div className="p-4">
+                      <h2 className="text-xl font-bold">{stay.name}</h2>
+                      <p className="text-gray-600 mt-1">₦ {stay.price.toLocaleString()}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </Carousel>
+              ))}
+            </Carousel>
+          </div>
         </div>
       </div>
     </div>
