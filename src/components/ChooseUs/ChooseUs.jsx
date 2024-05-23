@@ -1,60 +1,66 @@
 import React from 'react';
+import { Player } from '@lottiefiles/react-lottie-player';
 
-const App = () => {
+// Sample Lottie files (replace these with actual Lottie file URLs or paths)
+const guidedToursAnimation = 'https://assets9.lottiefiles.com/packages/lf20_touohxv0.json';
+const bestFlightsAnimation = 'https://assets9.lottiefiles.com/packages/lf20_l7zzfwhd.json';
+const exclusiveDealsAnimation = 'https://assets9.lottiefiles.com/packages/lf20_mmgmmixk.json';
+const customerSupportAnimation = 'https://assets9.lottiefiles.com/packages/lf20_86l83oo8.json';
+
+const ServicesSection = () => {
   return (
-    <div className="container mx-auto p-8">
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold mb-4">Why You Should <span className='text-orange-400'>Choose Us</span></h1>
-        <p className="text-lg text-gray-600">
-          There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected.
-        </p>
-      </div>
-      <div className="flex flex-col md:flex-row items-center md:items-start space-y-8 md:space-y-0 md:space-x-8">
-        <div className="md:w-1/2 space-y-8">
-          <div className="flex items-start space-x-4">
-            <div className="flex-shrink-0 w-12 h-12 rounded-full bg-orange-400 text-white flex items-center justify-center text-lg font-bold">
-              01
-            </div>
-            <div>
-              <h2 className="text-xl font-semibold mb-2">We provide the best choice for you</h2>
-              <p className="text-gray-600">There are many variations of passages of Lorem Ipsum available, but the majority.</p>
-            </div>
+    <section className="bg-gray-300 text-white py-16">
+      <div className="container mx-auto px-6">
+        <h2 className="text-center text-4xl font-bold mb-12 animate-color-change">We Offer Best Services</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
+          <div className="text-center p-6 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-300">
+            <Player 
+              src={guidedToursAnimation}
+              className="mx-auto mb-4"
+              style={{ height: '80px', width: '80px' }}
+              autoplay
+              loop
+            />
+            <h3 className="text-2xl font-semibold mb-3">Guided Tours</h3>
+            <p className="text-gray-400">Guided tours provided by Triplify offer travelers the opportunity to explore destinations with the expertise of knowledgeable guides.</p>
           </div>
-          <div className="flex items-start space-x-4">
-            <div className="flex-shrink-0 w-12 h-12 rounded-full bg-orange-400 text-white flex items-center justify-center text-lg font-bold">
-              02
-            </div>
-            <div>
-              <h2 className="text-xl font-semibold mb-2">Low price with best quality</h2>
-              <p className="text-gray-600">There are many variations of passages of Lorem Ipsum available, but the majority.</p>
-            </div>
+          <div className="text-center p-6 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-300">
+            <Player 
+              src={bestFlightsAnimation}
+              className="mx-auto mb-4"
+              style={{ height: '80px', width: '80px' }}
+              autoplay
+              loop
+            />
+            <h3 className="text-2xl font-semibold mb-3">Best Flights Options</h3>
+            <p className="text-gray-400">Triplify scours through various airlines and booking platforms to find the most competitive prices for flights.</p>
           </div>
-          <div className="flex items-start space-x-4">
-            <div className="flex-shrink-0 w-12 h-12 rounded-full bg-orange-400 text-white flex items-center justify-center text-lg font-bold">
-              03
-            </div>
-            <div>
-              <h2 className="text-xl font-semibold mb-2">Can refund up to 100%</h2>
-              <p className="text-gray-600">There are many variations of passages of Lorem Ipsum available, but the majority.</p>
-            </div>
+          <div className="text-center p-6 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-300">
+            <Player 
+              src={exclusiveDealsAnimation}
+              className="mx-auto mb-4"
+              style={{ height: '80px', width: '80px' }}
+              autoplay
+              loop
+            />
+            <h3 className="text-2xl font-semibold mb-3">Exclusive Deals</h3>
+            <p className="text-gray-400">Exclusive deals offered by Triplify are special offers and discounts available only to users of the Triplify platform.</p>
+          </div>
+          <div className="text-center p-6 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-300">
+            <Player 
+              src={customerSupportAnimation}
+              className="mx-auto mb-4"
+              style={{ height: '80px', width: '80px' }}
+              autoplay
+              loop
+            />
+            <h3 className="text-2xl font-semibold mb-3">24/7 Customer Support</h3>
+            <p className="text-gray-400">Travel plans can change unexpectedly, which is why Triplify's customer support is available round-the-clock.</p>
           </div>
         </div>
-        <div className="md:w-1/2 relative">
-          <img src="https://via.placeholder.com/600x400" alt="Beautiful landscape" className="rounded-lg shadow-lg w-full" />
-          <div className="absolute top-4 left-4 bg-white p-4 rounded-lg shadow-lg flex items-center space-x-4">
-            <img src="https://via.placeholder.com/40" alt="Cravic Mario" className="w-10 h-10 rounded-full"/>
-            <div>
-              <p className="font-semibold">Cravic Mario</p>
-              <p className="text-sm text-gray-500">Give rating</p>
-              <div className="flex items-center">
-                <span className="text-orange-400">★ 4.9</span>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
-    </div>
+    </section>
   );
 };
 
-export default App;
+export default ServicesSection;

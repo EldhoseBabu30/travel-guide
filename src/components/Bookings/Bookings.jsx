@@ -118,26 +118,26 @@ const App = () => {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen py-10">
+    <div className="bg-gray-100 dark:bg-gray-900 min-h-screen py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900 text-center">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white text-center">
           Places to <span className="text-orange-400">Stay</span>
         </h1>
         <div className="flex flex-col items-center mt-2 space-y-4">
           <div className="flex flex-col md:flex-row flex-wrap justify-center md:space-x-4 space-y-4 md:space-y-0">
             <div className="flex items-center space-x-2">
-              <label className="text-gray-600">Check-in</label>
+              <label className="text-gray-600 dark:text-gray-400">Check-in</label>
               <DatePicker
                 selected={startDate}
                 onChange={(date) => setStartDate(date)}
                 selectsStart
                 startDate={startDate}
                 endDate={endDate}
-                className="block px-4 py-2 border border-gray-300 rounded-md shadow-sm"
+                className="block px-4 py-2 border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:text-white"
               />
             </div>
             <div className="flex items-center space-x-2">
-              <label className="text-gray-600">Check-out</label>
+              <label className="text-gray-600 dark:text-gray-400">Check-out</label>
               <DatePicker
                 selected={endDate}
                 onChange={(date) => setEndDate(date)}
@@ -145,15 +145,15 @@ const App = () => {
                 startDate={startDate}
                 endDate={endDate}
                 minDate={startDate}
-                className="block px-4 py-2 border border-gray-300 rounded-md shadow-sm"
+                className="block px-4 py-2 border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:text-white"
               />
             </div>
             <div className="flex items-center space-x-2">
-              <label className="text-gray-600">Guests</label>
+              <label className="text-gray-600 dark:text-gray-400">Guests</label>
               <select
                 value={numAdults}
                 onChange={(e) => setNumAdults(parseInt(e.target.value))}
-                className="block px-4 py-2 border border-gray-300 rounded-md shadow-sm"
+                className="block px-4 py-2 border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:text-white"
               >
                 {[...Array(10).keys()].map((num) => (
                   <option key={num + 1} value={num + 1}>
@@ -168,7 +168,7 @@ const App = () => {
               <button
                 key={tab}
                 className={`flex-1 py-2 px-4 rounded-full text-center ${
-                  selectedTab === tab ? 'bg-orange-400 text-white' : 'bg-white text-gray-700'
+                  selectedTab === tab ? 'bg-orange-400 text-white' : 'bg-white text-gray-700 dark:bg-gray-700 dark:text-gray-300'
                 }`}
                 onClick={() => setSelectedTab(tab)}
                 style={{ padding: '8px 16px', flex: '1 0 auto' }} // Ensuring consistent padding and flexible sizing
@@ -177,7 +177,7 @@ const App = () => {
               </button>
             ))}
             <button
-              className="py-2 px-4 bg-white text-gray-700 rounded-full border border-gray-300"
+              className="py-2 px-4 bg-white text-gray-700 dark:bg-gray-700 dark:text-gray-300 rounded-full border border-gray-300 dark:border-gray-600"
               onClick={() => setIsAdvancedFilterOpen(!isAdvancedFilterOpen)}
               style={{ padding: '8px 16px', flex: '1 0 auto' }} // Ensuring consistent padding and flexible sizing
             >
@@ -188,17 +188,17 @@ const App = () => {
 
         {isAdvancedFilterOpen && (
           <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-8 shadow-lg relative w-full max-w-lg m-4">
-              <h2 className="text-2xl font-bold mb-4">Advanced Filter</h2>
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-8 shadow-lg relative w-full max-w-lg m-4">
+              <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Advanced Filter</h2>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-gray-700">Price Range</label>
+                  <label className="block text-gray-700 dark:text-gray-400">Price Range</label>
                   <input
                     type="number"
                     name="priceRange"
                     value={filters.priceRange}
                     onChange={handleFilterChange}
-                    className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm"
+                    className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:text-white"
                     placeholder="Enter maximum price"
                   />
                 </div>
@@ -208,9 +208,9 @@ const App = () => {
                     name="available"
                     checked={filters.available}
                     onChange={handleFilterChange}
-                    className="h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                    className="h-4 w-4 text-indigo-600 border-gray-300 rounded dark:bg-gray-700"
                   />
-                  <label className="ml-2 block text-gray-700">Available</label>
+                  <label className="ml-2 block text-gray-700 dark:text-gray-400">Available</label>
                 </div>
                 <div className="flex items-center">
                   <input
@@ -218,9 +218,9 @@ const App = () => {
                     name="pool"
                     checked={filters.pool}
                     onChange={handleFilterChange}
-                    className="h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                    className="h-4 w-4 text-indigo-600 border-gray-300 rounded dark:bg-gray-700"
                   />
-                  <label className="ml-2 block text-gray-700">Pool</label>
+                                    <label className="ml-2 block text-gray-700 dark:text-gray-400">Pool</label>
                 </div>
                 <div className="flex items-center">
                   <input
@@ -228,14 +228,14 @@ const App = () => {
                     name="jungleRooms"
                     checked={filters.jungleRooms}
                     onChange={handleFilterChange}
-                    className="h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                    className="h-4 w-4 text-indigo-600 border-gray-300 rounded dark:bg-gray-700"
                   />
-                  <label className="ml-2 block text-gray-700">Jungle Rooms</label>
+                  <label className="ml-2 block text-gray-700 dark:text-gray-400">Jungle Rooms</label>
                 </div>
               </div>
               <div className="mt-6 flex justify-end space-x-4">
                 <button
-                  className="py-2 px-4 bg-gray-200 text-gray-700 rounded-full"
+                  className="py-2 px-4 bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300 rounded-full"
                   onClick={() => setIsAdvancedFilterOpen(false)}
                 >
                   Cancel
@@ -248,7 +248,7 @@ const App = () => {
                 </button>
               </div>
               <button
-                className="absolute top-2 right-2 text-gray-600"
+                className="absolute top-2 right-2 text-gray-600 dark:text-gray-300"
                 onClick={() => setIsAdvancedFilterOpen(false)}
               >
                 &times;
@@ -269,10 +269,10 @@ const App = () => {
             >
               {filteredStays.map((stay) => (
                 <div key={stay.id} className="p-4">
-                  <div className="relative bg-white rounded-lg overflow-hidden shadow-lg w-80 h-96 mx-auto">
+                  <div className="relative bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg w-80 h-96 mx-auto">
                     <img className="w-full h-56 object-cover" src={stay.image} alt={stay.name} />
                     <div className="absolute top-4 right-4">
-                      <button className="bg-white rounded-full p-2 shadow-md">
+                      <button className="bg-white dark:bg-gray-700 rounded-full p-2 shadow-md">
                         <svg
                           className="h-6 w-6 text-orange-400"
                           fill="currentColor"
@@ -287,8 +287,8 @@ const App = () => {
                       </button>
                     </div>
                     <div className="p-4">
-                      <h2 className="text-xl font-bold">{stay.name}</h2>
-                      <p className="text-gray-600 mt-1">₦ {stay.price.toLocaleString()}</p>
+                      <h2 className="text-xl font-bold text-gray-900 dark:text-white">{stay.name}</h2>
+                      <p className="text-gray-600 dark:text-gray-400 mt-1">₦ {stay.price.toLocaleString()}</p>
                     </div>
                   </div>
                 </div>

@@ -9,14 +9,14 @@ import ooty from '../../assets/ooty.jpg';
 import fort from '../../assets/fort.jpg';
 
 const DestinationCard = ({ image, title, description, price, rating, isActive }) => (
-  <div className={`card bg-white shadow-xl rounded-lg overflow-hidden m-2 transform transition-transform duration-300 ${isActive ? 'scale-105 shadow-2xl' : ''}`}>
+  <div className={`card bg-white dark:bg-gray-800 shadow-xl rounded-lg overflow-hidden m-2 transform transition-transform duration-300 ${isActive ? 'scale-105 shadow-2xl' : ''}`}>
     <div className={`relative ${isActive ? 'h-48' : 'h-full'}`}>
       <img src={image} alt={title} className="w-full h-full object-cover" />
     </div>
     {isActive && (
-      <div className={`p-4 transition-opacity duration-300`}>
-        <h3 className="font-bold text-xl mb-2">{title}</h3>
-        <p className="text-gray-700 mb-4">{description}</p>
+      <div className="p-4 transition-opacity duration-300">
+        <h3 className="font-bold text-xl mb-2 text-gray-900 dark:text-white">{title}</h3>
+        <p className="text-gray-700 dark:text-gray-400 mb-4">{description}</p>
         <div className="flex justify-between items-center">
           <span className="text-orange-400 font-bold">${price}</span>
           <span className="flex items-center">
@@ -28,7 +28,7 @@ const DestinationCard = ({ image, title, description, price, rating, isActive })
             >
               <path d="M10 15l-5.878 3.09 1.122-6.545L.367 7.09l6.564-.955L10 0l2.09 6.135 6.543.955-4.874 4.455 1.122 6.545L10 15z" />
             </svg>
-            <span className="ml-1">{rating}</span>
+            <span className="ml-1 text-gray-900 dark:text-white">{rating}</span>
           </span>
         </div>
       </div>
@@ -38,11 +38,11 @@ const DestinationCard = ({ image, title, description, price, rating, isActive })
 
 const NextArrow = ({ onClick }) => (
   <button
-    className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-lg hover:bg-gray-300 transition-colors duration-200 z-10"
+    className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-gray-200 dark:bg-gray-700 p-2 rounded-full shadow-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200 z-10"
     onClick={onClick}
   >
     <svg
-      className="w-6 h-6 text-gray-700"
+      className="w-6 h-6 text-gray-700 dark:text-gray-300"
       fill="currentColor"
       viewBox="0 0 20 20"
       xmlns="http://www.w3.org/2000/svg"
@@ -54,11 +54,11 @@ const NextArrow = ({ onClick }) => (
 
 const PrevArrow = ({ onClick }) => (
   <button
-    className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-lg hover:bg-gray-300 transition-colors duration-200 z-10"
+    className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-gray-200 dark:bg-gray-700 p-2 rounded-full shadow-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200 z-10"
     onClick={onClick}
   >
     <svg
-      className="w-6 h-6 text-gray-700"
+      className="w-6 h-6 text-gray-700 dark:text-gray-300"
       fill="currentColor"
       viewBox="0 0 20 20"
       xmlns="http://www.w3.org/2000/svg"
@@ -151,20 +151,20 @@ const App = () => {
   };
 
   return (
-    <div className="h-screen container mx-auto px-4 py-16">
-      <h1 className="text-4xl font-bold mb-4 text-center">
+    <div className="h-screen container mx-auto px-4 py-16 dark:bg-gray-900">
+      <h1 className="text-4xl font-bold mb-4 text-center text-gray-900 dark:text-white">
         Find your best <span className="text-orange-400">destination</span>
       </h1>
-      <p className="text-center mb-12">We have more than 350+ destinations you can choose</p>
+      <p className="text-center mb-12 text-gray-700 dark:text-gray-300">We have more than 350+ destinations you can choose</p>
       <div className="flex justify-center mb-12">
         <div className="relative">
           <input
             type="text"
             placeholder="Search Destinations..."
-            className="w-full py-2 pl-10 pr-4 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-orange-400"
+            className="w-full py-2 pl-10 pr-4 border border-gray-300 dark:border-gray-700 rounded-full focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-800 dark:text-gray-300"
           />
           <svg
-            className="w-5 h-5 text-gray-500 absolute left-3 top-1/2 transform -translate-y-1/2"
+            className="w-5 h-5 text-gray-500 dark:text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
@@ -187,3 +187,4 @@ const App = () => {
 };
 
 export default App;
+
