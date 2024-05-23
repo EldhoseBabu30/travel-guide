@@ -4,7 +4,7 @@ const App = () => {
   return (
     <div className="container mx-auto p-8">
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold mb-4">Why You Should Choose Us</h1>
+        <h1 className="text-4xl font-bold mb-4">Why You Should <span className='text-orange-400'>Choose Us</span></h1>
         <p className="text-lg text-gray-600">
           There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected.
         </p>
@@ -12,7 +12,7 @@ const App = () => {
       <div className="flex flex-col md:flex-row items-center md:items-start space-y-8 md:space-y-0 md:space-x-8">
         <div className="md:w-1/2 space-y-8">
           <div className="flex items-start space-x-4">
-            <div className="flex-shrink-0 w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center text-lg font-bold">
+            <div className="flex-shrink-0 w-12 h-12 rounded-full bg-orange-400 text-white flex items-center justify-center text-lg font-bold">
               01
             </div>
             <div>
@@ -21,7 +21,7 @@ const App = () => {
             </div>
           </div>
           <div className="flex items-start space-x-4">
-            <div className="flex-shrink-0 w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center text-lg font-bold">
+            <div className="flex-shrink-0 w-12 h-12 rounded-full bg-orange-400 text-white flex items-center justify-center text-lg font-bold">
               02
             </div>
             <div>
@@ -30,7 +30,7 @@ const App = () => {
             </div>
           </div>
           <div className="flex items-start space-x-4">
-            <div className="flex-shrink-0 w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center text-lg font-bold">
+            <div className="flex-shrink-0 w-12 h-12 rounded-full bg-orange-400 text-white flex items-center justify-center text-lg font-bold">
               03
             </div>
             <div>
@@ -47,7 +47,7 @@ const App = () => {
               <p className="font-semibold">Cravic Mario</p>
               <p className="text-sm text-gray-500">Give rating</p>
               <div className="flex items-center">
-                <span className="text-yellow-500">★ 4.9</span>
+                <span className="text-orange-400">★ 4.9</span>
               </div>
             </div>
           </div>

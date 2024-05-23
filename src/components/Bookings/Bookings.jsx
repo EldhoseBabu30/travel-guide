@@ -265,6 +265,7 @@ const App = () => {
               autoPlay
               showDots={filteredStays.length > 3}
               arrows={filteredStays.length > 3}
+              className=''
             >
               {filteredStays.map((stay) => (
                 <div key={stay.id} className="p-4">
@@ -273,7 +274,7 @@ const App = () => {
                     <div className="absolute top-4 right-4">
                       <button className="bg-white rounded-full p-2 shadow-md">
                         <svg
-                          className="h-6 w-6 text-gray-900"
+                          className="h-6 w-6 text-orange-400"
                           fill="currentColor"
                           viewBox="0 0 24 24"
                         >
