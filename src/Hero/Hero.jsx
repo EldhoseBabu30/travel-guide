@@ -57,7 +57,7 @@ const Hero = () => {
             <div className="flex flex-col items-center md:items-start">
               <SearchBar />
               <div className="w-full px-4 md:w-auto md:absolute md:top-24 md:left-12">
-                <p className="text-gray-700 dark:text-gray-400 opacity-50 font-thin text-center md:text-left ">
+                <p className="text-gray-300 dark:text-gray-400 opacity-50 font-thin text-center md:text-left ">
                   Popular places: Munnar, Lakshadweep, Ooty
                 </p>
               </div>
