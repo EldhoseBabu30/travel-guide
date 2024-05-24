@@ -14,21 +14,25 @@ const HowItWorksSection = () => {
       animation: tripRequestAnimation,
       title: "Make a Trip Request",
       description: "Your adventure starts now. Make a trip request to your desired destination. It’s simple and fast and will help you find all your needs.",
+      color: 'bg-gradient-to-r from-red-100 via-red-200 to-red-300'
     },
     {
       animation: craftTripAnimation,
       title: "Craft Your Trip",
       description: "All our trips are built from the ground up with thoughtful personalization and attention to detail. Discuss options and alternatives until your trip is tweaked to perfection.",
+      color: 'bg-gradient-to-r from-green-100 via-green-200 to-green-300'
     },
     {
       animation: bookTripAnimation,
       title: "Book Your Trip",
       description: "The planning is officially done. Now it's time to make that dream trip a reality. Next step, secure your trip by paying the deposit. The countdown to take-off is in sight.",
+      color: 'bg-gradient-to-r from-yellow-100 via-yellow-200 to-yellow-300'
     },
     {
       animation: takeOffAnimation,
       title: "Take Off",
       description: "The countdown is officially over! Your expert is there for you pre-trip, on-trip, and even post-trip with 24/7 support and concierge service. Whatever you need, don’t hesitate.",
+      color: 'bg-gradient-to-r from-blue-100 via-blue-200 to-blue-300'
     },
   ];
 
@@ -39,6 +43,8 @@ const HowItWorksSection = () => {
     rendererSettings: {
       preserveAspectRatio: 'xMidYMid slice',
     },
+    height: 150, // Adjust the height here
+    width: 150, // Adjust the width here
   });
 
   return (
@@ -51,17 +57,20 @@ const HowItWorksSection = () => {
             {steps.map((step, index) => (
               <div
                 key={index}
-                className={`bg-gray-800 rounded-lg p-8 max-w-xs w-full text-left relative ${
-                  index < steps.length - 1 ? 'mr-8' : ''
-                }`}
+                className={`${step.color} rounded-lg p-8 w-full max-w-xs text-left relative`}
+                style={{ height: '400px' }}
               >
-                <div className="w-24 h-24 mx-auto mb-4">
-                  <Lottie options={lottieOptions(step.animation)} />
+                <div className="w-full h-36 mb-4 overflow-hidden">
+                  <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+                    <Lottie options={lottieOptions(step.animation)} />
+                  </div>
                 </div>
-                <h3 className="text-xl font-semibold mb-2 text-pink-500">{step.title}</h3>
-                <p className="text-gray-300">{step.description}</p>
+                <div>
+                  <h3 className="text-xl font-semibold mb-2 text-gray-700">{step.title}</h3>
+                  <p className="text-gray-600">{step.description}</p>
+                </div>
                 {index < steps.length - 1 && (
-                  <div className="absolute bottom-0 right-0 transform translate-x-full translate-y-1/2 w-16 h-16 flex justify-center items-center">
+                  <div className="absolute bottom-4 right-4 transform translate-x-full translate-y-1/2 w-16 h-16 flex justify-center items-center">
                     <Lottie options={lottieOptions(arrowAnimation)} height={50} width={50} />
                   </div>
                 )}
