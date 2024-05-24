@@ -13,26 +13,26 @@ const HowItWorksSection = () => {
     {
       animation: tripRequestAnimation,
       title: "Make a Trip Request",
-      description: "Your adventure starts now. Make a trip request to your desired destination. It’s simple and fast and will help you find all your needs.",
-      color: 'bg-gradient-to-r from-red-100 via-red-200 to-red-300'
+      description: "Start your adventure with a simple trip request to your desired destination.",
+      color: 'bg-gradient-to-r from-gray-200 to-gray-100'
     },
     {
       animation: craftTripAnimation,
       title: "Craft Your Trip",
-      description: "All our trips are built from the ground up with thoughtful personalization and attention to detail. Discuss options and alternatives until your trip is tweaked to perfection.",
-      color: 'bg-gradient-to-r from-green-100 via-green-200 to-green-300'
+      description: "Personalize and tweak your trip until it’s perfect for you.",
+      color: 'bg-gradient-to-r from-gray-200 to-gray-100'
     },
     {
       animation: bookTripAnimation,
       title: "Book Your Trip",
-      description: "The planning is officially done. Now it's time to make that dream trip a reality. Next step, secure your trip by paying the deposit. The countdown to take-off is in sight.",
-      color: 'bg-gradient-to-r from-yellow-100 via-yellow-200 to-yellow-300'
+      description: "Secure your trip by paying the deposit. Get ready to take off!",
+      color: 'bg-gradient-to-r from-gray-200 to-gray-100'
     },
     {
       animation: takeOffAnimation,
       title: "Take Off",
-      description: "The countdown is officially over! Your expert is there for you pre-trip, on-trip, and even post-trip with 24/7 support and concierge service. Whatever you need, don’t hesitate.",
-      color: 'bg-gradient-to-r from-blue-100 via-blue-200 to-blue-300'
+      description: "Enjoy 24/7 support during your trip for a worry-free experience.",
+      color: 'bg-gradient-to-r from-gray-200 to-gray-100'
     },
   ];
 
@@ -43,8 +43,6 @@ const HowItWorksSection = () => {
     rendererSettings: {
       preserveAspectRatio: 'xMidYMid slice',
     },
-    height: 150, // Adjust the height here
-    width: 150, // Adjust the width here
   });
 
   return (
@@ -57,21 +55,19 @@ const HowItWorksSection = () => {
             {steps.map((step, index) => (
               <div
                 key={index}
-                className={`${step.color} rounded-lg p-8 w-full max-w-xs text-left relative`}
-                style={{ height: '400px' }}
+                className={`${step.color} rounded-lg p-6 w-full max-w-xs text-left relative transition duration-500 transform hover:scale-105 hover:shadow-xl`}
+                style={{ height: '320px' }}
               >
-                <div className="w-full h-36 mb-4 overflow-hidden">
-                  <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-                    <Lottie options={lottieOptions(step.animation)} />
-                  </div>
+                <div className="w-full h-28 mb-4 overflow-hidden flex justify-center items-center border border-gray-300 rounded-md">
+                  <Lottie options={lottieOptions(step.animation)} height={170} width={170} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold mb-2 text-gray-700">{step.title}</h3>
-                  <p className="text-gray-600">{step.description}</p>
+                  <h3 className="text-lg font-semibold mb-2 text-gray-900">{step.title}</h3>
+                  <p className="text-gray-700">{step.description}</p>
                 </div>
                 {index < steps.length - 1 && (
-                  <div className="absolute bottom-4 right-4 transform translate-x-full translate-y-1/2 w-16 h-16 flex justify-center items-center">
-                    <Lottie options={lottieOptions(arrowAnimation)} height={50} width={50} />
+                  <div className="absolute bottom-4 right-4 transform translate-x-full translate-y-1/2 w-12 h-12 flex justify-center items-center">
+                    <Lottie options={lottieOptions(arrowAnimation)} height={40} width={40} />
                   </div>
                 )}
               </div>
