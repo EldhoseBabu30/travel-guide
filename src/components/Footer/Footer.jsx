@@ -10,7 +10,7 @@ const Footer = () => {
     <div className="bg-gray-100 p-8">
       <div className="flex flex-col md:flex-row md:justify-between">
         <div className="mb-8 md:mb-0">
-          <h1 className="text-2xl font-bold text-green-500">njanSanchari</h1>
+          <h1 className="text-2xl font-bold text-orange-400">NjanSanchari</h1>
           <p className="text-xl font-bold">Don't Dream It, Explore It</p>
           <div className="mt-4">
             <div className="flex items-center mb-2">

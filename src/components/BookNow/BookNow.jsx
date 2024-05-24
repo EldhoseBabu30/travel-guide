@@ -85,7 +85,7 @@ const BookNowSection = () => {
   return (
     <section className="relative py-16 bg-white text-black">
       <div className="container mx-auto px-4">
-        <h2 className="text-red-500 text-2xl font-bold mb-2">Book Now</h2>
+        <h2 className="text-orange-400 text-2xl font-bold mb-2">Book Now</h2>
         <h3 className="text-4xl font-bold mb-4">Plan Your Trip</h3>
         <p className="text-lg mb-8">Why wait? Start planning your dream getaway today with Triplify and turn your travel dreams into reality!</p>
         <div className="flex flex-wrap lg:flex-nowrap justify-center items-start gap-8">
@@ -123,10 +123,10 @@ const BookNowSection = () => {
                 <label className="text-gray-700">Subscribe to our newsletter</label>
               </div>
               <div className="flex justify-between">
-                <button type="submit" name="checkAvailability" className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition">
+                <button type="submit" name="checkAvailability" className="bg-orange-400 text-white py-2 px-4 rounded hover:bg-orange-500 transition">
                   Check Availability
                 </button>
-                <button type="submit" name="bookNow" className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition">
+                <button type="submit" name="bookNow" className="bg-orange-400 text-white py-2 px-4 rounded hover:bg-orange-500 transition">
                   Book Now
                 </button>
               </div>
