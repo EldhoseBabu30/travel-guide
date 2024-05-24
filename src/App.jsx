@@ -11,7 +11,6 @@ function App() {
     <div>
       <BrowserRouter>
       <Nav/>
-     
     
       <Routes> 
          <Route path='/' element={<Hero/>}/> 

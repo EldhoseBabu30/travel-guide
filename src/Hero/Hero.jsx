@@ -8,6 +8,9 @@ import ChooseUs from "../components/ChooseUs/ChooseUs";
 import FloatingButton from "../components/FloatingButton";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons';
+import HowItWorksSection from '../components/How/HowIt';
+import BookNowSection from '../components/BookNow/BookNow';
+import Footer from '../components/Footer/Footer';
 
 const Hero = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -68,6 +71,10 @@ const Hero = () => {
       <BannerVideo />
       <Bookings />
       <ChooseUs />
+      <HowItWorksSection/>
+      <BookNowSection/>
+      <Footer/>
+
       <FloatingButton />
       <button
         onClick={toggleDarkMode}
