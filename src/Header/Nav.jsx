@@ -1,16 +1,23 @@
 import React, { useState, useEffect, useRef } from "react";
 import { NavLink, Link } from "react-router-dom";
 import logo from "../assets/light logo.png";
+import { FiSearch, FiUser } from "react-icons/fi";
 
 const Nav = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const dropdownRef = useRef();
+  const userDropdownRef = useRef();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setActiveDropdown(null);
+      }
+      if (userDropdownRef.current && !userDropdownRef.current.contains(event.target)) {
+        setUserDropdownOpen(false);
       }
     };
 
@@ -28,17 +35,48 @@ const Nav = () => {
     setActiveDropdown(activeDropdown === index ? null : index);
   };
 
+  const toggleSearch = () => {
+    setSearchOpen(!searchOpen);
+  };
+
+  const toggleUserDropdown = () => {
+    setUserDropdownOpen(!userDropdownOpen);
+  };
+
   return (
-    <nav className="fixed top-0 left-[2.5%] w-[95%] bg-black bg-opacity-50 p-4 px-8 flex items-center text-white z-40 mt-4 rounded-xl">
-      <Link to="/" className="flex items-center">
+    <nav className="fixed top-0 left-[2.5%] w-[95%] bg-black bg-opacity-50 p-4 px-8 flex items-center text-white z-40 mt-4 rounded-xl h-16 md:h-auto transition-all duration-300">
+      <Link to="/" className={`flex items-center ${searchOpen ? 'hidden md:flex' : 'flex'}`}>
         <img src={logo} alt="Sanchari Logo" className="w-28 h-auto object-contain" />
       </Link>
-      <button className="text-white md:hidden ml-auto" onClick={toggleMenu}>
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={menuOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}></path>
-        </svg>
-      </button>
-      <div className={`flex-col md:flex md:flex-row md:items-center md:ml-40 gap-4 ${menuOpen ? 'absolute top-full left-0 right-0 mt-4 bg-black bg-opacity-50 p-4 rounded-xl z-50 flex' : 'hidden'} md:flex`}>
+      <div className="flex items-center ml-auto gap-4 md:hidden">
+        <div className={`flex items-center transition-all duration-500 ease-in-out ${searchOpen ? 'border-b border-white' : ''}`}>
+          <input
+            type="text"
+            placeholder="Search"
+            className={`bg-transparent text-white placeholder-white focus:outline-none transition-all duration-500 ease-in-out ${searchOpen ? 'w-full opacity-100' : 'w-0 opacity-0'}`}
+          />
+          <button className="text-white" onClick={toggleSearch}>
+            <FiSearch className="text-white cursor-pointer text-2xl transition-transform duration-1000 ease-in-out transform hover:scale-110" />
+          </button>
+        </div>
+        <div className="relative" ref={userDropdownRef}>
+          <FiUser
+            className="text-white cursor-pointer text-2xl transition-transform duration-500 ease-in-out transform hover:scale-110"
+            onClick={toggleUserDropdown}
+          />
+          {userDropdownOpen && (
+            <div className="absolute right-0 mt-2 w-48 bg-white text-black rounded-lg shadow-lg z-50">
+              <NavLink to="/sign-in" className="block px-4 py-2 hover:bg-gray-100">Sign In</NavLink>
+            </div>
+          )}
+        </div>
+        <button className="text-white ml-auto" onClick={toggleMenu}>
+          <svg className="w-6 h-6 transition-transform duration-500 ease-in-out transform hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={menuOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}></path>
+          </svg>
+        </button>
+      </div>
+      <div className={`flex-col md:flex md:flex-row md:items-center md:ml-40 gap-4 ${menuOpen ? 'absolute top-full left-0 right-0 mt-4 bg-black bg-opacity-50 p-4 rounded-xl z-50 flex' : 'hidden'} md:flex transition-all duration-300`}>
         <Dropdown
           title="Destinations"
           items={{
@@ -78,9 +116,28 @@ const Nav = () => {
           onClick={() => toggleDropdown(4)}
           ref={dropdownRef}
         />
-        <div className="hidden md:block">
-          <input type="text" placeholder="Search" className="bg-transparent border-b border-white text-white placeholder-white focus:outline-none" />
-          <button className="ml-4 text-white">Sign In</button>
+      </div>
+      <div className="hidden md:flex items-center ml-auto gap-4">
+        <div className={`flex items-center transition-all duration-500 ease-in-out ${searchOpen ? 'border-b border-white' : ''}`}>
+          <input
+            type="text"
+            placeholder="Search"
+            className={`bg-transparent text-white placeholder-white focus:outline-none transition-all duration-500 ease-in-out ${searchOpen ? 'w-full opacity-100' : 'w-0 opacity-0'}`}
+          />
+          <button className="text-white" onClick={toggleSearch}>
+            <FiSearch className="text-white cursor-pointer hover:text-orange-400 text-2xl transition-transform duration-500 ease-in-out transform hover:scale-110" />
+          </button>
+        </div>
+        <div className="relative" ref={userDropdownRef}>
+          <FiUser
+            className="text-white cursor-pointer text-2xl hover:text-orange-400 transition-transform duration-500 ease-in-out transform hover:scale-110"
+            onClick={toggleUserDropdown}
+          />
+          {userDropdownOpen && (
+            <div className="absolute right-0 mt-2 w-32 bg-white  text-black rounded-lg shadow-lg z-50">
+              <NavLink to="/sign-in" className="block px-4 py-2 rounded-lg hover:text-orange-400">Sign In</NavLink>
+            </div>
+          )}
         </div>
       </div>
     </nav>
