@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import video from '../../assets/banner-video.mp4';
 
 const App = () => {
@@ -20,9 +21,11 @@ const App = () => {
           Discover the Untouched Paradise
         </h1>
 
-        <button className="mt-8 shadow-md rounded-md px-6 py-3 bg-orange-400 text-white hover:bg-white hover:text-orange-400 transition-all text-sm font-inter flex items-center justify-center">
-          View All Packages
-        </button>
+        <Link to="/packages">
+          <button className="mt-8 shadow-md rounded-md px-6 py-3 bg-orange-400 text-white hover:bg-white hover:text-orange-400 transition-all text-sm font-inter flex items-center justify-center">
+            View All Packages
+          </button>
+        </Link>
       </div>
     </div>
   );

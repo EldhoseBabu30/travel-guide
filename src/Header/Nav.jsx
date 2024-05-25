@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import logo from "../assets/light logo.png";
 
 const Nav = () => {
@@ -41,32 +41,47 @@ const Nav = () => {
       <div className={`flex-col md:flex md:flex-row md:items-center md:ml-40 gap-4 ${menuOpen ? 'absolute top-full left-0 right-0 mt-4 bg-black bg-opacity-50 p-4 rounded-xl z-50 flex' : 'hidden'} md:flex`}>
         <Dropdown
           title="Destinations"
-          items={["Place 1", "Place 2", "Place 3"]}
+          items={{
+            "": ["Munnar", "Ooty ", "Kodaikanal", "Kovalam", "Kanyakumari"]
+          }}
           active={activeDropdown === 1}
           onClick={() => toggleDropdown(1)}
           ref={dropdownRef}
         />
         <Dropdown
           title="Hotels"
-          items={["Hotel 1", "Hotel 2", "Hotel 3"]}
+          items={{
+            "Popular Hotels": ["Hotel 1", "Hotel 2", "Hotel 3"],
+            "Boutique Hotels": ["Hotel 4", "Hotel 5"],
+          }}
           active={activeDropdown === 2}
           onClick={() => toggleDropdown(2)}
           ref={dropdownRef}
         />
         <Dropdown
           title="Food Spots"
-          items={["Spot 1", "Spot 2", "Spot 3"]}
+          items={{
+            "Popular Spots": ["Spot 1", "Spot 2", "Spot 3"],
+            "Street Food": ["Spot 4", "Spot 5"],
+          }}
           active={activeDropdown === 3}
           onClick={() => toggleDropdown(3)}
           ref={dropdownRef}
         />
         <Dropdown
           title="Community"
-          items={["Event 1", "Event 2", "Event 3"]}
+          items={{
+            "Events": ["Event 1", "Event 2", "Event 3"],
+            "Meetups": ["Meetup 1", "Meetup 2"],
+          }}
           active={activeDropdown === 4}
           onClick={() => toggleDropdown(4)}
           ref={dropdownRef}
         />
+        <div className="hidden md:block">
+          <input type="text" placeholder="Search" className="bg-transparent border-b border-white text-white placeholder-white focus:outline-none" />
+          <button className="ml-4 text-white">Sign In</button>
+        </div>
       </div>
     </nav>
   );
@@ -82,9 +97,20 @@ const Dropdown = React.forwardRef(({ title, items, active, onClick }, ref) => {
         {title}
       </button>
       {active && (
-        <div className="absolute mt-2 w-full md:w-48 rounded shadow-lg z-50 border border-gray-300" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-          {items.map((item, index) => (
-            <NavLink key={index} to={`/${title.toLowerCase().replace(" ", "-")}/${item.toLowerCase().replace(" ", "-")}`} className="block px-4 py-2 text-white hover:text-orange-400">{item}</NavLink>
+        <div className="absolute mt-2 w-56 rounded-lg shadow-lg z-50 border border-gray-200 bg-white">
+          {Object.keys(items).map((category, idx) => (
+            <div key={idx} className="py-2">
+              <h3 className="px-4 py-2 text-gray-900 font-semibold">{category}</h3>
+              {items[category].map((item, index) => (
+                <NavLink
+                  key={index}
+                  to={`/${title.toLowerCase().replace(" ", "-")}/${item.toLowerCase().replace(" ", "-")}`}
+                  className="block px-4 py-2 text-gray-800 hover:text-orange-500"
+                >
+                  {item}
+                </NavLink>
+              ))}
+            </div>
           ))}
         </div>
       )}
