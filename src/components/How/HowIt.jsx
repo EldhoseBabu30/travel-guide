@@ -47,7 +47,7 @@ const HowItWorksSection = () => {
 
   return (
     <Parallax bgImage={backgroundImage} strength={300}>
-      <section className="relative py-16 text-center text-white overflow-hidden">
+      <section className="relative py-16 text-center text-white  bg-black bg-opacity-50 overflow-hidden">
         <div className="container mx-auto px-4">
           <h2 className="text-4xl font-bold mb-4">Fast & Easy</h2>
           <h3 className="text-3xl font-bold mb-8">Plan Your Dream Trip With Us</h3>
@@ -59,7 +59,7 @@ const HowItWorksSection = () => {
                 style={{ height: '320px' }}
               >
                 <div className="w-full h-28 mb-4 overflow-hidden flex justify-center items-center border border-gray-300 rounded-md">
-                  <Lottie options={lottieOptions(step.animation)} height={170} width={170} />
+                  <Lottie options={lottieOptions(step.animation)} height={170} width={140} />
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold mb-2 text-gray-900">{step.title}</h3>
@@ -67,7 +67,7 @@ const HowItWorksSection = () => {
                 </div>
                 {index < steps.length - 1 && (
                   <div className="absolute bottom-4 right-4 transform translate-x-full translate-y-1/2 w-12 h-12 flex justify-center items-center">
-                    <Lottie options={lottieOptions(arrowAnimation)} height={40} width={40} />
+                    <Lottie  options={lottieOptions(arrowAnimation)} height={50} width={100} />
                   </div>
                 )}
               </div>
