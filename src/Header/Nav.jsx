@@ -8,14 +8,17 @@ const Nav = () => {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
-  const dropdownRef = useRef();
+
+  const dropdownRefs = useRef([]);
   const userDropdownRef = useRef();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setActiveDropdown(null);
-      }
+      dropdownRefs.current.forEach((ref, index) => {
+        if (ref && !ref.contains(event.target)) {
+          setActiveDropdown((prev) => (prev === index ? null : prev));
+        }
+      });
       if (userDropdownRef.current && !userDropdownRef.current.contains(event.target)) {
         setUserDropdownOpen(false);
       }
@@ -80,11 +83,11 @@ const Nav = () => {
         <Dropdown
           title="Destinations"
           items={{
-            "": ["Munnar", "Ooty ", "Kodaikanal", "Kovalam", "Kanyakumari"]
+            "": ["Munnar", "Ooty", "Kodaikanal", "Kovalam", "Kanyakumari", "See All Destinations"]
           }}
           active={activeDropdown === 1}
           onClick={() => toggleDropdown(1)}
-          ref={dropdownRef}
+          ref={(el) => (dropdownRefs.current[1] = el)}
         />
         <Dropdown
           title="Hotels"
@@ -94,7 +97,7 @@ const Nav = () => {
           }}
           active={activeDropdown === 2}
           onClick={() => toggleDropdown(2)}
-          ref={dropdownRef}
+          ref={(el) => (dropdownRefs.current[2] = el)}
         />
         <Dropdown
           title="Food Spots"
@@ -104,7 +107,7 @@ const Nav = () => {
           }}
           active={activeDropdown === 3}
           onClick={() => toggleDropdown(3)}
-          ref={dropdownRef}
+          ref={(el) => (dropdownRefs.current[3] = el)}
         />
         <Dropdown
           title="Community"
@@ -114,7 +117,7 @@ const Nav = () => {
           }}
           active={activeDropdown === 4}
           onClick={() => toggleDropdown(4)}
-          ref={dropdownRef}
+          ref={(el) => (dropdownRefs.current[4] = el)}
         />
       </div>
       <div className="hidden md:flex items-center ml-auto gap-4">
@@ -134,7 +137,7 @@ const Nav = () => {
             onClick={toggleUserDropdown}
           />
           {userDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-32 bg-white  text-black rounded-lg shadow-lg z-50">
+            <div className="absolute right-0 mt-2 w-32 bg-white text-black rounded-lg shadow-lg z-50">
               <NavLink to="/sign-in" className="block px-4 py-2 rounded-lg hover:text-orange-400">Sign In</NavLink>
             </div>
           )}
@@ -158,15 +161,18 @@ const Dropdown = React.forwardRef(({ title, items, active, onClick }, ref) => {
           {Object.keys(items).map((category, idx) => (
             <div key={idx} className="py-2">
               <h3 className="px-4 py-2 text-gray-900 font-semibold">{category}</h3>
-              {items[category].map((item, index) => (
-                <NavLink
-                  key={index}
-                  to={`/${title.toLowerCase().replace(" ", "-")}/${item.toLowerCase().replace(" ", "-")}`}
-                  className="block px-4 py-2 text-gray-800 hover:text-orange-500"
-                >
-                  {item}
-                </NavLink>
-              ))}
+              {items[category].map((item, index) => {
+                const isSeeAll = item === 'See All Destinations';
+                return (
+                  <NavLink
+                    key={index}
+                    to={isSeeAll ? '/destinations' : `/${title.toLowerCase().replace(" ", "-")}/${item.toLowerCase().replace(" ", "-")}`}
+                    className={`block px-4 py-2 text-gray-800 ${isSeeAll ? 'hover:bg-orange-400 hover:text-white' : 'hover:text-orange-400'}`}
+                  >
+                    {item}
+                  </NavLink>
+                );
+              })}
             </div>
           ))}
         </div>
