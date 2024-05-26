@@ -3,7 +3,6 @@ import { NavLink, Link, useLocation } from "react-router-dom";
 import logo from "../assets/light logo.png";
 import { FiSearch, FiUser } from "react-icons/fi";
 
-
 const Nav = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
@@ -49,6 +48,10 @@ const Nav = () => {
   const toggleUserDropdown = () => {
     setUserDropdownOpen(!userDropdownOpen);
   };
+
+  if (isSignInPage) {
+    return null; // Don't render the navbar on the sign-in page
+  }
 
   return (
     <nav className="fixed top-0 left-[2.5%] w-[95%] bg-black bg-opacity-50 p-4 px-8 flex items-center text-white z-40 mt-4 rounded-xl h-16 md:h-auto transition-all duration-300">
