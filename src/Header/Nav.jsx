@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useLocation } from "react-router-dom";
 import logo from "../assets/light logo.png";
 import { FiSearch, FiUser } from "react-icons/fi";
+
 
 const Nav = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -11,6 +12,9 @@ const Nav = () => {
 
   const dropdownRefs = useRef([]);
   const userDropdownRef = useRef();
+
+  const location = useLocation();
+  const isSignInPage = location.pathname === "/sign-in";
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -59,17 +63,17 @@ const Nav = () => {
             className={`bg-transparent text-white placeholder-white focus:outline-none transition-all duration-500 ease-in-out ${searchOpen ? 'w-full opacity-100' : 'w-0 opacity-0'}`}
           />
           <button className="text-white" onClick={toggleSearch}>
-            <FiSearch className="text-white cursor-pointer text-2xl transition-transform duration-1000 ease-in-out transform hover:scale-110" />
+            <FiSearch className="text-white cursor-pointer text-2xl transition-transform duration-1000 ease-in-out transform hover:text-orange-400 hover:scale-110" />
           </button>
         </div>
         <div className="relative" ref={userDropdownRef}>
           <FiUser
-            className="text-white cursor-pointer text-2xl transition-transform duration-500 ease-in-out transform hover:scale-110"
+            className="text-white cursor-pointer text-2xl transition-transform duration-500 ease-in-out transform hover:text-orange-400 hover:scale-110"
             onClick={toggleUserDropdown}
           />
           {userDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-white text-black rounded-lg shadow-lg z-50">
-              <NavLink to="/sign-in" className="block px-4 py-2 hover:bg-gray-100">Sign In</NavLink>
+            <div className="absolute right-0 mt-2 w-32 bg-white text-black rounded-lg shadow-lg z-50">
+              <NavLink to="/sign-in" className="block px-4 py-2 rounded-lg hover:text-orange-400">Sign In</NavLink>
             </div>
           )}
         </div>
