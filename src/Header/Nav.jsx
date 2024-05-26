@@ -13,7 +13,7 @@ const Nav = () => {
   const userDropdownRef = useRef();
 
   const location = useLocation();
-  const isSignInPage = location.pathname === "/sign-in";
+  const isAuthPage = location.pathname === "/sign-in" || location.pathname === "/sign-up";
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -49,8 +49,8 @@ const Nav = () => {
     setUserDropdownOpen(!userDropdownOpen);
   };
 
-  if (isSignInPage) {
-    return null; // Don't render the navbar on the sign-in page
+  if (isAuthPage) {
+    return null; // Don't render the navbar on the authentication pages
   }
 
   return (
@@ -136,22 +136,22 @@ const Nav = () => {
           />
           <button className="text-white" onClick={toggleSearch}>
             <FiSearch className="text-white cursor-pointer hover:text-orange-400 text-2xl transition-transform duration-500 ease-in-out transform hover:scale-110" />
-          </button>
-        </div>
-        <div className="relative" ref={userDropdownRef}>
-          <FiUser
-            className="text-white cursor-pointer text-2xl hover:text-orange-400 transition-transform duration-500 ease-in-out transform hover:scale-110"
-            onClick={toggleUserDropdown}
-          />
-          {userDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-32 bg-white text-black rounded-lg shadow-lg z-50">
-              <NavLink to="/sign-in" className="block px-4 py-2 rounded-lg hover:text-orange-400">Sign In</NavLink>
-            </div>
-          )}
-        </div>
+            </button>
       </div>
-    </nav>
-  );
+      <div className="relative" ref={userDropdownRef}>
+        <FiUser
+          className="text-white cursor-pointer text-2xl hover:text-orange-400 transition-transform duration-500 ease-in-out transform hover:scale-110"
+          onClick={toggleUserDropdown}
+        />
+        {userDropdownOpen && (
+          <div className="absolute right-0 mt-2 w-32 bg-white text-black rounded-lg shadow-lg z-50">
+            <NavLink to="/sign-in" className="block px-4 py-2 rounded-lg hover:text-orange-400">Sign In</NavLink>
+          </div>
+        )}
+      </div>
+    </div>
+  </nav>
+);
 };
 
 const Dropdown = React.forwardRef(({ title, items, active, onClick }, ref) => {
@@ -189,3 +189,4 @@ const Dropdown = React.forwardRef(({ title, items, active, onClick }, ref) => {
 });
 
 export default Nav;
+

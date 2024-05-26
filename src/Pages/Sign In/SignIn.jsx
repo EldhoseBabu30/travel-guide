@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom'; // Import Link from React Router
 import { FiMail, FiLock } from 'react-icons/fi';
 import google from '../../assets/icons/google.png';
 import facebook from '../../assets/icons/facebook.png';
@@ -7,7 +8,7 @@ const SignIn = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-orange-50 p-4">
       <div className="flex w-full justify-end">
-      <div className="flex flex-col justify-center w-full pr-8">
+        <div className="flex flex-col justify-center w-full pr-8">
           <h1 className="text-4xl font-bold mb-4">The trip of your dreams starts with NjanSanchari</h1>
           <p className="text-lg text-gray-700">
             Covering hundreds of destinations and countless experiences, NjanSanchari is your guide for traveling better and smarter.
@@ -58,13 +59,13 @@ const SignIn = () => {
             </div>
             <button
               type="submit"
-              className="w-full bg-orange-400 text-white px-5 py-3 rounded-md hover:bg-orange-500 transition"
+              className="w-full bg-orange-400 text-white px-5 py-3 rounded-md hover:bg-blue-600 transition"
             >
               Sign in
             </button>
           </form>
           <div className="mt-4 text-center">
-            <a href="#" className="text-sm text-gray-600 hover:underline">Don't have an account? <span className='text-orange-400'>Sign up</span></a>
+            <Link to="/sign-up" className="text-sm text-gray-600 hover:underline">Don't have an account? <span className='text-orange-400'>Sign up</span></Link>
           </div>
         </div>
       </div>
