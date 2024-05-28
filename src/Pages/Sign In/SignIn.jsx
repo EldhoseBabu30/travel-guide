@@ -1,10 +1,15 @@
-import React from 'react';
-import { Link } from 'react-router-dom'; // Import Link from React Router
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom'; 
 import { FiMail, FiLock } from 'react-icons/fi';
 import google from '../../assets/icons/google.png';
 import facebook from '../../assets/icons/facebook.png';
 
+
+
 const SignIn = () => {
+
+
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-orange-50 p-4">
       <div className="flex w-full justify-end">
@@ -44,7 +49,11 @@ const SignIn = () => {
             <div className="relative">
               <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
+
+                value={email}
                 type="email"
+              
+              
                 placeholder="Email address"
                 className="w-full p-3 pl-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400"
               />
@@ -52,8 +61,12 @@ const SignIn = () => {
             <div className="relative">
               <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
+
+                value={password}
                 type="password"
+              
                 placeholder="Password"
+               
                 className="w-full p-3 pl-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400"
               />
             </div>
