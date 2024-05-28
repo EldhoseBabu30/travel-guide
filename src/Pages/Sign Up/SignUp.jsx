@@ -1,17 +1,22 @@
 import React from 'react';
+import logo from "../../assets/Sanchari logo high.png";
+import google from "../../assets/icons/google.png";
+import facebook from "../../assets/icons/facebook.png";
+import apple from "../../assets/icons/apple.png";
+
 
 const SignUp = () => {
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      <div className="flex w-full max-w-5xl mx-auto bg-white shadow-md rounded-lg overflow-hidden">
+    <div className="flex min-h-screen bg-gray-100 items-center justify-center p-4">
+      <div className="flex flex-col md:flex-row w-full max-w-5xl bg-white shadow-md rounded-lg overflow-hidden">
         {/* Left Section */}
         <div className="w-full md:w-1/2 bg-cover" style={{ backgroundImage: "url('/path-to-your-background-image.png')" }}>
           <div className="flex flex-col h-full p-8 bg-gray-800 bg-opacity-50">
             <div className="flex items-center mb-4">
               <div className="bg-white p-2 rounded-full">
-                <img src="/path-to-your-logo.png" alt="Logo" className="w-12 h-12" />
+                <img src={logo} alt="Logo" className="w-12 h-12" />
               </div>
-              <span className="ml-4 text-white text-2xl font-bold">Logoipsum</span>
+              <span className="ml-4 text-white text-2xl font-bold">Njan<span className='text-orange-400'>Sanchari</span></span>
             </div>
             <div className="mt-auto">
               <div className="mb-4">
@@ -20,7 +25,7 @@ const SignUp = () => {
                   placeholder="Search destinations, hotels"
                   className="w-full px-4 py-2 text-gray-800 border rounded-lg shadow-sm focus:outline-none focus:ring focus:border-teal-300"
                 />
-                <button className="mt-2 w-full py-2 text-white bg-teal-500 rounded-lg hover:bg-teal-600">
+                <button className="mt-2 w-full py-2 text-white bg-orange-400 rounded-lg hover:bg-orange-500">
                   Search
                 </button>
               </div>
@@ -46,14 +51,14 @@ const SignUp = () => {
           <h2 className="mb-4 text-3xl font-bold">Travel Made Easy</h2>
           <p className="mb-6 text-gray-600">Join Our Community by Creating Your Account and Gain Access to Exclusive Travel Tips and Inspiration</p>
           <form>
-            <div className="grid grid-cols-2 gap-4 mb-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
                 <label className="block mb-2 text-sm font-bold text-gray-700">
                   First Name
                 </label>
                 <input
                   type="text"
-                  placeholder="John"
+                  placeholder=""
                   className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring focus:border-teal-300"
                 />
               </div>
@@ -63,7 +68,7 @@ const SignUp = () => {
                 </label>
                 <input
                   type="text"
-                  placeholder="Doe"
+                  placeholder=""
                   className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring focus:border-teal-300"
                 />
               </div>
@@ -74,7 +79,7 @@ const SignUp = () => {
               </label>
               <input
                 type="email"
-                placeholder="johndoe@gmail.com"
+                placeholder=""
                 className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring focus:border-teal-300"
               />
             </div>
@@ -84,11 +89,11 @@ const SignUp = () => {
               </label>
               <input
                 type="text"
-                placeholder="081234567899"
+                placeholder=""
                 className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring focus:border-teal-300"
               />
             </div>
-            <div className="grid grid-cols-2 gap-4 mb-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
                 <label className="block mb-2 text-sm font-bold text-gray-700">
                   Password
@@ -105,7 +110,7 @@ const SignUp = () => {
                 </label>
                 <input
                   type="password"
-                  placeholder="Enter confirmation password"
+                  placeholder=""
                   className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring focus:border-teal-300"
                 />
               </div>
@@ -113,12 +118,12 @@ const SignUp = () => {
             <div className="mb-4">
               <label className="inline-flex items-center">
                 <input type="checkbox" className="form-checkbox text-teal-500" />
-                <span className="ml-2 text-sm text-gray-700">I agree with the <a href="#" className="text-teal-500 hover:underline">terms and condition</a></span>
+                <span className="ml-2 text-sm text-gray-700">I agree with the <a href="#" className="text-orange-400 hover:underline">terms and condition</a></span>
               </label>
             </div>
             <button
               type="submit"
-              className="w-full py-2 text-white bg-teal-500 rounded-lg hover:bg-teal-600"
+              className="w-full py-2 text-white bg-orange-400 rounded-lg hover:bg-orange-500"
             >
               Create Account
             </button>
@@ -128,22 +133,22 @@ const SignUp = () => {
             <span className="px-3 text-gray-500">or sign up with</span>
             <hr className="w-full border-gray-300" />
           </div>
-          <div className="flex space-x-4 mt-4">
-            <button className="w-full py-2 text-gray-700 border rounded-lg hover:bg-gray-100">
-              <img src="path-to-google-logo.png" alt="Google" className="inline w-4 h-4 mr-2" />
+          <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4 mt-4">
+            <button className="flex-1 py-2 text-gray-700 border rounded-lg hover:bg-gray-100 flex items-center justify-center">
+              <img src={google} alt="Google" className="w-4 h-4 mr-2" />
               Google
             </button>
-            <button className="w-full py-2 text-gray-700 border rounded-lg hover:bg-gray-100">
-              <img src="path-to-apple-logo.png" alt="Apple" className="inline w-4 h-4 mr-2" />
+            <button className="flex-1 py-2 text-gray-700 border rounded-lg hover:bg-gray-100 flex items-center justify-center">
+              <img src={apple} alt="Apple" className="w-4 h-4 mr-2" />
               Apple
             </button>
-            <button className="w-full py-2 text-gray-700 border rounded-lg hover:bg-gray-100">
-              <img src="path-to-facebook-logo.png" alt="Facebook" className="inline w-4 h-4 mr-2" />
+            <button className="flex-1 py-2 text-gray-700 border rounded-lg hover:bg-gray-100 flex items-center justify-center">
+              <img src={facebook} alt="Facebook" className="w-4 h-4 mr-2" />
               Facebook
             </button>
           </div>
           <p className="mt-4 text-center">
-            Already have an account? <a href="#" className="text-teal-500 hover:underline">Sign in</a>
+            Already have an account? <a href="#" className="text-orange-400 hover:underline">Sign in</a>
           </p>
         </div>
       </div>
@@ -151,4 +156,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default SignUp;
