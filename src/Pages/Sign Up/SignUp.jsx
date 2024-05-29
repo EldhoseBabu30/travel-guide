@@ -1,123 +1,95 @@
 import React, { useState } from 'react';
-import logo from "../../assets/Sanchari logo high.png";
-import google from "../../assets/icons/google.png";
-import facebook from "../../assets/icons/facebook.png";
-import apple from "../../assets/icons/apple.png";
 import { Link } from 'react-router-dom';
+import google from "../../assets/icons/google.png";
+import rightarrow from "../../assets/icons/rightarrow.png";
 
 const SignUp = () => {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form submitted:', { firstName, lastName, email, phoneNumber, password, confirmPassword });
+
+  
+    if (!fullName || !email || !password) {
+      setError('All fields are required.');
+      return;
+    }
+
+   
+    const userData = { fullName, email, password };
+    localStorage.setItem('userData', JSON.stringify(userData));
+
+   
+    alert('Registration successful!');
+    
+
+  
+    setFullName('');
+    setEmail('');
+    setPassword('');
+    setError(null);
   };
 
   return (
     <div className="flex min-h-screen bg-gray-100 items-center justify-center p-4">
-      <div className="flex flex-col md:flex-row w-full max-w-5xl bg-white shadow-lg rounded-lg overflow-hidden">
+      <div className="flex flex-col md:flex-row w-full max-w-5xl bg-white shadow-lg rounded-2xl overflow-hidden">
         {/* Left Section */}
-        <div className="w-full md:w-1/2 bg-cover bg-center relative" style={{ backgroundImage: "url('/path-to-your-background-image.png')" }}>
-          <div className="absolute inset-0 bg-gray-800 bg-opacity-60 flex flex-col p-8">
-            <div className="flex items-center mb-4">
-              <div className="bg-white p-2 rounded-full">
-                <img src={logo} alt="Logo" className="w-12 h-12" />
-              </div>
-              <span className="ml-4 text-white text-3xl font-bold">Njan<span className='text-orange-400'>Sanchari</span></span>
-            </div>
-            <div className="mt-auto">
-              <div className="mb-4">
-                <input
-                  type="text"
-                  placeholder="Search destinations, hotels"
-                  className="w-full px-4 py-2 text-gray-800 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:border-teal-300"
-                />
-                <button className="mt-2 w-full py-2 text-white bg-orange-400 rounded-lg hover:bg-orange-500">
-                  Search
-                </button>
-              </div>
-              <p className="text-gray-200 mb-2">Most People Search: Bali, Lombok, Raja Ampat</p>
-              <div className="bg-white bg-opacity-25 p-4 rounded-lg text-white">
-                <div className="flex items-center mb-2">
-                  <img src="/path-to-user-image.png" alt="User" className="w-10 h-10 rounded-full" />
-                  <div className="ml-2">
-                    <p className="text-sm font-bold">Janne April</p>
-                    <p className="text-xs">Traveler</p>
-                  </div>
-                </div>
-                <p className="text-sm">
-                  "Traveling has never been easier with this platform. It has saved me time and money on every trip."
-                </p>
-              </div>
+        <div
+          className="hidden md:block rounded-2xl w-1/2 bg-cover bg-center"
+          style={{
+            backgroundImage: `url(https://i.pinimg.com/736x/5d/bb/55/5dbb551d5ad0a8a1b2280ef247f61902.jpg)`,
+            borderTopLeftRadius: '20px',
+            borderBottomLeftRadius: '20px'
+          }}
+        >
+          <div className="flex items-start justify-center h-full bg-gray bg-opacity-50">
+            <div className="text-center text-white mt-8">
+              <h1 className="text-4xl font-bold">Discover & See Places</h1>
+              <p className="text-lg mt-2">Exploring unique destinations</p>
             </div>
           </div>
         </div>
 
         {/* Right Section */}
         <div className="w-full md:w-1/2 p-8">
-          <h2 className="mb-4 text-3xl font-bold text-gray-800">Travel Made Easy</h2>
-          <p className="mb-6 text-gray-600">Join Our Community by Creating Your Account and Gain Access to Exclusive Travel Tips and Inspiration</p>
+          <Link to="/" className="flex items-center text-gray-600 hover:underline mb-4">
+            <img src={rightarrow} className="w-6 h-6 mr-2" alt="Right Arrow" />
+            Back to website
+          </Link>
+          <h1 className="text-3xl font-bold text-center mb-4">Create an Account</h1>
+          <p className="text-center text-gray-600 mb-6">Please enter your details</p>
+          {error && <p className="text-center text-red-600 mb-4">{error}</p>}
           <form onSubmit={handleSubmit}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div className="grid grid-cols-1 gap-4 mb-4">
               <div>
                 <label className="block mb-2 text-sm font-bold text-gray-700">
-                  First Name
+                  Full Name
                 </label>
                 <input
                   type="text"
-                  placeholder="First Name"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:border-teal-300"
-                  autoComplete="given-name"
+                  placeholder="Full Name"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-orange-400"
+                  autoComplete="name"
                 />
               </div>
               <div>
                 <label className="block mb-2 text-sm font-bold text-gray-700">
-                  Last Name
+                  Email Address
                 </label>
                 <input
-                  type="text"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  placeholder="Last Name"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:border-teal-300"
-                  autoComplete="family-name"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="mail@example.com"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-orange-400"
+                  autoComplete="email"
                 />
               </div>
-            </div>
-            <div className="mb-4">
-              <label className="block mb-2 text-sm font-bold text-gray-700">
-                Email
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:border-teal-300"
-                autoComplete="email"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block mb-2 text-sm font-bold text-gray-700">
-                Phone Number
-              </label>
-              <input
-                type="tel"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                placeholder="Phone Number"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:border-teal-300"
-                autoComplete="tel"
-              />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
                 <label className="block mb-2 text-sm font-bold text-gray-700">
                   Password
@@ -126,60 +98,36 @@ const SignUp = () => {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Password"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:border-teal-300"
+                  placeholder="Min of 6 characters"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-orange-400"
                   autoComplete="new-password"
                 />
               </div>
-              <div>
-                <label className="block mb-2 text-sm font-bold text-gray-700">
-                  Confirm Password
-                </label>
-                <input
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Confirm Password"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:border-teal-300"
-                  autoComplete="new-password"
-                />
-              </div>
-            </div>
-            <div className="mb-4">
-              <label className="inline-flex items-center">
-                <input type="checkbox" className="form-checkbox text-teal-500" />
-                <span className="ml-2 text-sm text-gray-700">I agree with the <a href="#" className="text-orange-400 hover:underline">terms and conditions</a></span>
-              </label>
             </div>
             <button
               type="submit"
-              className="w-full py-2 text-white bg-orange-400 rounded-lg hover:bg-orange-500"
+              className="w-full bg-orange-400 text-white px-5 py-3 rounded-lg hover:bg-orange-500 transition"
             >
               Create Account
             </button>
           </form>
           <div className="flex items-center my-6">
             <hr className="flex-grow border-gray-300" />
-            <span className="px-3 text-gray-500">or sign up with</span>
+            <span className="px-3 text-gray-500">or</span>
             <hr className="flex-grow border-gray-300" />
           </div>
-          <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4">
-            <button className="flex-1 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-100 flex items-center justify-center">
-              <img src={google} alt="Google" className="w-4 h-4 mr-2" />
-              Google
-            </button>
-            <button className="flex-1 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-100 flex items-center justify-center">
-              <img src={apple} alt="Apple" className="w-4 h-4 mr-2" />
-              Apple
-            </button>
-            <button className="flex-1 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-100 flex items-center justify-center">
-              <img src={facebook} alt="Facebook" className="w-4 h-4 mr-2" />
-              Facebook
-            </button>
+          <button
+            type="button"
+            className="w-full flex items-center justify-center bg-white text-black border border-gray-300 px-5 py-3 rounded-lg hover:bg-gray-100 transition"
+          >
+            <img src={google} className="w-5 h-5 mr-2" alt="Google Icon" />
+            Sign up with Google
+          </button>
+          <div className="mt-4 text-center">
+            <Link to="/sign-in" className="text-sm text-gray-600 hover:underline">
+              Already have an account? Login
+            </Link>
           </div>
-          <p className="mt-4 text-center">
-            Already have an account? <Link to="/sign-in" className="text-orange-400 hover:underline">Sign in</Link>
-          </p>
         </div>
       </div>
     </div>
