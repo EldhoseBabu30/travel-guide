@@ -1,6 +1,8 @@
 import React from 'react';
 import google from "../../assets/icons/google.png";
 import { Link } from 'react-router-dom';
+import logo from "../../assets/Sanchari logo high.png";
+
 
 
 const SignUp = () => {
@@ -9,8 +11,8 @@ const SignUp = () => {
       <div className="flex flex-col lg:flex-row w-full max-w-5xl bg-white shadow-md rounded-tl-3xl rounded-br-3xl rounded-tr-md rounded-bl-md overflow-hidden">
         <div className="lg:w-2/5 w-full flex flex-col items-center p-8">
           <div className="flex items-center mb-6">
-            <div className="bg-orange-400 rounded-full p-4">
-              <span className="text-white text-xl font-bold">Trip</span>
+            <div className=" p-4">
+              <span className="text-white w-28 text-xl font-bold"><img className='w-32' src={logo} alt="" /></span>
             </div>
           </div>
           <h2 className="mb-2 text-3xl font-bold">Hi 👋</h2>
