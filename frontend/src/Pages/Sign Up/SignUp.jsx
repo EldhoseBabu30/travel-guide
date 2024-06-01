@@ -1,36 +1,47 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import google from "../../assets/icons/google.png";
 import rightarrow from "../../assets/icons/rightarrow.png";
 
 const SignUp = () => {
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({});
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-  
-    if (!fullName || !email || !password) {
-      setError('All fields are required.');
-      return;
-    }
-
-   
-    const userData = { fullName, email, password };
-    localStorage.setItem('userData', JSON.stringify(userData));
-
-   
-    alert('Registration successful!');
-    
-
-  
-    setFullName('');
-    setEmail('');
-    setPassword('');
+    setLoading(true);
     setError(null);
+
+    try {
+      const res = await fetch("/api/auth/sign-up", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.message || "Sign-up failed");
+        setLoading(false);
+        return;
+      }
+
+      navigate("/sign-in");
+    } catch (err) {
+      setError("Something went wrong. Please try again.");
+      setLoading(false);
+    }
   };
 
   return (
@@ -41,8 +52,8 @@ const SignUp = () => {
           className="hidden md:block rounded-2xl w-1/2 bg-cover bg-center"
           style={{
             backgroundImage: `url(https://i.pinimg.com/736x/5d/bb/55/5dbb551d5ad0a8a1b2280ef247f61902.jpg)`,
-            borderTopLeftRadius: '20px',
-            borderBottomLeftRadius: '20px'
+            borderTopLeftRadius: "20px",
+            borderBottomLeftRadius: "20px",
           }}
         >
           <div className="flex items-start justify-center h-full bg-gray bg-opacity-50">
@@ -55,12 +66,19 @@ const SignUp = () => {
 
         {/* Right Section */}
         <div className="w-full md:w-1/2 p-8">
-          <Link to="/" className="flex items-center text-gray-600 hover:underline mb-4">
+          <Link
+            to="/"
+            className="flex items-center text-gray-600 hover:underline mb-4"
+          >
             <img src={rightarrow} className="w-6 h-6 mr-2" alt="Right Arrow" />
             Back to website
           </Link>
-          <h1 className="text-3xl font-bold text-center mb-4">Create an Account</h1>
-          <p className="text-center text-gray-600 mb-6">Please enter your details</p>
+          <h1 className="text-3xl font-bold text-center mb-4">
+            Create an Account
+          </h1>
+          <p className="text-center text-gray-600 mb-6">
+            Please enter your details
+          </p>
           {error && <p className="text-center text-red-600 mb-4">{error}</p>}
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 gap-4 mb-4">
@@ -71,10 +89,11 @@ const SignUp = () => {
                 <input
                   type="text"
                   placeholder="Full Name"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
+                  id="fullname"
+                  onChange={handleChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-orange-400"
                   autoComplete="name"
+                  required
                 />
               </div>
               <div>
@@ -83,11 +102,12 @@ const SignUp = () => {
                 </label>
                 <input
                   type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  id="email"
+                  onChange={handleChange}
                   placeholder="mail@example.com"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-orange-400"
                   autoComplete="email"
+                  required
                 />
               </div>
               <div>
@@ -96,19 +116,21 @@ const SignUp = () => {
                 </label>
                 <input
                   type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  id="password"
+                  onChange={handleChange}
                   placeholder="Min of 6 characters"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-orange-400"
                   autoComplete="new-password"
+                  required
                 />
               </div>
             </div>
             <button
+              disabled={loading}
               type="submit"
               className="w-full bg-orange-400 text-white px-5 py-3 rounded-lg hover:bg-orange-500 transition"
             >
-              Create Account
+              {loading ? 'Loading...' : 'Sign Up'}
             </button>
           </form>
           <div className="flex items-center my-6">
@@ -124,7 +146,10 @@ const SignUp = () => {
             Sign up with Google
           </button>
           <div className="mt-4 text-center">
-            <Link to="/sign-in" className="text-sm text-gray-600 hover:underline">
+            <Link
+              to="/sign-in"
+              className="text-sm text-gray-600 hover:underline"
+            >
               Already have an account? Login
             </Link>
           </div>

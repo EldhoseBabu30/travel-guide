@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import authRouter from './routes/auth.route.js';
 
 dotenv.config();
 
@@ -25,6 +26,8 @@ app.use(cors());
 app.listen(3000, () => {
   console.log("Server running on port 3000");
 });
+
+app.use('/api/auth', authRouter);
 
 // Error-handling middleware
 app.use((err, req, res, next) => {

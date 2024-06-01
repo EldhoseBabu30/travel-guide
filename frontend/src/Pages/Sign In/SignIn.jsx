@@ -1,11 +1,55 @@
 import React from 'react';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from '../../redux/UserSlice';
 import google from "../../assets/icons/google.png";
-import { Link } from 'react-router-dom';
+
 import logo from "../../assets/Sanchari logo high.png";
+import vintage_car from '../../assets/vintagecar.png';
 
 
 
-const SignUp = () => {
+const SignIn = () => {
+
+
+    const [formData, setFormData] = useState({});
+    const { loading, error } = useSelector((state) => state.user);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const handleChange = (e) => {
+      setFormData({
+        ...formData,
+        [e.target.id]: e.target.value,
+      });
+    };
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      try {
+        dispatch(signInStart());
+        const res = await fetch('/api/auth/sign-in', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+        const data = await res.json();
+        console.log(data);
+        if (data.success === false) {
+          dispatch(signInFailure(data.message));
+          return;
+        }
+        dispatch(signInSuccess(data));
+        navigate('/');
+      } catch (error) {
+        dispatch(signInFailure(error.message));
+      }
+    };
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4">
       <div className="flex flex-col lg:flex-row w-full max-w-5xl bg-white shadow-md rounded-tl-3xl rounded-br-3xl rounded-tr-md rounded-bl-md overflow-hidden">
@@ -17,13 +61,15 @@ const SignUp = () => {
           </div>
           <h2 className="mb-2 text-3xl font-bold">Hi 👋</h2>
           <p className="mb-6 text-gray-600">Join to the adventure Trips!</p>
-          <form className="w-full">
+          <form onSubmit={handleSubmit} className="w-full" >
             <div className="mb-4">
               <label className="block mb-2 text-sm font-bold text-gray-700">
                 Email
               </label>
               <div className="relative">
                 <input
+                 onChange={handleChange}
+                 id='email'
                   type="email"
                   className="w-full pl-4 pr-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:border-orange-400"
                 />
@@ -35,7 +81,9 @@ const SignUp = () => {
               </label>
               <div className="relative">
                 <input
+                onChange={handleChange}
                   type="password"
+                  id='password'
                   className="w-full pl-4 pr-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:border-orange-400"
                 />
               </div>
@@ -44,10 +92,11 @@ const SignUp = () => {
               Already have an account? <Link to='/sign-up' className="text-orange-400 hover:underline">Sign up</Link>
             </p>
             <button
+            disabled={loading}
               type="submit"
               className="w-full py-2 mt-4 text-white bg-orange-400 rounded-lg hover:bg-orange-500"
             >
-             Sign In
+            {loading ? 'Loading...' : 'Sign In'}
             </button>
           </form>
           <div className="flex items-center justify-between mt-6 w-full">
@@ -65,11 +114,13 @@ const SignUp = () => {
           </button>
         </div>
         <div className="hidden lg:block lg:w-3/5 w-full h-64 lg:h-auto bg-cover bg-center lg:p-4 lg:overflow-hidden">
-          <div className="h-full rounded-tl-3xl rounded-bl-md rounded-tr-md rounded-br-3xl w-full bg-cover bg-center" style={{ backgroundImage: "url('https://cdn.gencraft.com/prod/user/ec6159e6-829c-450a-91ca-fb1d237920fe/cf5b009a-813e-440d-9abc-b7f1526ce7f9/image/image1_0.jpg?Expires=1717141692&Signature=PGmtrt7Eqdo4br4SDxkksAQWQ24rofvgNtAhUBNrCdYrFgMyemCfuVXlWnxgFayAiNY8g5JtUgZNgIbDyPZY0IF0Qw8b8XlZoMHxeUUdMmMp9kkYi-XdJjJOdJ8kOrSBVntwCLlSn0Q~ZaIpoMqtXoV-QUvXqNEO19h7xdSVyQZPeombSiDpUdS26YrwXSS0OKa0tgEpapLbnKrKKOWV5lP1ppWv7SckCzqF4S3BVh4kdIiza9nbV8F-UQ3Zw1s45X6gsSIYaH1k0m8NatBQG98xjmMfuh90nYzqkMyoi23I8jAFbppITpL5tWsittwtiEEWswRpJoq7OeX7mXXjLw__&Key-Pair-Id=K3RDDB1TZ8BHT8')" }}></div>
+          <div className="h-full rounded-tl-3xl rounded-bl-md rounded-tr-md rounded-br-3xl w-full bg-cover bg-center" 
+          > <img className='rounded-tl-3xl rounded-bl-md rounded-tr-md rounded-br-3xl' src={vintage_car} alt="" /></div>
         </div>
       </div>
+      {error && <p className='text-red-500 mt-5'>{error}</p>}
     </div>
   );
 };
 
-export default SignUp;
+export default SignIn;
