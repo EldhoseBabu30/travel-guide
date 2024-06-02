@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import google from "../../assets/icons/google.png";
 import rightarrow from "../../assets/icons/rightarrow.png";
+import Swal from "sweetalert2";
 
 const SignUp = () => {
-  const [formData, setFormData] = useState({ fullname: '', email: '', password: '' });
+  const [formData, setFormData] = useState({ username: '', email: '', password: '' });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ const SignUp = () => {
     setError(null);
 
     try {
-      const res = await fetch("/api/auth/sign-up", {
+      const res = await fetch("http://localhost:3000/api/auth/sign-up", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -34,12 +35,18 @@ const SignUp = () => {
       if (!res.ok) {
         setError(data.message || "Sign-up failed");
         setLoading(false);
+        console.log(data);
+
         return;
+        
       }
-
-      console.log(data);
-
-      navigate("/sign-in");
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'User created successfully.',
+      }).then(() => {
+        navigate('/sign-in');
+      });
     } catch (err) {
       setError("Something went wrong. Please try again.");
       setLoading(false);
@@ -86,13 +93,13 @@ const SignUp = () => {
             <div className="grid grid-cols-1 gap-4 mb-4">
               <div>
                 <label className="block mb-2 text-sm font-bold text-gray-700">
-                  Full Name
+                  User Name
                 </label>
                 <input
                   type="text"
-                  placeholder="Full Name"
-                  id="fullname"
-                  value={formData.fullname}
+                  placeholder=""
+                  id="username"
+                  value={formData.username}
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-orange-400"
                   autoComplete="name"
@@ -108,7 +115,7 @@ const SignUp = () => {
                   id="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="mail@example.com"
+                  placeholder=""
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-orange-400"
                   autoComplete="email"
                   required
@@ -123,7 +130,7 @@ const SignUp = () => {
                   id="password"
                   value={formData.password}
                   onChange={handleChange}
-                  placeholder="Min of 6 characters"
+                  placeholder=""
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-orange-400"
                   autoComplete="new-password"
                   required

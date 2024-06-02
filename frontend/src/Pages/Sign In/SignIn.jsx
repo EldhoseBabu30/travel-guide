@@ -11,6 +11,8 @@ import google from "../../assets/icons/google.png";
 
 import logo from "../../assets/Sanchari logo high.png";
 import vintage_car from '../../assets/vintagecar.png';
+import Swal from 'sweetalert2';
+
 
 
 
@@ -31,7 +33,7 @@ const SignIn = () => {
       e.preventDefault();
       try {
         dispatch(signInStart());
-        const res = await fetch('/api/auth/sign-in', {
+        const res = await fetch('http://localhost:3000/api/auth/sign-in', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -45,7 +47,13 @@ const SignIn = () => {
           return;
         }
         dispatch(signInSuccess(data));
-        navigate('/');
+        Swal.fire({
+          icon: 'success',
+          title: 'Sign in Successful',
+          text: 'You have successfully Signed in.',
+        }).then(() => {
+          navigate('/');
+        });
       } catch (error) {
         dispatch(signInFailure(error.message));
       }
