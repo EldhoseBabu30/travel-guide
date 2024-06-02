@@ -49,6 +49,7 @@ const SignIn = () => {
       } catch (error) {
         dispatch(signInFailure(error.message));
       }
+      console.log(formData);
     };
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4">

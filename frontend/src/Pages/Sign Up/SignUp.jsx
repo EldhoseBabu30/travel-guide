@@ -4,7 +4,7 @@ import google from "../../assets/icons/google.png";
 import rightarrow from "../../assets/icons/rightarrow.png";
 
 const SignUp = () => {
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({ fullname: '', email: '', password: '' });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -36,6 +36,8 @@ const SignUp = () => {
         setLoading(false);
         return;
       }
+
+      console.log(data);
 
       navigate("/sign-in");
     } catch (err) {
@@ -90,6 +92,7 @@ const SignUp = () => {
                   type="text"
                   placeholder="Full Name"
                   id="fullname"
+                  value={formData.fullname}
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-orange-400"
                   autoComplete="name"
@@ -103,6 +106,7 @@ const SignUp = () => {
                 <input
                   type="email"
                   id="email"
+                  value={formData.email}
                   onChange={handleChange}
                   placeholder="mail@example.com"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-orange-400"
@@ -117,6 +121,7 @@ const SignUp = () => {
                 <input
                   type="password"
                   id="password"
+                  value={formData.password}
                   onChange={handleChange}
                   placeholder="Min of 6 characters"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-orange-400"

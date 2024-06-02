@@ -1,32 +1,35 @@
+import { errorHandler } from "../utils/error.js";
 import User from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { errorHandler } from "../utils/error.js";
 
 export const signup = async (req, res, next) => {
-    const { email, password } = req.body;
-    try {
-        // Check if the user already exists
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({ success: false, message: "User already exists" });
-        }
-        
-        const hashedPassword = bcryptjs.hashSync(password, 10);
-        const newUser = new User({
-            email,
-            password: hashedPassword
-        });
+  const { fullname, email, password } = req.body;
 
-        await newUser.save();
-        res.status(201).json({
-            success: true,
-            message: "User created successfully"
-        });
-    } catch (error) {
-        next(error);
+  try {
+    // Check if the user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ success: false, message: "User already exists" });
     }
+    
+    const hashedPassword = bcryptjs.hashSync(password, 10);
+    const newUser = new User({
+      fullname,
+      email,
+      password: hashedPassword
+    });
+
+    await newUser.save();
+    res.status(201).json({
+      success: true,
+      message: "User created successfully"
+    });
+  } catch (error) {
+    next(error);
+  }
 };
+
 
 export const signin = async (req, res, next) => {
     const { email, password } = req.body;
