@@ -6,7 +6,7 @@ import {
   signInStart,
   signInSuccess,
   signInFailure,
-} from '../../redux/UserSlice';
+} from '../../redux/user/UserSlice';
 import google from "../../assets/icons/google.png";
 
 import logo from "../../assets/Sanchari logo high.png";
