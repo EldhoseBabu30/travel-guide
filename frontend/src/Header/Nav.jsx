@@ -1,19 +1,45 @@
 import React, { useState, useEffect, useRef } from "react";
 import { NavLink, Link, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import logo from "../assets/light logo.png";
 import { FiSearch, FiUser } from "react-icons/fi";
+import {
+  deleteUserFailure,
+  deleteUserSuccess,
+  signOutUserStart,
+} from '../redux/user/UserSlice.js';
+import Modal from "./Modal"; // Import the Modal component
 
 const Nav = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false); // State for controlling modal visibility
 
   const dropdownRefs = useRef([]);
   const userDropdownRef = useRef();
 
+  const dispatch = useDispatch();
   const location = useLocation();
   const isAuthPage = location.pathname === "/sign-in" || location.pathname === "/sign-up";
+
+  const { currentUser } = useSelector((state) => state.user);
+
+  const handleSignOut = async () => {
+    try {
+      dispatch(signOutUserStart());
+      const res = await fetch('/api/auth/signout');
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(deleteUserFailure(data.message));
+        return;
+      }
+      dispatch(deleteUserSuccess(data));
+    } catch (error) {
+      dispatch(deleteUserFailure(error.message));
+    }
+  };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -49,6 +75,19 @@ const Nav = () => {
     setUserDropdownOpen(!userDropdownOpen);
   };
 
+  const openModal = () => {
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
+  const confirmSignOut = () => {
+    closeModal();
+    handleSignOut();
+  };
+
   if (isAuthPage) {
     return null; // Don't render the navbar on the authentication pages
   }
@@ -70,13 +109,34 @@ const Nav = () => {
           </button>
         </div>
         <div className="relative" ref={userDropdownRef}>
-          <FiUser
-            className="text-white cursor-pointer text-2xl transition-transform duration-500 ease-in-out transform hover:text-orange-400 hover:scale-110"
-            onClick={toggleUserDropdown}
-          />
+          {currentUser ? (
+            <img
+              className="rounded-full h-7 w-7 object-cover cursor-pointer"
+              src={currentUser.avatar}
+              alt="profile"
+              onClick={toggleUserDropdown}
+            />
+          ) : (
+            <FiUser
+              className="text-white cursor-pointer text-2xl transition-transform duration-500 ease-in-out transform hover:text-orange-400 hover:scale-110"
+              onClick={toggleUserDropdown}
+            />
+          )}
           {userDropdownOpen && (
             <div className="absolute right-0 mt-2 w-32 bg-white text-black rounded-lg shadow-lg z-50">
-              <NavLink to="/sign-in" className="block px-4 py-2 rounded-lg hover:text-orange-400">Sign In</NavLink>
+              {currentUser ? (
+                <>
+                  <NavLink to="/profile" className="block px-4 py-2 rounded-lg hover:text-orange-400">Profile</NavLink>
+                  <button
+                    onClick={openModal} // Open modal on click
+                    className="block w-full text-left px-4 py-2 rounded-lg hover:text-orange-400"
+                  >
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <NavLink to="/sign-in" className="block px-4 py-2 rounded-lg hover:text-orange-400">Sign In</NavLink>
+              )}
             </div>
           )}
         </div>
@@ -136,22 +196,44 @@ const Nav = () => {
           />
           <button className="text-white" onClick={toggleSearch}>
             <FiSearch className="text-white cursor-pointer hover:text-orange-400 text-2xl transition-transform duration-500 ease-in-out transform hover:scale-110" />
-            </button>
+          </button>
+        </div>
+        <div className="relative" ref={userDropdownRef}>
+          {currentUser ? (
+            <img
+              className="rounded-full h-7 w-7 object-cover cursor-pointer"
+              src={currentUser.avatar}
+              alt="profile"
+              onClick={toggleUserDropdown}
+            />
+          ) : (
+            <FiUser
+              className="text-white cursor-pointer text-2xl hover:text-orange-400 transition-transform duration-500 ease-in-out transform hover:scale-110"
+              onClick={toggleUserDropdown}
+            />
+          )}
+          {userDropdownOpen && (
+            <div className="absolute right-0 mt-2 w-32 bg-white text-black rounded-lg shadow-lg z-50">
+              {currentUser ? (
+                <>
+                  <NavLink to="/profile" className="block px-4 py-2 rounded-lg hover:text-orange-400">Profile</NavLink>
+                  <button
+                    onClick={openModal} // Open modal on click
+                    className="block w-full text-left px-4 py-2 rounded-lg hover:text-orange-400"
+                  >
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <NavLink to="/sign-in" className="block px-4 py-2 rounded-lg hover:text-orange-400">Sign In</NavLink>
+              )}
+            </div>
+          )}
+        </div>
       </div>
-      <div className="relative" ref={userDropdownRef}>
-        <FiUser
-          className="text-white cursor-pointer text-2xl hover:text-orange-400 transition-transform duration-500 ease-in-out transform hover:scale-110"
-          onClick={toggleUserDropdown}
-        />
-        {userDropdownOpen && (
-          <div className="absolute right-0 mt-2 w-32 bg-white text-black rounded-lg shadow-lg z-50">
-            <NavLink to="/sign-in" className="block px-4 py-2 rounded-lg hover:text-orange-400">Sign In</NavLink>
-          </div>
-        )}
-      </div>
-    </div>
-  </nav>
-);
+      <Modal isOpen={modalOpen} onClose={closeModal} onConfirm={confirmSignOut} />
+    </nav>
+  );
 };
 
 const Dropdown = React.forwardRef(({ title, items, active, onClick }, ref) => {
@@ -189,4 +271,3 @@ const Dropdown = React.forwardRef(({ title, items, active, onClick }, ref) => {
 });
 
 export default Nav;
-
