@@ -8,14 +8,14 @@ import {
   deleteUserSuccess,
   signOutUserStart,
 } from '../redux/user/UserSlice.js';
-import Modal from "./Modal"; // Import the Modal component
+import Modal from "./Modal";
 
 const Nav = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false); // State for controlling modal visibility
+  const [modalOpen, setModalOpen] = useState(false); 
 
   const dropdownRefs = useRef([]);
   const userDropdownRef = useRef();
@@ -29,7 +29,7 @@ const Nav = () => {
   const handleSignOut = async () => {
     try {
       dispatch(signOutUserStart());
-      const res = await fetch('/api/auth/signout');
+      const res = await fetch('http://localhost:3000/api/auth/sign-out');
       const data = await res.json();
       if (data.success === false) {
         dispatch(deleteUserFailure(data.message));

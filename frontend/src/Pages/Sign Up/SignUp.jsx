@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import google from "../../assets/icons/google.png";
 import rightarrow from "../../assets/icons/rightarrow.png";
 import Swal from "sweetalert2";
+import OAuth from "../../components/Authentication/OAuth";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({ username: '', email: '', password: '' });
@@ -150,13 +150,7 @@ const SignUp = () => {
             <span className="px-3 text-gray-500">or</span>
             <hr className="flex-grow border-gray-300" />
           </div>
-          <button
-            type="button"
-            className="w-full flex items-center justify-center bg-white text-black border border-gray-300 px-5 py-3 rounded-lg hover:bg-gray-100 transition"
-          >
-            <img src={google} className="w-5 h-5 mr-2" alt="Google Icon" />
-            Sign up with Google
-          </button>
+         <OAuth/>
           <div className="mt-4 text-center">
             <Link
               to="/sign-in"

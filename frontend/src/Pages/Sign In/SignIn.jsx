@@ -12,6 +12,7 @@ import google from "../../assets/icons/google.png";
 import logo from "../../assets/Sanchari logo high.png";
 import vintage_car from '../../assets/vintagecar.png';
 import Swal from 'sweetalert2';
+import OAuth from '../../components/Authentication/OAuth';
 
 
 
@@ -113,14 +114,7 @@ const SignIn = () => {
             <span className="px-3 text-gray-500">OR</span>
             <hr className="w-full border-gray-300" />
           </div>
-          <button className="w-full py-2 mt-4 border rounded-lg text-gray-700 hover:bg-gray-100">
-            <img
-              src={google}
-              alt="Google"
-              className="inline w-4 h-4 mr-2"
-            />
-            Sign in with Google
-          </button>
+       <OAuth/>
         </div>
         <div className="hidden lg:block lg:w-3/5 w-full h-64 lg:h-auto bg-cover bg-center lg:p-4 lg:overflow-hidden">
           <div className="h-full rounded-tl-3xl rounded-bl-md rounded-tr-md rounded-br-3xl w-full bg-cover bg-center" 
