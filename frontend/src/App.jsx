@@ -6,6 +6,7 @@ import Destination from './Pages/Destination/Destination'
 import Packages from './Pages/Packages/Packages'
 import SignIn from './Pages/Sign In/SignIn'
 import SignUp from './Pages/Sign Up/SignUp'
+import Profile from './Pages/Profile/Profile'
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
           <Route path="/packages" element={<Packages />} />
           <Route path="/sign-in" element={<SignIn />} />
           <Route path="/sign-up" element={<SignUp />} />
+          <Route path="/profile" element={<Profile   />} />
 
         </Routes>
       </BrowserRouter>
