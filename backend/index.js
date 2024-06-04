@@ -5,6 +5,10 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import authRouter from './routes/auth.route.js';
 
+import userRouter from './routes/user.route.js';
+
+
+
 dotenv.config();
 
  
@@ -28,6 +32,7 @@ app.use(cors());
 app.listen(3000, () => {
   console.log("Server running on port 3000");
 });
+app.use('/api/user', userRouter);
 
 app.use('/api/auth', authRouter);
 
