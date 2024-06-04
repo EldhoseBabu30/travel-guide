@@ -1,4 +1,4 @@
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useRef, useState, useEffect } from 'react';
 import {
   getDownloadURL,
@@ -18,19 +18,24 @@ import {
   signOutUserSuccess,
   signOutUserFailure,
 } from '../../redux/user/UserSlice.js';
-import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 export default function Profile() {
   const fileRef = useRef(null);
   const { currentUser, loading, error } = useSelector((state) => state.user);
-  const [file, setFile] = useState(undefined);
+  const [file, setFile] = useState(null);
   const [filePerc, setFilePerc] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    username: currentUser?.username,
+    email: currentUser?.email,
+    avatar: currentUser?.avatar,
+  });
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
 
   useEffect(() => {
     if (file) {
@@ -70,48 +75,51 @@ export default function Profile() {
     e.preventDefault();
     try {
       dispatch(updateUserStart());
-      const res = await fetch(
-        `http://localhost:3000/api/user/update/${currentUser._id}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
-        }
-      );
+      const token = Cookies.get('access_token');
+      const res = await fetch(`http://localhost:3000/api/user/update/${currentUser._id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`, // Include the token
+        },
+        body: JSON.stringify(formData),
+      });
       const data = await res.json();
-      if (data.success === false) {
+      if (!res.ok) {
         dispatch(updateUserFailure(data.message));
         return;
       }
-
       dispatch(updateUserSuccess(data));
       setUpdateSuccess(true);
     } catch (error) {
       dispatch(updateUserFailure(error.message));
     }
   };
-
+  
   const handleDeleteUser = async () => {
     try {
       dispatch(deleteUserStart());
-      const res = await fetch(
-        `http://localhost:3000/api/user/delete/${currentUser._id}`,
-        {
-          method: 'DELETE',
-        }
-      );
+      const token = Cookies.get('access_token');
+      const res = await fetch(`http://localhost:3000/api/user/delete/${currentUser._id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`, // Include the token
+        },
+      });
       const data = await res.json();
-      if (data.success === false) {
+      if (!res.ok) {
         dispatch(deleteUserFailure(data.message));
         return;
       }
       dispatch(deleteUserSuccess(data));
+      navigate('/');
     } catch (error) {
       dispatch(deleteUserFailure(error.message));
     }
   };
+  
+  
+  
 
   const handleSignOut = async () => {
     try {
@@ -126,6 +134,7 @@ export default function Profile() {
       navigate('/');
     } catch (error) {
       dispatch(signOutUserFailure(error.message));
+      console.error('Sign out error:', error.message);
     }
   };
 
@@ -166,7 +175,7 @@ export default function Profile() {
         <input
           type='text'
           placeholder='Username'
-          defaultValue={currentUser.username}
+          value={formData.username}
           id='username'
           className='border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500'
           onChange={handleChange}
@@ -176,7 +185,7 @@ export default function Profile() {
           type='email'
           placeholder='Email'
           id='email'
-          defaultValue={currentUser.email}
+          value={formData.email}
           className='border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500'
           autoComplete='current-email'
           onChange={handleChange}
