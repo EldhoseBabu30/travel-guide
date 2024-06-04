@@ -16,7 +16,7 @@ const Modal = ({ isOpen, onClose, onConfirm }) => {
             No
           </button>
           <button
-            className="px-4 py-2 bg-orange-400 text-white rounded-full shadow-md hover:bg-orange-500 transition-colors duration-200"
+            className="px-4 py-2 bg-orange-400 text-white rounded-full shadow-md hover:bg-orange-5x00 transition-colors duration-200"
             onClick={onConfirm}
           >
             Yes

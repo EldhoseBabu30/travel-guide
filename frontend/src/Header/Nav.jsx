@@ -15,7 +15,7 @@ const Nav = () => {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false); 
+  const [modalOpen, setModalOpen] = useState(false);
 
   const dropdownRefs = useRef([]);
   const userDropdownRef = useRef();
@@ -84,8 +84,8 @@ const Nav = () => {
   };
 
   const confirmSignOut = () => {
-    closeModal();
     handleSignOut();
+    closeModal();
   };
 
   if (isAuthPage) {
@@ -201,95 +201,78 @@ const Nav = () => {
         <div className="relative" ref={userDropdownRef}>
           {currentUser ? (
             <img
-            className="rounded-full h-7 w-7 object-cover cursor-pointer"
-            src={currentUser.avatar}
-            alt="profile"
-            onClick={toggleUserDropdown}
-          />
-        ) : (
-          <FiUser
-            className="text-white cursor-pointer text-2xl transition-transform duration-500 ease-in-out transform hover:text-orange-400 hover:scale-110"
-            onClick={toggleUserDropdown}
-          />
-        )}
-        {userDropdownOpen && (
-          <div className="absolute right-0 mt-2 w-32 bg-white text-black rounded-lg shadow-lg z-50">
-            {currentUser ? (
-              <>
-                <NavLink to="/profile" className="block px-4 py-2 rounded-lg hover:text-orange-400">Profile</NavLink>
-                <button
-                  onClick={openModal} // Open modal on click
-                  className="block w-full text-left px-4 py-2 rounded-lg hover:text-orange-400"
-                >
-                  Sign Out
-                </button>
-              </>
-            ) : (
-              <NavLink to="/sign-in" className="block px-4 py-2 rounded-lg hover:text-orange-400">Sign In</NavLink>
-            )}
-          </div>
-        )}
+              className="rounded-full h-7 w-7 object-cover cursor-pointer"
+              src={currentUser.avatar}
+              alt="profile"
+              onClick={toggleUserDropdown}
+            />
+          ) : (
+            <FiUser
+              className="text-white cursor-pointer text-2xl transition-transform duration-500 ease-in-out transform hover:text-orange-400 hover:scale-110"
+              onClick={toggleUserDropdown}
+            />
+          )}
+          {userDropdownOpen && (
+            <div className="absolute right-0 mt-2 w-32 bg-white text-black rounded-lg shadow-lg z-50">
+              {currentUser ? (
+                <>
+                  <NavLink to="/profile" className="block px-4 py-2 rounded-lg hover:text-orange-400">Profile</NavLink>
+                  <button
+                    onClick={openModal} // Open modal on click
+                    className="block w-full text-left px-4 py-2 rounded-lg hover:text-orange-400"
+                  >
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <NavLink to="/sign-in" className="block px-4 py-2 rounded-lg hover:text-orange-400">Sign In</NavLink>
+              )}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
-    <Modal isOpen={modalOpen} onClose={closeModal}>
-      <h2 className="text-xl font-semibold mb-4">Confirm Sign Out</h2>
-      <p className="mb-4">Are you sure you want to sign out?</p>
-      <div className="flex justify-end">
-        <button
-          onClick={closeModal}
-          className="px-4 py-2 bg-gray-300 rounded-lg mr-2 hover:bg-gray-400"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={confirmSignOut}
-          className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
-        >
-          Sign Out
-        </button>
-      </div>
-    </Modal>
-  </nav>
-);
+      <Modal isOpen={modalOpen} onClose={closeModal} onConfirm={confirmSignOut} />
+    </nav>
+  );
 };
 
 const Dropdown = React.forwardRef(({ title, items, active, onClick }, ref) => {
-return (
-  <div className="relative" ref={ref}>
-    <button
-      className={`nav-link relative font-bold transition duration-300 ease-in-out transform hover:text-orange-400 hover:scale-105 focus:outline-none ${active ? 'text-orange-400' : ''}`}
-      onClick={onClick}
-    >
-      {title}
-    </button>
-    {active && (
-      <div className="absolute mt-2 w-56 rounded-lg shadow-lg z-50 border border-gray-200 bg-white">
-        {Object.keys(items).map((category, idx) => (
-          <div key={idx} className="py-2">
-            {category && (
-              <h3 className="px-4 py-2 text-gray-900 font-semibold">{category}</h3>
-            )}
-            {items[category].map((item, index) => {
-              const itemSlug = item.toLowerCase().replace(/\s+/g, '-');
-              const linkTo = itemSlug === 'see-all-destinations' 
-                ? '/destinations' 
-                : `/${itemSlug}`;
-              return (
-                <NavLink
-                  key={index}
-                  to={linkTo}
-                  className={`block px-4 py-2 text-gray-800 ${itemSlug === 'see-all-destinations' ? 'hover:bg-orange-400 hover:text-white' : 'hover:text-orange-400'}`}
-                >
-                  {item}
-                </NavLink>
-              );
-            })}
-          </div>
-        ))}
-      </div>
-    )}
-  </div>
-);
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        className={`nav-link relative font-bold transition duration-300 ease-in-out transform hover:text-orange-400 hover:scale-105 focus:outline-none ${active ? 'text-orange-400' : ''}`}
+        onClick={onClick}
+      >
+        {title}
+      </button>
+      {active && (
+        <div className="absolute mt-2 w-56 rounded-lg shadow-lg z-50 border border-gray-200 bg-white">
+          {Object.keys(items).map((category, idx) => (
+            <div key={idx} className="py-2">
+              {category && (
+                <h3 className="px-4 py-2 text-gray-900 font-semibold">{category}</h3>
+              )}
+              {items[category].map((item, index) => {
+                const itemSlug = item.toLowerCase().replace(/\s+/g, '-');
+                const linkTo = itemSlug === 'see-all-destinations' 
+                  ? '/destinations' 
+                  : `/${itemSlug}`;
+                return (
+                  <NavLink
+                    key={index}
+                    to={linkTo}
+                    className={`block px-4 py-2 text-gray-800 ${itemSlug === 'see-all-destinations' ? 'hover:bg-orange-400 hover:text-white' : 'hover:text-orange-400'}`}
+                  >
+                    {item}
+                  </NavLink>
+                );
+              })}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 });
 
 export default Nav;
