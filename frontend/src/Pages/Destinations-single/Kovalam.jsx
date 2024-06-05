@@ -1,13 +1,13 @@
 import React from 'react';
 
-const Munnar = () => {
+const Kovalam = () => {
   return (
     <div className="font-sans">
       <header className="relative bg-cover bg-center h-screen" style={{ backgroundImage: 'url(/path-to-your-munnar-image.jpg)' }}>
         <div className="absolute inset-0 bg-black opacity-50"></div>
         <div className="relative z-10 text-white p-8 text-center">
           <div className="mt-32">
-            <h1 className="text-6xl font-bold">Travel to Munnar</h1>
+            <h1 className="text-6xl font-bold">Travel to Kovalam</h1>
             <p className="mt-4 text-xl">Whatever you want, our experts can make it happen.</p>
             <div className="mt-8">
               <button className="bg-orange-400 hover:bg-orange-500 text-white font-bold py-4 px-8 rounded mr-4">Craft your trip</button>
@@ -21,9 +21,9 @@ const Munnar = () => {
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold mb-4">Beyond the city limits, nature comes unabashed and boundless</h2>
           <p className="mb-8">
-            Think big. Munnar boasts sprawling tea gardens, lush green hills, and picturesque landscapes. The pleasant climate and serene atmosphere make it a perfect escape from the bustling city life. Munnar offers countless opportunities for peaceful retreats and adventure activities alike. Slow down, embrace the tranquility, and immerse yourself in the beauty of nature.
+          Think big. Ooty boasts sprawling tea gardens, lush green hills, and picturesque landscapes. The pleasant climate and serene atmosphere make it a perfect escape from the bustling city life. Ooty offers countless opportunities for peaceful retreats and adventure activities alike. Slow down, embrace the tranquility, and immerse yourself in the beauty of nature.
           </p>
-          <img src="/path-to-your-munnar-image2.jpg" alt="Munnar" className="w-full h-auto rounded-lg shadow-lg mb-8"/>
+          <img src="/path-to-your-munnar-image2.jpg" alt="Kovalam" className="w-full h-auto rounded-lg shadow-lg mb-8"/>
         </div>
       </section>
 
@@ -60,4 +60,4 @@ const Munnar = () => {
   );
 };
 
-export default Munnar;
+export default Kovalam;

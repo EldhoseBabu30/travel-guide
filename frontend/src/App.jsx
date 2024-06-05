@@ -7,6 +7,12 @@ import Packages from './Pages/Packages/Packages'
 import SignIn from './Pages/Sign In/SignIn'
 import SignUp from './Pages/Sign Up/SignUp'
 import Profile from './Pages/Profile/Profile'
+import Munnar from './Pages/Destinations-single/Munnar'
+import Ooty from './Pages/Destinations-single/Ooty'
+import Kodaikanal from './Pages/Destinations-single/Kodaikanal'
+import Kovalam from './Pages/Destinations-single/Kovalam'
+import Kanyakumari from './Pages/Destinations-single/Kanyakumari'
+
 
 
 function App() {
@@ -23,6 +29,13 @@ function App() {
           <Route path="/sign-in" element={<SignIn />} />
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/profile" element={<Profile   />} />
+          <Route path="/munnar" element={<Munnar />} />
+          <Route path="/ooty" element={<Ooty />} />
+          <Route path="/kodaikanal" element={<Kodaikanal />} />
+          <Route path="/kovalam" element={<Kovalam />} />
+          <Route path="/kanyakumari" element={<Kanyakumari />} />
+
+
 
         </Routes>
       </BrowserRouter>
