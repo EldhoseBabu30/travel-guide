@@ -1,51 +1,72 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const Destination = () => {
-  const destinations = [
-    {
-      id: 1,
-      name: 'Munnar',
-      image: 'path-to-munnar-image.jpg', // Replace with actual image path
-      description: 'Explore the beautiful tea gardens and scenic hills of Munnar.',
-      price: '$250',
-      rating: '4.5/5',
-    },
-    {
-      id: 2,
-      name: 'Lakshadweep',
-      image: 'path-to-lakshadweep-image.jpg', // Replace with actual image path
-      description: 'Enjoy the pristine beaches and crystal clear waters of Lakshadweep.',
-      price: '$300',
-      rating: '4.7/5',
-    },
-    {
-      id: 3,
-      name: 'Ooty',
-      image: 'path-to-ooty-image.jpg', // Replace with actual image path
-      description: 'Experience the charm of the Queen of Hill Stations.',
-      price: '$200',
-      rating: '4.4/5',
-    },
-    // Add more destinations as needed
-  ];
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
+  const destinations = {
+    "South America": ["Argentina", "Bolivia", "Brazil", "Chile", "Colombia", "More..."],
+    "Europe": ["Armenia", "Bosnia and Herzegovina", "Corsica", "Croatia", "England", "More..."],
+    "Africa & Middle East": ["Benin", "Botswana", "Egypt", "Ghana", "Jordan", "More..."],
+    "Asia": ["India", "Japan", "Maldives", "Mongolia", "Nepal", "More..."],
+    "North & Central America": ["Canada", "Costa Rica", "Dominican Republic", "Mexico", "Panama", "More..."],
+  };
+
+  const toggleDropdown = (category) => {
+    setSelectedCategory(selectedCategory === category ? null : category);
+  };
 
   return (
     <div className="container mx-auto p-6 bg-gray-100 dark:bg-gray-900 pt-20">
-      <h1 className="text-4xl font-bold text-center my-6 text-orange-400">Destinations</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {destinations.map((destination) => (
-          <div key={destination.id} className="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden">
-            <img src={destination.image} alt={destination.name} className="w-full h-48 object-cover" />
-            <div className="p-4">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{destination.name}</h2>
-              <p className="mt-2 text-gray-700 dark:text-gray-300">{destination.description}</p>
-              <div className="mt-4 flex justify-between items-center">
-                <span className="text-orange-400 font-bold">{destination.price}</span>
-                <span className="text-gray-600 dark:text-gray-400">{destination.rating}</span>
+      <div
+        className="relative bg-cover bg-center bg-no-repeat h-auto flex flex-col items-center justify-center"
+        style={{
+          backgroundImage: `url('https://img.freepik.com/free-vector/grey-world-map_1053-431.jpg?t=st=1717874654~exp=1717878254~hmac=54a0e00fdd4d45d1be189a4c9ce407d3945b924d3c7be065a845276d5cf21c7f&w=740')`,
+        }}
+      >
+        <div className=" bg-opacity-50 p-6 rounded-lg text-center mb-6">
+          <h2 className="text-4xl font-bold text-orange-500 mb-4">Remarkable places.</h2>
+          <h2 className="text-4xl font-bold text-orange-500 mb-4">Wildly unique experiences.</h2>
+          <h2 className="text-4xl font-bold text-orange-500 mb-4">Positive impact travel.</h2>
+        </div>
+        <div className="text-center mb-6">
+          <div className="flex flex-wrap justify-center">
+            {Object.keys(destinations).map((category) => (
+              <div key={category} className="mb-4 mx-2">
+                <button
+                  onClick={() => toggleDropdown(category)}
+                  className="text-2xl font-bold text-gray-900 dark:text-gray-100 bg-gray-200 dark:bg-gray-700 p-2 rounded-lg w-full text-left"
+                >
+                  {category}
+                </button>
+                {selectedCategory === category && (
+                  <ul className="mt-2 bg-gray-200 dark:bg-gray-700 rounded-lg p-4">
+                    {destinations[category].map((place) => (
+                      <li key={place} className="text-gray-700 dark:text-gray-300 py-1">
+                        {place}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
-            </div>
+            ))}
           </div>
-        ))}
+        </div>
+      </div>
+      <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden mt-10 p-6 text-center">
+        <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Join our travel revolution</h2>
+        <p className="text-gray-700 dark:text-gray-300 mb-4">
+          Sign up to stay in the know - hot new travel spots, how we strive to make the world a better place, and all sorts of surprises.
+        </p>
+        <form className="flex justify-center">
+          <input
+            type="email"
+            className="p-2 rounded-l-lg border border-gray-300 dark:border-gray-600 focus:outline-none"
+            placeholder="Your email"
+          />
+          <button className="p-2 bg-purple-600 text-white rounded-r-lg hover:bg-purple-700">
+            Sign Up
+          </button>
+        </form>
       </div>
     </div>
   );
