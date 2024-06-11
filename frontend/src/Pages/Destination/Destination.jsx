@@ -63,7 +63,7 @@ const Destination = () => {
             className="p-2 rounded-l-lg border border-gray-300 dark:border-gray-600 focus:outline-none"
             placeholder="Your email"
           />
-          <button className="p-2 bg-purple-600 text-white rounded-r-lg hover:bg-purple-700">
+          <button className="p-2 bg-orange-400 text-white rounded-r-lg hover:bg-orange-500">
             Sign Up
           </button>
         </form>

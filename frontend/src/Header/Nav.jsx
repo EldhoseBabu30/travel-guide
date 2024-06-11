@@ -159,8 +159,7 @@ const Nav = () => {
         <Dropdown
           title="Hotels"
           items={{
-            "Popular Hotels": ["Hotel 1", "Hotel 2", "Hotel 3"],
-            "Boutique Hotels": ["Hotel 4", "Hotel 5"],
+            "": ["Hotel 1", "Hotel 2", "Hotel 3","Hotel 4", "Hotel 5"],
           }}
           active={activeDropdown === 2}
           onClick={() => toggleDropdown(2)}
@@ -169,8 +168,7 @@ const Nav = () => {
         <Dropdown
           title="Food Spots"
           items={{
-            "Popular Spots": ["Spot 1", "Spot 2", "Spot 3"],
-            "Street Food": ["Spot 4", "Spot 5"],
+            "": ["Spot 1", "Spot 2", "Spot 3","Spot 4", "Spot 5"],
           }}
           active={activeDropdown === 3}
           onClick={() => toggleDropdown(3)}
@@ -179,8 +177,7 @@ const Nav = () => {
         <Dropdown
           title="Community"
           items={{
-            "Events": ["Event 1", "Event 2", "Event 3"],
-            "Meetups": ["Meetup 1", "Meetup 2"],
+            "": ["Event 1", "Event 2", "Event 3","Meetup 1", "Meetup 2"],
           }}
           active={activeDropdown === 4}
           onClick={() => toggleDropdown(4)}
