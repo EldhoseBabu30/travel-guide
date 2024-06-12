@@ -1,9 +1,15 @@
 import React from 'react';
+import video from '../../assets/ooty.mp4';
+import image from '../../assets/ooty1.jpg';
 
 const Ooty = () => {
   return (
     <div className="font-sans">
-      <header className="relative bg-cover bg-center h-screen" style={{ backgroundImage: 'url(/path-to-your-munnar-image.jpg)' }}>
+      <header className="relative h-screen">
+        <video autoPlay loop muted className="absolute inset-0 w-full h-full object-cover">
+          <source src={video} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
         <div className="absolute inset-0 bg-black opacity-50"></div>
         <div className="relative z-10 text-white p-8 text-center">
           <div className="mt-32">
@@ -21,9 +27,9 @@ const Ooty = () => {
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold mb-4">Beyond the city limits, nature comes unabashed and boundless</h2>
           <p className="mb-8">
-          Think big. Ooty boasts sprawling tea gardens, lush green hills, and picturesque landscapes. The pleasant climate and serene atmosphere make it a perfect escape from the bustling city life. Ooty offers countless opportunities for peaceful retreats and adventure activities alike. Slow down, embrace the tranquility, and immerse yourself in the beauty of nature.
+            Think big. Munnar boasts sprawling tea gardens, lush green hills, and picturesque landscapes. The pleasant climate and serene atmosphere make it a perfect escape from the bustling city life. Munnar offers countless opportunities for peaceful retreats and adventure activities alike. Slow down, embrace the tranquility, and immerse yourself in the beauty of nature.
           </p>
-          <img src="/path-to-your-munnar-image2.jpg" alt="Ooty" className="w-full h-auto rounded-lg shadow-lg mb-8"/>
+          <img src={image} alt="Munnar" className="w-full h-auto rounded-lg shadow-lg mb-8"/>
         </div>
       </section>
 

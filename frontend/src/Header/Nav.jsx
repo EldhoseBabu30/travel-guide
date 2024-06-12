@@ -3,6 +3,7 @@ import { NavLink, Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import logo from "../assets/light logo.png";
 import { FiSearch, FiUser } from "react-icons/fi";
+import { MdLocationOn, MdHotel, MdRestaurant } from "react-icons/md";
 import {
   deleteUserFailure,
   deleteUserSuccess,
@@ -171,14 +172,13 @@ const Nav = () => {
             { label: "Tulasi Village", path: "/tulasi-village" },
             { label: "Vythiri", path: "/vythiri" },
             { label: "See All Hotels", path: "/hotels"}
-
           ]}
           active={activeDropdown === 2}
           onClick={() => toggleDropdown(2)}
           ref={(el) => (dropdownRefs.current[2] = el)}
           highlightItem="See All Hotels"
         />
-        <Dropdown
+        <FoodSpotsDropdown
           title="Food Spots"
           items={[
             { label: "Airlines", path: "/airlines" },
@@ -186,7 +186,7 @@ const Nav = () => {
             { label: "Delicia", path: "/delicia" },
             { label: "Majlis", path: "/majlis" },
             { label: "Paragon", path: "/paragon" },
-            {label: "See All Food Spots", path: "/food-spots"}
+            { label: "See All Food Spots", path: "/food-spots"}
           ]}
           active={activeDropdown === 3}
           onClick={() => toggleDropdown(3)}
@@ -249,11 +249,11 @@ const Nav = () => {
   );
 };
 
-const Dropdown = React.forwardRef(({ title, items, active, onClick, highlightItem }, ref) => {
+const Dropdown = React.forwardRef(({ title, items, active, onClick, highlightItem, icon }, ref) => {
   return (
     <div className="relative" ref={ref}>
-      <button className="text-white font-semibold cursor-pointer transition-transform duration-500 ease-in-out transform hover:text-orange-400 hover:scale-110" onClick={onClick}>
-        {title}
+      <button className="text-white font-semibold cursor-pointer transition-transform duration-500 ease-in-out transform hover:text-orange-400 hover:scale-110 flex items-center" onClick={onClick}>
+        {icon} {title}
       </button>
       {active && (
         <div className="absolute top-full left-0 mt-2 w-48 bg-white text-black rounded-lg shadow-lg z-50">
@@ -261,8 +261,36 @@ const Dropdown = React.forwardRef(({ title, items, active, onClick, highlightIte
             <NavLink
               key={idx}
               to={item.path}
-              className={`block px-4 py-2 ${item.label === highlightItem ? 'hover:bg-orange-400 hover:text-white rounded-lg shadow-lg' : 'hover:text-orange-400'}`}
+              className={`flex items-center px-4 py-2 ${item.label === highlightItem ? 'hover:bg-orange-400 hover:text-white rounded-lg shadow-lg' : 'hover:text-orange-400'}`}
             >
+              {item.label === "See All Destinations" && <MdLocationOn className="mr-2" />}
+              {item.label === "See All Hotels" && <MdHotel className="mr-2" />}
+              {item.label !== "See All Destinations" && item.label !== "See All Hotels" && icon}
+              {item.label}
+            </NavLink>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+});
+
+const FoodSpotsDropdown = React.forwardRef(({ title, items, active, onClick, highlightItem, icon }, ref) => {
+  return (
+    <div className="relative" ref={ref}>
+      <button className="text-white font-semibold cursor-pointer transition-transform duration-500 ease-in-out transform hover:text-orange-400 hover:scale-110 flex items-center" onClick={onClick}>
+        {icon} {title}
+      </button>
+      {active && (
+        <div className="absolute top-full left-0 mt-2 w-48 bg-white text-black rounded-lg shadow-lg z-50 grid grid-cols-1 md:grid-cols-2 gap-2 p-2">
+          {items.map((item, idx) => (
+            <NavLink
+              key={idx}
+              to={item.path}
+              className={`flex items-center justify-center px-4 py-2 text-center ${item.label === highlightItem ? 'hover:bg-orange-400 hover:text-white rounded-lg shadow-lg' : 'hover:text-orange-400'}`}
+            >
+              {item.label === "See All Food Spots" && <MdRestaurant className="mr-2" />}
+              {item.label !== "See All Food Spots" && icon}
               {item.label}
             </NavLink>
           ))}
