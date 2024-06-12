@@ -149,40 +149,56 @@ const Nav = () => {
       <div className={`flex-col md:flex md:flex-row md:items-center md:ml-40 gap-4 ${menuOpen ? 'absolute top-full left-0 right-0 mt-4 bg-black bg-opacity-50 p-4 rounded-xl z-50 flex' : 'hidden'} md:flex transition-all duration-300`}>
         <Dropdown
           title="Destinations"
-          items={{
-            "": ["Munnar", "Ooty", "Kodaikanal", "Kovalam", "Kanyakumari", "See All Destinations"]
-          }}
+          items={[
+            { label: "Munnar", path: "/munnar" },
+            { label: "Ooty", path: "/ooty" },
+            { label: "Kodaikanal", path: "/kodaikanal" },
+            { label: "Kovalam", path: "/kovalam" },
+            { label: "Kanyakumari", path: "/kanyakumari" },
+            { label: "See All Destinations", path: "/destinations" }
+          ]}
           active={activeDropdown === 1}
           onClick={() => toggleDropdown(1)}
           ref={(el) => (dropdownRefs.current[1] = el)}
+          highlightItem="See All Destinations"
         />
         <Dropdown
           title="Hotels"
-          items={{
-            "": ["Hotel 1", "Hotel 2", "Hotel 3","Hotel 4", "Hotel 5"],
-          }}
+          items={[
+            { label: "Elixir", path: "/elixir" },
+            { label: "Leela Kovalam", path: "/leela-kovalam" },
+            { label: "Raviz Kadavu", path: "/raviz-kadavu" },
+            { label: "Tulasi Village", path: "/tulasi-village" },
+            { label: "Vythiri", path: "/vythiri" },
+            { label: "See All Hotels", path: "/hotels"}
+
+          ]}
           active={activeDropdown === 2}
           onClick={() => toggleDropdown(2)}
           ref={(el) => (dropdownRefs.current[2] = el)}
+          highlightItem="See All Hotels"
         />
         <Dropdown
           title="Food Spots"
-          items={{
-            "": ["Spot 1", "Spot 2", "Spot 3","Spot 4", "Spot 5"],
-          }}
+          items={[
+            { label: "Airlines", path: "/airlines" },
+            { label: "Arabian Palace", path: "/arabian-palace" },
+            { label: "Delicia", path: "/delicia" },
+            { label: "Majlis", path: "/majlis" },
+            { label: "Paragon", path: "/paragon" },
+            {label: "See All Food Spots", path: "/food-spots"}
+          ]}
           active={activeDropdown === 3}
           onClick={() => toggleDropdown(3)}
           ref={(el) => (dropdownRefs.current[3] = el)}
+          highlightItem="See All Food Spots"
         />
-        <Dropdown
-          title="Community"
-          items={{
-            "": ["Event 1", "Event 2", "Event 3","Meetup 1", "Meetup 2"],
-          }}
-          active={activeDropdown === 4}
-          onClick={() => toggleDropdown(4)}
-          ref={(el) => (dropdownRefs.current[4] = el)}
-        />
+        <NavLink
+          to="/community"
+          className="text-white font-semibold cursor-pointer transition-transform duration-500 ease-in-out transform hover:text-orange-400 hover:scale-110"
+        >
+          Community
+        </NavLink>
       </div>
       <div className="hidden md:flex items-center ml-auto gap-4">
         <div className={`flex items-center transition-all duration-500 ease-in-out ${searchOpen ? 'border-b border-white' : ''}`}>
@@ -233,38 +249,22 @@ const Nav = () => {
   );
 };
 
-const Dropdown = React.forwardRef(({ title, items, active, onClick }, ref) => {
+const Dropdown = React.forwardRef(({ title, items, active, onClick, highlightItem }, ref) => {
   return (
     <div className="relative" ref={ref}>
-      <button
-        className={`nav-link relative font-bold transition duration-300 ease-in-out transform hover:text-orange-400 hover:scale-105 focus:outline-none ${active ? 'text-orange-400' : ''}`}
-        onClick={onClick}
-      >
+      <button className="text-white font-semibold cursor-pointer transition-transform duration-500 ease-in-out transform hover:text-orange-400 hover:scale-110" onClick={onClick}>
         {title}
       </button>
       {active && (
-        <div className="absolute mt-2 w-56 rounded-lg shadow-lg z-50 border border-gray-200 bg-white">
-          {Object.keys(items).map((category, idx) => (
-            <div key={idx} className="py-2">
-              {category && (
-                <h3 className="px-4 py-2 text-gray-900 font-semibold">{category}</h3>
-              )}
-              {items[category].map((item, index) => {
-                const itemSlug = item.toLowerCase().replace(/\s+/g, '-');
-                const linkTo = itemSlug === 'see-all-destinations' 
-                  ? '/destinations' 
-                  : `/${itemSlug}`;
-                return (
-                  <NavLink
-                    key={index}
-                    to={linkTo}
-                    className={`block px-4 py-2 text-gray-800 ${itemSlug === 'see-all-destinations' ? 'hover:bg-orange-400 hover:text-white' : 'hover:text-orange-400'}`}
-                  >
-                    {item}
-                  </NavLink>
-                );
-              })}
-            </div>
+        <div className="absolute top-full left-0 mt-2 w-48 bg-white text-black rounded-lg shadow-lg z-50">
+          {items.map((item, idx) => (
+            <NavLink
+              key={idx}
+              to={item.path}
+              className={`block px-4 py-2 ${item.label === highlightItem ? 'hover:bg-orange-400 hover:text-white rounded-lg shadow-lg' : 'hover:text-orange-400'}`}
+            >
+              {item.label}
+            </NavLink>
           ))}
         </div>
       )}

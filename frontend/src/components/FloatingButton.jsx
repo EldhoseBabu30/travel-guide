@@ -4,6 +4,7 @@ import { ArrowUpIcon } from '@heroicons/react/24/solid'; // Adjust the path for 
 
 const FloatingButton = () => {
   const handleScrollToTop = () => {
+    console.log("Button clicked!"); // Add this line for debugging
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
