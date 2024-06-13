@@ -163,21 +163,12 @@ const Nav = () => {
           ref={(el) => (dropdownRefs.current[1] = el)}
           highlightItem="See All Destinations"
         />
-        <Dropdown
-          title="Hotels"
-          items={[
-            { label: "Elixir", path: "/elixir" },
-            { label: "Leela Kovalam", path: "/leela-kovalam" },
-            { label: "Raviz Kadavu", path: "/raviz-kadavu" },
-            { label: "Tulasi Village", path: "/tulasi-village" },
-            { label: "Vythiri", path: "/vythiri" },
-            { label: "See All Hotels", path: "/hotels"}
-          ]}
-          active={activeDropdown === 2}
-          onClick={() => toggleDropdown(2)}
-          ref={(el) => (dropdownRefs.current[2] = el)}
-          highlightItem="See All Hotels"
-        />
+       <NavLink
+          to="/hotels"
+          className="text-white font-semibold cursor-pointer transition-transform duration-500 ease-in-out transform hover:text-orange-400 hover:scale-110"
+        >
+          Hotels
+        </NavLink>
         <FoodSpotsDropdown
           title="Food Spots"
           items={[

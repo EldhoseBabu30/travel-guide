@@ -1,3 +1,5 @@
+import { Circle } from '@react-google-maps/api';
+
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: 'class', // or 'media' for OS-level preference
@@ -16,6 +18,9 @@ export default {
           '50%': { color: '#fb923c' }, // Tailwind's orange-400 color
         },
       },
+      listStyleType: {
+        circle:'circle'
+      }
     },
   },
   plugins: [],
