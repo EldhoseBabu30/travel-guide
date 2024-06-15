@@ -145,50 +145,60 @@ const Ooty = () => {
     <div className="font-sans">
       {/* Header Section */}
       <header className="relative h-screen overflow-hidden text-white text-center">
-        <div className="relative h-full">
-          <video autoPlay loop muted className="absolute w-full h-full object-cover">
-            <source src={video} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-          <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-30"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
-            <div className="inline-block relative">
-              <h1 className="text-6xl font-bold mb-4">Travel to Ooty</h1>
-              <p className="text-xl mb-6">Whatever you want, our experts can make it happen.</p>
-              <div className="flex justify-center gap-4">
-                <button className="bg-orange-400 hover:bg-orange-500 text-white py-2 px-4 rounded-lg">Craft your trip</button>
-                <button className="bg-gray-600 hover:bg-gray-800 bg-opacity-70 text-white py-2 px-4 rounded-lg">How it works</button>
-              </div>
-              <img src={mapOutline} alt="Map Outline" className="absolute top-0 left-full w-100 ml-4" />
-            </div>
-          </div>
-          <div className="absolute bottom-0 left-0 w-full text-center bg-black bg-opacity-60 p-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 text-white">
-              <div className="flex flex-col items-center border-r border-gray-400">
-                <p className="font-bold">Best time to visit:</p>
-                <p>October to June</p>
-              </div>
-              <div className="flex flex-col items-center border-r border-gray-400">
-                <p className="font-bold">Nearest City:</p>
-                <p>Coimbatore</p>
-              </div>
-              <div className="flex flex-col items-center border-r border-gray-400">
-                <p className="font-bold">Population:</p>
-                <p>~88,000</p>
-              </div>
-              <div className="flex flex-col items-center border-r border-gray-400">
-                <p className="font-bold">Area:</p>
-                <p> 36 SQ KM</p>
-              </div>
-              <div className="flex flex-col items-center">
-                <p className="font-bold">Languages:</p>
-                <p>Tamil, English</p>
-              </div>
-            </div>
-          </div>
-
+  <div className="relative h-full">
+    <video autoPlay loop muted className="absolute w-full h-full object-cover">
+      <source src={video} type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+    <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-30"></div>
+    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
+      <div className="inline-block relative">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 mx-2">Travel to Ooty</h1>
+        <p className="text-md sm:text-lg md:text-xl mb-6 mx-2 sm:whitespace-pre-line">Whatever you want, our experts can make it happen.</p>
+        <div className="flex justify-center gap-4 flex-wrap sm:flex-nowrap">
+          <button className="bg-orange-400 hover:bg-orange-500 text-white py-2 px-4 rounded-lg">Craft your trip</button>
+          <button className="bg-gray-600 hover:bg-gray-800 bg-opacity-70 text-white py-2 px-4 rounded-lg">How it works</button>
         </div>
-      </header>
+        <img src={mapOutline} alt="Map Outline" className="absolute top-0 left-full w-100 ml-4 hidden md:block" />
+      </div>
+    </div>
+    <div className="absolute bottom-0 left-0 w-full text-center bg-black bg-opacity-60 p-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 text-white text-xs sm:text-sm md:text-base">
+        <div className="flex flex-col items-center border-r border-gray-400">
+          <p className="font-bold">Best time to visit:</p>
+          <p>October to June</p>
+        </div>
+        <div className="flex flex-col items-center sm:border-r-0 md:border-r border-gray-400">
+          <p className="font-bold">Nearest City:</p>
+          <p>Coimbatore</p>
+        </div>
+        <div className="flex flex-col items-center border-r border-gray-400">
+          <p className="font-bold">Population:</p>
+          <p>~88000</p>
+        </div>
+        <div className="flex flex-col items-center sm:border-r-0 md:border-r border-gray-400">
+          <p className="font-bold">Area:</p>
+          <p> 36 SQ KM</p>
+        </div>
+        <div className="flex flex-col items-center sm:border-none" id="languages-section">
+          <p className="font-bold">Languages:</p>
+          <p>Tamil, English</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<style jsx>{`
+  @media (max-width: 640px) {
+    #languages-section {
+      grid-column: span 2 / span 2;
+    }
+    .sm\\:border-r-0 {
+      border-right: none;
+    }
+  }
+`}</style>
 
 
 
