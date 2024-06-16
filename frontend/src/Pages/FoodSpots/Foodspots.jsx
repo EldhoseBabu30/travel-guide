@@ -11,6 +11,8 @@ import image2 from '../../assets/munnar1.jpg';
 import image3 from '../../assets/kodaikanal.jpg';
 
 const libraries = ['places'];
+
+
 const mapContainerStyle = {
   height: "100vh",
   width: "100%"
@@ -40,26 +42,33 @@ const handleRender = (node, { value }) => (
   </Tooltip>
 );
 
+const marks = {
+  0: '₹0',
+  2500: '₹2500',
+  5000: '₹5000',
+  7500: '₹7500',
+  10000: '₹10000'
+};
+
 const App = () => {
   const [selectedSpot, setSelectedSpot] = useState(null);
   const [price, setPrice] = useState([0, 10000]);
+  const [searchText, setSearchText] = useState('');
+  const [filteredSpots, setFilteredSpots] = useState(spots);
   const mapRef = useRef();
 
   const handlePriceChange = (value) => {
     setPrice(value);
   };
 
-  const nextSpot = () => {
-    const currentIndex = spots.findIndex(spot => spot.id === selectedSpot?.id);
-    const nextIndex = (currentIndex + 1) % spots.length;
-    setSelectedSpot(spots[nextIndex]);
+  const handleSearch = (event) => {
+    const text = event.target.value.toLowerCase();
+    setSearchText(text);
+    const filtered = spots.filter(spot => spot.name.toLowerCase().includes(text));
+    setFilteredSpots(filtered);
   };
 
-  const prevSpot = () => {
-    const currentIndex = spots.findIndex(spot => spot.id === selectedSpot?.id);
-    const prevIndex = (currentIndex - 1 + spots.length) % spots.length;
-    setSelectedSpot(spots[prevIndex]);
-  };
+
 
   useEffect(() => {
     if (selectedSpot) {
@@ -68,42 +77,55 @@ const App = () => {
   }, [selectedSpot]);
 
   return (
-    <div className="flex">
-      <div className="w-1/3 p-4 bg-white shadow-lg">
-        <input type="text" placeholder="Search" className="w-full p-2 border rounded mb-4" />
+    <div className="flex pt-28 justify-center">
+      <div className="w-4/5 p-4 bg-white shadow-lg rounded-lg border border-gray-300">
+        <input
+          type="text"
+          placeholder="Search"
+          className="w-full p-2 border rounded mb-4"
+          value={searchText}
+          onChange={handleSearch}
+        />
         <div className="mb-4">
-          <label>Price Range</label>
+          <label>Price Range: ₹{price[0]} - ₹{price[1]}</label>
           <Slider
             min={0}
             max={10000}
             value={price}
             onChange={handlePriceChange}
+            marks={marks}
             handleRender={handleRender}
             className="w-full"
           />
         </div>
         <div>
-          {spots.map(spot => (
-            <div
-              key={spot.id}
-              className={`p-4 mb-4 border rounded shadow ${selectedSpot?.id === spot.id ? 'bg-gray-200' : ''}`}
-              onClick={() => setSelectedSpot(spot)}
-            >
-              <div className="flex justify-between items-center">
-                <div>
-                  <h2 className="text-lg font-bold">{spot.name}</h2>
-                  <p>Rating: {spot.rating}</p>
-                  <p>Location: {spot.place}</p>
-                  <p>Open: {spot.open} - Close: {spot.close}</p>
-                  <p>Facilities: {spot.facilities}</p>
+          {filteredSpots.length > 0 ? (
+            filteredSpots.map(spot => (
+              <div
+                key={spot.id}
+                className={`p-4 mb-4 rounded-lg shadow-md ${selectedSpot?.id === spot.id ? 'bg-gray-200' : 'hover:bg-gray-100'}`}
+                onClick={() => setSelectedSpot(spot)}
+              >
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h2 className="text-lg font-bold">{spot.name}</h2>
+                    <p>Rating: {spot.rating}</p>
+                    <p>Location: {spot.place}</p>
+                    <p>Open: {spot.open} - Close: {spot.close}</p>
+                    <p>Facilities: {spot.facilities}</p>
+                  </div>
+                  <img src={spot.image} alt={spot.name} className="w-16 h-16 object-cover rounded ml-4" />
                 </div>
-                <img src={spot.image} alt={spot.name} className="w-16 h-16 object-cover rounded ml-4" />
               </div>
+            ))
+          ) : (
+            <div className="p-4 mb-4 rounded-lg shadow-md text-center text-gray-600">
+              No hotels found.
             </div>
-          ))}
+          )}
         </div>
       </div>
-      <div className="w-2/3 relative">
+      <div className="w-2/3 relative ml-4">
         <LoadScript googleMapsApiKey="AIzaSyC35NX4I4MICHrydn6-sJKA2tOYv6m2Bxc" libraries={libraries}>
           <GoogleMap
             mapContainerStyle={mapContainerStyle}
@@ -111,7 +133,7 @@ const App = () => {
             center={center}
             onLoad={map => mapRef.current = map}
           >
-            {spots.map(spot => (
+            {filteredSpots.map(spot => (
               <Marker
                 key={spot.id}
                 position={spot.position}
@@ -120,12 +142,12 @@ const App = () => {
             ))}
           </GoogleMap>
         </LoadScript>
-        <div className="absolute top-1/2 left-2 transform -translate-y-1/2">
+        {/* <div className="absolute top-1/2 left-2 transform -translate-y-1/2">
           <button className="bg-white p-2 rounded" onClick={prevSpot}>‹</button>
         </div>
         <div className="absolute top-1/2 right-2 transform -translate-y-1/2">
           <button className="bg-white p-2 rounded" onClick={nextSpot}>›</button>
-        </div>
+        </div> */}
       </div>
     </div>
   );
