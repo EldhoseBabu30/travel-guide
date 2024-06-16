@@ -10,6 +10,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+// import UserBadgeSystem from './Additional Features/UserBadgeSystem';
+import EventCreation from './Additional Features/EventCreation';
 
 // Fix for leaflet's icon issue with webpack
 delete L.Icon.Default.prototype._getIconUrl;
@@ -69,12 +71,18 @@ const Community = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <SuggestionForm />
           <div className="col-span-1 md:col-span-2">
+            
             <MapWithSpots />
             <MessageBox />
           </div>
           <SnapUpload />
+          <EventCreation/>
+
           <PopularPackages />
+
         </div>
+        {/* <UserBadgeSystem/> */}
+        
         <AIChatBot />
         <ToastContainer />
       </div>
