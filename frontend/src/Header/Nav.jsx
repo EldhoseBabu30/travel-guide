@@ -181,6 +181,12 @@ const Nav = () => {
         >
           Community
         </NavLink>
+        <NavLink
+          to="/travel-planner"
+          className="text-white font-semibold cursor-pointer transition-transform duration-500 ease-in-out transform hover:text-orange-400 hover:scale-110"
+        >
+          Travel Planner
+        </NavLink>
       </div>
       <div className="hidden md:flex items-center ml-auto gap-4">
         <div className={`flex items-center transition-all duration-500 ease-in-out ${searchOpen ? 'border-b border-white' : ''}`}>

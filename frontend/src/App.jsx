@@ -16,6 +16,7 @@ import FloatingButton from './components/FloatingButton'
 import HotelMap from './Pages/Hotel/HotelListings'
 import FoodSpots from './Pages/FoodSpots/Foodspots'
 import Community from './Pages/Community/Community'
+import AITravelPlanner from './components/AI Travel Planner/AITravelPlanner'
 
 
 function App() {
@@ -40,6 +41,7 @@ function App() {
           <Route path="/hotels" element={<HotelMap />} />
           <Route path="/food-spots" element={<FoodSpots />} />
           <Route path="/community" element={<Community />} />
+          <Route path="/travel-planner" element={<AITravelPlanner />} />
 
 
 

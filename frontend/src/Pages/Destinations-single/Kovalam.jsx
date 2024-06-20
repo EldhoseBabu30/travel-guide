@@ -152,13 +152,13 @@ const Kovalam = () => {
     <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-30"></div>
     <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
       <div className="inline-block relative">
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 mx-2">Travel to Ooty</h1>
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 mx-2">Travel to Kovalam</h1>
         <p className="text-md sm:text-lg md:text-xl mb-6 mx-2 sm:whitespace-pre-line">Whatever you want, our experts can make it happen.</p>
         <div className="flex justify-center gap-4 flex-wrap sm:flex-nowrap">
           <button className="bg-orange-400 hover:bg-orange-500 text-white py-2 px-4 rounded-lg">Craft your trip</button>
           <button className="bg-gray-600 hover:bg-gray-800 bg-opacity-70 text-white py-2 px-4 rounded-lg">How it works</button>
         </div>
-        <img src={mapOutline} alt="Map Outline" className="absolute top-0 left-full w-100 ml-4 hidden md:block" />
+        <img src={mapOutline} alt="Map Outline" className="absolute top-0 left-full w-[60%] ml-4 hidden md:block" />
       </div>
     </div>
     <div className="absolute bottom-0 left-0 w-full text-center bg-black bg-opacity-60 p-4">
