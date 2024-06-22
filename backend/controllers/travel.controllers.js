@@ -1,25 +1,37 @@
-import { generateTravelPlan } from '../utils/GeminiAiModal.js';
+// controllers/generateItineraryController.js
 
-export const travelPlan = async (req, res, next) => {
+import axios from "axios";
+
+const travelController = async (req, res) => {
+  const { destination, duration, preferences } = req.body;
+
+  // Replace with your actual Google Gemini API endpoint and key
+  const googleGeminiApiUrl = 'https://api.google.com/gemini/plan';
+  const apiKey = 'AIzaSyBcqgvhFPrI5WlRxVbRZpmqki34rbc0lq8';
+
   try {
-    const { destination, dates, activities, people, travelWith } = req.body;
+    const response = await axios.post(
+      googleGeminiApiUrl,
+      {
+        destination,
+        duration,
+        preferences
+      },
+      {
+        headers: {
+          'Authorization': `Bearer ${AIzaSyBcqgvhFPrI5WlRxVbRZpmqki34rbc0lq8}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
 
-    // Call Gemini AI service to generate travel plan based on user input
-    const recommendations = await generateTravelPlan(destination, dates, activities, people, travelWith);
-
-    // Construct the travel plan response
-    const travelPlan = {
-      destination,
-      dates,
-      activities,
-      people,
-      travelWith,
-      recommendations,
-    };
-
-    res.json(travelPlan);
+    res.json(response.data);
   } catch (error) {
-    console.error('Error details:', error);
-    next(error); // Pass error to error handling middleware
+    console.error('Error generating itinerary:', error);
+    res.status(500).json({ error: 'Failed to generate itinerary' });
   }
+};
+
+module.exports = {
+  travelController
 };

@@ -99,19 +99,19 @@ const AITravelPlanner = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 py-6">
-      <div className="bg-white p-6 rounded shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-4">AI Travel Planner</h1>
+    <div className="min-h-screen flex items-center justify-center mt-12">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl">
+        <h1 className="text-4xl font-bold mb-6 text-center text-blue-700">AI Travel Planner</h1>
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
+          <div className="mb-6">
             {destinations.map((destination, index) => (
-              <div key={index} className="relative flex items-center mb-2">
+              <div key={index} className="relative flex items-center mb-4">
                 <input
                   type="text"
                   placeholder="Select a city"
                   value={destination}
                   onChange={(e) => handleDestinationChange(index, e.target.value)}
-                  className="w-full px-3 py-2 border rounded-md"
+                  className="w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
                 {index !== 0 && (
@@ -142,12 +142,12 @@ const AITravelPlanner = () => {
             <button
               type="button"
               onClick={addDestination}
-              className="text-blue-500"
+              className="text-blue-500 hover:text-blue-700 transition duration-200"
             >
               + Add destination
             </button>
           </div>
-          <div className="mb-4">
+          <div className="mb-6">
             <label htmlFor="dates" className="block text-gray-700 font-medium mb-2">
               Select Dates
             </label>
@@ -157,18 +157,18 @@ const AITravelPlanner = () => {
               name="dates"
               value={formData.dates}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-md"
+              className="w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
-          <div className="mb-4">
+          <div className="mb-6">
             <label className="block text-gray-700 font-medium mb-2">Select Activities</label>
             <div className="flex flex-wrap">
               {['Kid Friendly', 'Museums', 'Shopping', 'Historical', 'Outdoor Adventures', 'Art & Cultural', 'Amusement Parks'].map((activity) => (
                 <button
                   type="button"
                   key={activity}
-                  className={`px-3 py-2 m-1 border rounded-md ${formData.activities.includes(activity) ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
+                  className={`px-4 py-2 m-1 border rounded-md shadow-sm transition duration-200 ${formData.activities.includes(activity) ? 'bg-green-500 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
                   onClick={() => handleActivityChange(activity)}
                 >
                   {activity}
@@ -176,7 +176,7 @@ const AITravelPlanner = () => {
               ))}
             </div>
           </div>
-          <div className="mb-4">
+          <div className="mb-6">
             <label htmlFor="people" className="block text-gray-700 font-medium mb-2">
               How Many People
             </label>
@@ -186,19 +186,19 @@ const AITravelPlanner = () => {
               name="people"
               value={formData.people}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-md"
+              className="w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               min="1"
               required
             />
           </div>
-          <div className="mb-4">
+          <div className="mb-6">
             <label className="block text-gray-700 font-medium mb-2">Who is Traveling with You?</label>
             <div className="flex">
               {['Couple', 'Friends', 'Family'].map((option) => (
                 <button
                   type="button"
                   key={option}
-                  className={`px-3 py-2 m-1 border rounded-md ${formData.travelWith === option ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
+                  className={`px-4 py-2 m-1 border rounded-md shadow-sm transition duration-200 ${formData.travelWith === option ? 'bg-green-500 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
                   onClick={() => setFormData({ ...formData, travelWith: option })}
                 >
                   {option}
@@ -208,7 +208,7 @@ const AITravelPlanner = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition duration-200"
+            className="w-full bg-blue-500 text-white py-3 rounded-md hover:bg-blue-600 transition duration-200"
             disabled={loading}
           >
             {loading ? 'Planning...' : 'Plan My Trip'}
