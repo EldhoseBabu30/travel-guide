@@ -18,9 +18,11 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: 'http://127.0.0.1:5173',
-  credentials: true,
+  origin: ['http://localhost:5173', 'http://127.0.0.1:5173'], // Allow requests from your frontend's origins
+  credentials: true, // Enable credentials (cookies, authorization headers, etc.)
 }));
+
+
 
 app.listen(3000, () => {
   console.log("Server running on port 3000");
@@ -28,7 +30,7 @@ app.listen(3000, () => {
 
 app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter);
-app.use('/api/travel-planner', travelPlannerRouter);
+app.use('/api/plan', travelPlannerRouter);
 
 // Error-handling middleware
 app.use((err, req, res, next) => {

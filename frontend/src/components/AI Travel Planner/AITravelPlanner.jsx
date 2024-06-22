@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-const TravelPlanner = () => {
+const AITravelPlanner = () => {
   const [formData, setFormData] = useState({
     destination: '',
     dates: '',
@@ -9,10 +10,33 @@ const TravelPlanner = () => {
     people: 1,
     travelWith: '',
   });
-  const [destinations, setDestinations] = useState(['']); // To handle multiple destinations
-  const [response, setResponse] = useState(null);
+  const [destinations, setDestinations] = useState(['']);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [suggestions, setSuggestions] = useState([]);
+  const navigate = useNavigate();
+
+  // Mock data for cities in India
+  const citiesInIndia = [
+    'Mumbai',
+    'Delhi',
+    'Bangalore',
+    'Hyderabad',
+    'Ahmedabad',
+    'Chennai',
+    'Kolkata',
+    'Surat',
+    'Pune',
+    'Jaipur',
+    // Add more cities as needed
+  ];
+
+  // Function to filter cities based on user input
+  const filterCities = (inputValue) => {
+    return citiesInIndia.filter((city) =>
+      city.toLowerCase().includes(inputValue.toLowerCase())
+    );
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -32,6 +56,17 @@ const TravelPlanner = () => {
     newDestinations[index] = value;
     setDestinations(newDestinations);
     setFormData({ ...formData, destination: newDestinations.join(', ') });
+
+    // Update state with filtered suggestions
+    setSuggestions(filterCities(value));
+  };
+
+  const handleSuggestionClick = (index, suggestion) => {
+    const newDestinations = [...destinations];
+    newDestinations[index] = suggestion;
+    setDestinations(newDestinations);
+    setFormData({ ...formData, destination: newDestinations.join(', ') });
+    setSuggestions([]);
   };
 
   const addDestination = () => {
@@ -50,13 +85,14 @@ const TravelPlanner = () => {
     setError(null);
 
     try {
-      const res = await axios.post('http://localhost:3000/api/travel-planner', formData, {
+      const res = await axios.post('http://localhost:3000/api/plan', formData, {
         withCredentials: true,
       });
-      setResponse(res.data);
+
+      navigate('/plan', { state: { travelPlan: res.data } });
     } catch (err) {
-      console.error('Error details:', err); // Log the error details
-      setError('Failed to fetch travel plan. Please try again.');
+      console.error('Error details:', err);
+      setError('Failed to generate travel plan. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -69,7 +105,7 @@ const TravelPlanner = () => {
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             {destinations.map((destination, index) => (
-              <div key={index} className="flex items-center mb-2">
+              <div key={index} className="relative flex items-center mb-2">
                 <input
                   type="text"
                   placeholder="Select a city"
@@ -86,6 +122,20 @@ const TravelPlanner = () => {
                   >
                     &times;
                   </button>
+                )}
+                {/* Display suggestions */}
+                {index === 0 && suggestions.length > 0 && (
+                  <ul className="absolute bg-white border rounded-md shadow-md mt-1 w-full left-0 z-10">
+                    {suggestions.map((suggestion, idx) => (
+                      <li
+                        key={idx}
+                        className="px-3 py-2 cursor-pointer hover:bg-gray-200"
+                        onClick={() => handleSuggestionClick(index, suggestion)}
+                      >
+                        {suggestion}
+                      </li>
+                    ))}
+                  </ul>
                 )}
               </div>
             ))}
@@ -165,15 +215,9 @@ const TravelPlanner = () => {
           </button>
         </form>
         {error && <p className="text-red-500 mt-4">{error}</p>}
-        {response && (
-          <div className="mt-6">
-            <h2 className="text-xl font-semibold">Your Travel Plan</h2>
-            <pre className="mt-4 p-4 bg-gray-100 rounded">{JSON.stringify(response, null, 2)}</pre>
-          </div>
-        )}
       </div>
     </div>
   );
 };
 
-export default TravelPlanner;
+export default AITravelPlanner;
