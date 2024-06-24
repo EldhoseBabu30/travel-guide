@@ -85,10 +85,7 @@ const AITravelPlanner = () => {
     setError(null);
 
     try {
-      const res = await axios.post('http://localhost:3000/api/plan', formData, {
-        withCredentials: true,
-      });
-
+      const res = await axios.post('http://localhost:3000/api/trips/plan', formData);
       navigate('/plan', { state: { travelPlan: res.data } });
     } catch (err) {
       console.error('Error details:', err);
@@ -123,7 +120,6 @@ const AITravelPlanner = () => {
                     &times;
                   </button>
                 )}
-                {/* Display suggestions */}
                 {index === 0 && suggestions.length > 0 && (
                   <ul className="absolute bg-white border rounded-md shadow-md mt-1 w-full left-0 z-10">
                     {suggestions.map((suggestion, idx) => (

@@ -1,8 +1,10 @@
 import express from 'express';
-import { travelPlan } from '../controllers/travel.controllers.js'
+import { getTrips, createTrip, planTrip } from '../controllers/travel.controllers.js'
 
 const router = express.Router();
 
-router.post('/plan', travelPlan);
+router.get('/', getTrips);
+router.post('/', createTrip);
+router.post('/plan', planTrip);
 
 export default router;

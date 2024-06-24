@@ -1,37 +1,31 @@
-// controllers/generateItineraryController.js
+import Trip from '../models/trip.model.js'
+import { generateTravelPlan } from '../services/geminiService.js';
 
-import axios from "axios";
-
-const travelController = async (req, res) => {
-  const { destination, duration, preferences } = req.body;
-
-  // Replace with your actual Google Gemini API endpoint and key
-  const googleGeminiApiUrl = 'https://api.google.com/gemini/plan';
-  const apiKey = 'AIzaSyBcqgvhFPrI5WlRxVbRZpmqki34rbc0lq8';
-
-  try {
-    const response = await axios.post(
-      googleGeminiApiUrl,
-      {
-        destination,
-        duration,
-        preferences
-      },
-      {
-        headers: {
-          'Authorization': `Bearer ${AIzaSyBcqgvhFPrI5WlRxVbRZpmqki34rbc0lq8}`,
-          'Content-Type': 'application/json'
-        }
-      }
-    );
-
-    res.json(response.data);
-  } catch (error) {
-    console.error('Error generating itinerary:', error);
-    res.status(500).json({ error: 'Failed to generate itinerary' });
-  }
+export const getTrips = async (req, res) => {
+    try {
+        const trips = await Trip.find();
+        res.json(trips);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
 };
 
-module.exports = {
-  travelController
+export const createTrip = async (req, res) => {
+    const trip = new Trip(req.body);
+    try {
+        const newTrip = await trip.save();
+        res.status(201).json(newTrip);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+};
+
+export const planTrip = async (req, res) => {
+    const { destination, dates, activities, people, travelWith } = req.body;
+    try {
+        const itinerary = await generateTravelPlan(destination, dates, activities, people, travelWith);
+        res.json(itinerary);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
 };
