@@ -22,12 +22,13 @@ import BudgetSelection from './components/AI Travel Planner/BudgetSelection';
 import HotelSelection from './components/AI Travel Planner/HotelSelection';
 import FoodSpotsPlanner from './components/AI Travel Planner/FoodSpots';
 import Itinerary from './components/AI Travel Planner/Itinerary';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import Suggestions from './components/AI Travel Planner/Suggestions';
+// import { LocalizationProvider } from '@mui/x-date-pickers';
+// import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 function App() {
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
+    // <LocalizationProvider dateAdapter={AdapterDateFns}>
       <BrowserRouter>
         <Nav />
         <Routes>
@@ -51,10 +52,12 @@ function App() {
           <Route path="/hotel-selection" element={<HotelSelection />} />
           <Route path="/food-spots-planner" element={<FoodSpotsPlanner />} />
           <Route path="/itinerary" element={<Itinerary />} />
+          <Route path="/suggestion" element={<Suggestions />} />
+
         </Routes>
         <FloatingButton />
       </BrowserRouter>
-    </LocalizationProvider>
+    // </LocalizationProvider>
   );
 }
 
