@@ -22,7 +22,7 @@ import BudgetSelection from './components/AI Travel Planner/BudgetSelection';
 import HotelSelection from './components/AI Travel Planner/HotelSelection';
 import FoodSpotsPlanner from './components/AI Travel Planner/FoodSpots';
 import Itinerary from './components/AI Travel Planner/Itinerary';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 function App() {

@@ -114,9 +114,7 @@ const Suggestions = () => {
           ))}
         </Grid>
         <Grid item xs={12} md={6}>
-          <Paper elevation={3} sx={{ height: '100%' }}>
-            <MapboxMap center={position} markers={markers} polyline={[]} />
-          </Paper>
+          <MapboxMap center={position} markers={markers} polyline={[]} />
         </Grid>
       </Grid>
       <Box sx={{ mt: 4, textAlign: 'center' }}>
