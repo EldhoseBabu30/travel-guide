@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Container, Typography, Card, CardContent, CardMedia, Button, Grid } from '@mui/material';
+import { Box, Container, Typography, Card, CardContent, CardMedia, Button, Grid, Paper } from '@mui/material';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import MapboxMap from './MapboxMap';
@@ -59,7 +59,7 @@ const Suggestions = () => {
 
   return (
     <Container>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" gutterBottom align="center">
         Suggestions for {destination}
       </Typography>
       <Grid container spacing={4}>
@@ -114,7 +114,9 @@ const Suggestions = () => {
           ))}
         </Grid>
         <Grid item xs={12} md={6}>
-          <MapboxMap center={position} markers={markers} polyline={[]} />
+          <Paper elevation={3} sx={{ height: '100%' }}>
+            <MapboxMap center={position} markers={markers} polyline={[]} />
+          </Paper>
         </Grid>
       </Grid>
       <Box sx={{ mt: 4, textAlign: 'center' }}>

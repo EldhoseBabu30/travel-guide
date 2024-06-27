@@ -1,63 +1,97 @@
 import React from 'react';
-import { Container, Typography, Card, CardContent, CardMedia, Button, Grid } from '@mui/material';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Box, Button, Container, Typography, Card, CardContent, Grid } from '@mui/material';
+import { useNavigate, useLocation } from 'react-router-dom';
 import MapboxMap from './MapboxMap';
 
-const Finalize = () => {
+const Itinerary = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { state } = location;
-  const { hotels, foodSpots, position } = state || {};
+  const { selectedHotel, selectedFoodSpots } = state;
 
-  const itinerary = [...hotels, ...foodSpots];
-
-  const handleGoBack = () => {
-    navigate('/plan');
+  const handleDownloadPDF = () => {
+    // Implement PDF generation logic here
   };
 
-  const markers = itinerary.map(item => ({ name: item.name, coordinates: item.coordinates }));
-  const polyline = itinerary.map(item => item.coordinates);
+  const handleShare = () => {
+    // Implement sharing logic here
+  };
 
   return (
-    <Container>
-      <Typography variant="h4" gutterBottom>
-        Finalize Itinerary
-      </Typography>
-      <Grid container spacing={4}>
-        <Grid item xs={12} md={6}>
-          {itinerary.map((item, index) => (
-            <Card key={index} sx={{ mb: 2 }}>
-              <CardMedia
-                component="img"
-                height="140"
-                image={item.image}
-                alt={item.name}
-              />
+    <Container maxWidth="lg">
+      <Box sx={{ mt: 4 }}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          Your Trip Itinerary
+        </Typography>
+        <Grid container spacing={4}>
+          <Grid item xs={12} md={8}>
+            <Card sx={{ mb: 2 }}>
               <CardContent>
                 <Typography variant="h5" component="div">
-                  {item.name}
+                  Hotel
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {item.description}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Price: ₹{item.price}
+                  {selectedHotel.name}
                 </Typography>
               </CardContent>
             </Card>
-          ))}
+            <Card sx={{ mb: 2 }}>
+              <CardContent>
+                <Typography variant="h5" component="div">
+                  Breakfast Spot
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {selectedFoodSpots.breakfast.name}
+                </Typography>
+              </CardContent>
+            </Card>
+            <Card sx={{ mb: 2 }}>
+              <CardContent>
+                <Typography variant="h5" component="div">
+                  Lunch Spot
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {selectedFoodSpots.lunch.name}
+                </Typography>
+              </CardContent>
+            </Card>
+            <Card sx={{ mb: 2 }}>
+              <CardContent>
+                <Typography variant="h5" component="div">
+                  Dinner Spot
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {selectedFoodSpots.dinner.name}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <MapboxMap coordinates={selectedHotel.coordinates} />
+            <MapboxMap coordinates={selectedFoodSpots.breakfast.coordinates} />
+            <MapboxMap coordinates={selectedFoodSpots.lunch.coordinates} />
+            <MapboxMap coordinates={selectedFoodSpots.dinner.coordinates} />
+          </Grid>
         </Grid>
-        <Grid item xs={12} md={6}>
-          <MapboxMap center={position} markers={markers} polyline={polyline} />
-        </Grid>
-      </Grid>
-      <Box sx={{ mt: 4, textAlign: 'center' }}>
-        <Button variant="contained" color="secondary" onClick={handleGoBack}>
-          Go Back to Planning
-        </Button>
+        <Box sx={{ mt: 4, display: 'flex', justifyContent: 'space-between' }}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleDownloadPDF}
+          >
+            Download PDF
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleShare}
+          >
+            Share
+          </Button>
+        </Box>
       </Box>
     </Container>
   );
 };
 
-export default Finalize;
+export default Itinerary;

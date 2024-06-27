@@ -1,13 +1,28 @@
 import React from 'react';
-import TripForm from './TripForm';
+import { Container, Button, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import Lottie from 'react-lottie';
+// import travelAnimation from './path/to/travel-animation.json';
 
 const HomePage = () => {
+  const navigate = useNavigate();
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: travelAnimation,
+    rendererSettings: {
+      preserveAspectRatio: 'xMidYMid slice'
+    }
+  };
+
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold">Welcome to TripPlanner AI</h1>
-      <p>Plan your perfect trip with our AI-powered trip planner.</p>
-      <TripForm />
-    </div>
+    <Container maxWidth="sm" sx={{ textAlign: 'center', mt: 4 }}>
+      <Lottie options={defaultOptions} height={400} width={400} />
+      <Typography variant="h4" gutterBottom>Welcome to TripPlanner AI</Typography>
+      <Button variant="contained" color="primary" onClick={() => navigate('/trip-planning')}>
+        Plan a Trip
+      </Button>
+    </Container>
   );
 };
 
