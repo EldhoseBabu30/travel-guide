@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import MapboxMap from './MapboxMap';
 import axios from 'axios';
 
-const FoodSpots = () => {
+const FoodSpot = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { state } = location;
@@ -118,4 +118,4 @@ const FoodSpots = () => {
   );
 };
 
-export default FoodSpots;
+export default FoodSpot;

@@ -32,7 +32,7 @@ const HotelSelection = () => {
   };
 
   const handleSubmit = () => {
-    navigate('/food-spots', { state: { ...state, selectedHotel } });
+    navigate('/foodspots', { state: { ...state, selectedHotel } });
   };
 
   return (

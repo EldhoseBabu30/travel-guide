@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -10,7 +10,6 @@ import {
   Select,
   InputLabel,
   FormControl,
-  Slider,
   Snackbar,
   Paper,
 } from '@mui/material';
@@ -33,6 +32,16 @@ const TripForm = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
 
+  useEffect(() => {
+    if (formData.startDate && formData.endDate) {
+      const start = new Date(formData.startDate);
+      const end = new Date(formData.endDate);
+      const timeDiff = Math.abs(end - start);
+      const dayDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+      setFormData({ ...formData, days: dayDiff });
+    }
+  }, [formData.startDate, formData.endDate]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -42,10 +51,6 @@ const TripForm = () => {
     setFormData({ ...formData, [field]: date });
   };
 
-  const handleDaysChange = (event, newValue) => {
-    setFormData({ ...formData, days: newValue });
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!formData.startDate || !formData.endDate) {
@@ -53,7 +58,7 @@ const TripForm = () => {
       setSnackbarOpen(true);
       return;
     }
-    navigate('/suggestions', { state: formData });
+    navigate('/trip-home', { state: formData });
   };
 
   const handleSnackbarClose = () => {
@@ -106,21 +111,17 @@ const TripForm = () => {
                 )}
               />
             </LocalizationProvider>
-            <Box className="mt-4">
-              <Typography gutterBottom className="mb-2">
-                Days
-              </Typography>
-              <Slider
-                value={formData.days}
-                onChange={handleDaysChange}
-                step={1}
-                marks
-                min={1}
-                max={30}
-                valueLabelDisplay="auto"
-                className="mb-4"
-              />
-            </Box>
+            <TextField
+              fullWidth
+              label="Days"
+              name="days"
+              value={formData.days}
+              margin="normal"
+              InputProps={{
+                readOnly: true,
+              }}
+              className="mb-4"
+            />
             <TextField
               fullWidth
               label="People"
@@ -167,7 +168,9 @@ const TripForm = () => {
           message={snackbarMessage}
         />
       </Paper>
+     
     </Container>
+    
   );
 };
 

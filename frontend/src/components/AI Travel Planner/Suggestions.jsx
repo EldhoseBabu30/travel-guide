@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import MapboxMap from './MapboxMap';
 
+
 const Suggestions = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -61,7 +62,7 @@ const Suggestions = () => {
         Suggestions for {destination}
       </Typography>
       <Grid container spacing={4}>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={6} className="relative">
           <Typography variant="h6" gutterBottom className="mb-4">
             Hotels
           </Typography>
@@ -117,8 +118,10 @@ const Suggestions = () => {
             </div>
           ))}
         </Grid>
-        <Grid item xs={12} md={6}>
-          <MapboxMap center={position} markers={markers} polyline={[]} />
+        <Grid item xs={12} md={6} className="flex flex-col items-center justify-center">
+          <div className="w-full h-full rounded-lg overflow-hidden mb-4 mt-24">
+            <MapboxMap center={position} markers={markers} polyline={[]} />
+          </div>
         </Grid>
       </Grid>
       <Box className="mt-8 text-center">
