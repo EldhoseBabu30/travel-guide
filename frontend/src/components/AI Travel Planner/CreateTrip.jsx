@@ -7,7 +7,7 @@ import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import MapboxMap from './MapboxMap';
 
-mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_API_KEY;
+mapboxgl.accessToken = "pk.eyJ1IjoiYWJzaGFuIiwiYSI6ImNseHZ1ajUybTBtbGcyanF6eGFid216OHAifQ.1AXCW22VbJsmDC-2oIm0yw";
 
 const CreateTrip = () => {
   const navigate = useNavigate();

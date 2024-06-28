@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Typography, Card, CardContent, CardMedia, Button, Grid } from '@mui/material';
+import { Container, Typography, Card, CardContent, CardMedia, Button, Grid, Box } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
 import MapboxMap from './MapboxMap';
 

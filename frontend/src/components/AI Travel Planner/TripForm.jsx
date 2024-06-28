@@ -1,125 +1,172 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, Container, TextField, Typography, MenuItem, Select, InputLabel, FormControl, IconButton, Autocomplete } from '@mui/material';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'; 
-import RemoveIcon from '@mui/icons-material/Remove';
-import AddIcon from '@mui/icons-material/Add';
+import {
+  Box,
+  Button,
+  Container,
+  TextField,
+  Typography,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
+  Slider,
+  Snackbar,
+  Paper,
+} from '@mui/material';
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import Lottie from 'react-lottie';
+import animationData from '../../assets/Lottiefiles/travel.json'; // Make sure to have a Lottie animation JSON file in this path
 
 const TripForm = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     destination: '',
-    dates: [],
-    destinations: [],
+    startDate: null,
+    endDate: null,
+    days: 1,
+    people: '',
     focus: '',
-    people: 1,
-    companion: ''
+    budget: '',
   });
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleAddDestination = () => {
-    setFormData({ ...formData, destinations: [...formData.destinations, formData.destination] });
-    setFormData({ ...formData, destination: '' });
+  const handleDateChange = (date, field) => {
+    setFormData({ ...formData, [field]: date });
   };
 
-  const handleRemoveDestination = (index) => {
-    const newDestinations = [...formData.destinations];
-    newDestinations.splice(index, 1);
-    setFormData({ ...formData, destinations: newDestinations });
-  };
-
-  const handleDatesChange = (newDates) => {
-    setFormData({ ...formData, dates: newDates });
-  };
-
-  const handlePeopleChange = (increment) => {
-    setFormData({ ...formData, people: formData.people + increment });
+  const handleDaysChange = (event, newValue) => {
+    setFormData({ ...formData, days: newValue });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    navigate('/budget-selection', { state: formData });
+    if (!formData.startDate || !formData.endDate) {
+      setSnackbarMessage('Please select both start and end dates.');
+      setSnackbarOpen(true);
+      return;
+    }
+    navigate('/suggestions', { state: formData });
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
+  const lottieOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: animationData,
+    rendererSettings: {
+      preserveAspectRatio: 'xMidYMid slice',
+    },
   };
 
   return (
-    <Container maxWidth="sm">
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Plan Your Trip
-        </Typography>
-        <form onSubmit={handleSubmit}>
-          <Autocomplete
-            options={[]} // Fetch from API based on user input
-            value={formData.destination}
-            onChange={(event, newValue) => setFormData({ ...formData, destination: newValue })}
-            renderInput={(params) => <TextField {...params} label="Destination" margin="normal" required />}
-            fullWidth
-          />
-          <Button variant="contained" color="primary" onClick={handleAddDestination} sx={{ mt: 2 }}>
-            Add Destination
-          </Button>
-          <Box sx={{ mt: 2 }}>
-            {formData.destinations.map((dest, index) => (
-              <Box key={index} sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                <Typography>{dest}</Typography>
-                <IconButton onClick={() => handleRemoveDestination(index)}>
-                  <RemoveIcon />
-                </IconButton>
-              </Box>
-            ))}
-          </Box>
-          <DatePicker
-            label="Travel Dates"
-            value={formData.dates}
-            onChange={handleDatesChange}
-            renderInput={(params) => <TextField {...params} margin="normal" fullWidth />}
-            required
-            multiple
-          />
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Focus</InputLabel>
-            <Select
-              name="focus"
-              value={formData.focus}
+    <Container className="mt-8 max-w-md">
+      <Paper className="p-6 rounded-lg shadow-md">
+        <Box className="text-center">
+          <Lottie options={lottieOptions} height={200} width={200} />
+          <Typography variant="h4" component="h1" gutterBottom className="mb-4">
+            Plan Your Trip
+          </Typography>
+          <form onSubmit={handleSubmit}>
+            <TextField
+              fullWidth
+              label="Destination"
+              name="destination"
+              value={formData.destination}
               onChange={handleChange}
+              margin="normal"
               required
-            >
-              <MenuItem value="sightseeing">Sightseeing</MenuItem>
-              <MenuItem value="adventure">Adventure</MenuItem>
-              <MenuItem value="relaxation">Relaxation</MenuItem>
-              <MenuItem value="culture">Culture</MenuItem>
-            </Select>
-          </FormControl>
-          <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
-            <IconButton onClick={() => handlePeopleChange(-1)} disabled={formData.people <= 1}>
-              <RemoveIcon />
-            </IconButton>
-            <Typography>{formData.people}</Typography>
-            <IconButton onClick={() => handlePeopleChange(1)}>
-              <AddIcon />
-            </IconButton>
-          </Box>
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Companion</InputLabel>
-            <Select
-              name="companion"
-              value={formData.companion}
+              className="mb-4"
+            />
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DatePicker
+                label="Start Date"
+                value={formData.startDate}
+                onChange={(date) => handleDateChange(date, 'startDate')}
+                renderInput={(params) => (
+                  <TextField {...params} fullWidth margin="normal" required className="mb-4" />
+                )}
+              />
+              <DatePicker
+                label="End Date"
+                value={formData.endDate}
+                onChange={(date) => handleDateChange(date, 'endDate')}
+                renderInput={(params) => (
+                  <TextField {...params} fullWidth margin="normal" required className="mb-4" />
+                )}
+              />
+            </LocalizationProvider>
+            <Box className="mt-4">
+              <Typography gutterBottom className="mb-2">
+                Days
+              </Typography>
+              <Slider
+                value={formData.days}
+                onChange={handleDaysChange}
+                step={1}
+                marks
+                min={1}
+                max={30}
+                valueLabelDisplay="auto"
+                className="mb-4"
+              />
+            </Box>
+            <TextField
+              fullWidth
+              label="People"
+              name="people"
+              value={formData.people}
               onChange={handleChange}
-            >
-              <MenuItem value="couple">Couple</MenuItem>
-              <MenuItem value="friends">Friends</MenuItem>
-              <MenuItem value="family">Family</MenuItem>
-            </Select>
-          </FormControl>
-          <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
-            Create New Trip
-          </Button>
-        </form>
-      </Box>
+              margin="normal"
+              required
+              className="mb-4"
+            />
+            <FormControl fullWidth margin="normal" required className="mb-4">
+              <InputLabel>Focus</InputLabel>
+              <Select
+                name="focus"
+                value={formData.focus}
+                onChange={handleChange}
+                label="Focus"
+              >
+                <MenuItem value="sightseeing">Sightseeing</MenuItem>
+                <MenuItem value="adventure">Adventure</MenuItem>
+                <MenuItem value="relaxation">Relaxation</MenuItem>
+                <MenuItem value="culture">Culture</MenuItem>
+              </Select>
+            </FormControl>
+            <TextField
+              fullWidth
+              label="Budget"
+              name="budget"
+              value={formData.budget}
+              onChange={handleChange}
+              margin="normal"
+              required
+              className="mb-4"
+            />
+            <Button type="submit" variant="contained" color="primary" className="mt-4">
+              Plan Trip
+            </Button>
+          </form>
+        </Box>
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={6000}
+          onClose={handleSnackbarClose}
+          message={snackbarMessage}
+        />
+      </Paper>
     </Container>
   );
 };
