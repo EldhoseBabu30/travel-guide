@@ -168,9 +168,7 @@ const TripForm = () => {
           message={snackbarMessage}
         />
       </Paper>
-     
     </Container>
-    
   );
 };
 

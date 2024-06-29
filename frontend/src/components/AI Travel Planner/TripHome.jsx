@@ -18,7 +18,7 @@ const TripHome = () => {
     days: 1,
     people: 1,
     budget: 0,
-    destination: 'paris'
+    destination: 'paris' // Default value in case state is not passed correctly
   };
 
   const [budget, setBudget] = useState(formData.budget || 0);
@@ -27,6 +27,30 @@ const TripHome = () => {
     lunch: false,
     dinner: false,
   });
+
+  const [mapCenter, setMapCenter] = useState(null); // Initialize with null until coordinates are fetched
+
+  useEffect(() => {
+    const fetchCoordinates = async (destination) => {
+      try {
+        const apiKey = 'YOUR_OPENCAGE_API_KEY'; // Replace with your OpenCage API key
+        const response = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${destination}&key=${apiKey}`);
+        const data = await response.json();
+        if (data.results && data.results.length > 0) {
+          const { lat, lng } = data.results[0].geometry;
+          setMapCenter([lat, lng]);
+        } else {
+          console.error('Unable to fetch coordinates for the destination');
+        }
+      } catch (error) {
+        console.error('Error fetching coordinates:', error);
+      }
+    };
+
+    if (formData.destination) {
+      fetchCoordinates(formData.destination);
+    }
+  }, [formData.destination]);
 
   const handleBudgetChange = (event, newValue) => {
     setBudget(newValue);
@@ -45,48 +69,26 @@ const TripHome = () => {
     dinner: meals.dinner ? mealPrices[budget].dinner * formData.days * formData.people : 0,
   } : { breakfast: 0, lunch: 0, dinner: 0 };
 
-  const position = [48.8566, 2.3522]; // Default Paris position
-  const [mapCenter, setMapCenter] = useState(position);
-
-  useEffect(() => {
-    const fetchCoordinates = async (destination) => {
-      const coordinates = {
-        paris: [48.8566, 2.3522],
-        london: [51.5074, -0.1278],
-        newyork: [40.7128, -74.0060],
-      };
-      setMapCenter(coordinates[destination.toLowerCase()] || position);
-    };
-    if (formData.destination) {
-      fetchCoordinates(formData.destination);
-    }
-  }, [formData.destination]);
-
   const handleNext = () => {
     navigate('/next-step', { state: { ...formData, budget, meals } });
   };
 
   return (
-    <Container className="flex flex-row min-h-screen">
-      <Box className="w-1/2 p-4">
-        <Box className="flex items-center mb-4">
-          <ArrowBack />
-          <Typography variant="h6" className="ml-2">Trip Planner AI</Typography>
-          <Box className="flex-1 text-right">
-            <Typography variant="body1">Step 1 of 2</Typography>
-          </Box>
+    <Container className="flex flex-col lg:flex-row min-h-screen">
+      <Box className="lg:w-1/2 p-8 lg:p-16">
+        <Box className="flex items-center mb-8">
+          <ArrowBack className="mr-2 cursor-pointer" onClick={() => navigate(-1)} />
+          <Typography variant="h4" className="flex-1">Trip Planner AI</Typography>
+          <Typography variant="body1" className="text-right">Step 1 of 2</Typography>
         </Box>
-        <Typography variant="h5" className="mb-4">
+        <Typography variant="h5" className="mb-8">
           Meals preferences
         </Typography>
         <Typography variant="body1" className="mb-4">
           Select the meals you would like to include in your trip, your budget for it and the type of food you prefer.
         </Typography>
-        <Typography variant="h6" className="mb-2">
+        <Typography variant="h6" className="mb-4">
           Budget level
-        </Typography>
-        <Typography variant="body1" className="mb-4">
-          Select the budget level you are planning to spend.
         </Typography>
         <Slider
           value={budget}
@@ -101,7 +103,7 @@ const TripHome = () => {
           max={2}
           valueLabelDisplay="off"
         />
-        <Typography variant="h6" className="mt-4 mb-2">
+        <Typography variant="h6" className="mt-8 mb-4">
           Meals to include
         </Typography>
         <Typography variant="body2" className="mb-4">
@@ -130,22 +132,24 @@ const TripHome = () => {
             }
           />
         ))}
-        <Button variant="contained" color="primary" className="mt-4" onClick={handleNext}>
+        <Button variant="contained" color="primary" className="mt-8" onClick={handleNext}>
           Next
         </Button>
       </Box>
-      <Box className="w-1/2">
-        <MapContainer center={mapCenter} zoom={13} style={{ height: '100vh' }}>
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-          />
-          <Marker position={mapCenter}>
-            <Popup>
-              {formData.destination.charAt(0).toUpperCase() + formData.destination.slice(1)}
-            </Popup>
-          </Marker>
-        </MapContainer>
+      <Box className="lg:w-1/2">
+        {mapCenter && (
+          <MapContainer center={mapCenter} zoom={13} style={{ height: '100vh' }}>
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            />
+            <Marker position={mapCenter}>
+              <Popup>
+                {formData.destination.charAt(0).toUpperCase() + formData.destination.slice(1)}
+              </Popup>
+            </Marker>
+          </MapContainer>
+        )}
       </Box>
     </Container>
   );
