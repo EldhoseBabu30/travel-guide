@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Container, Typography, Slider, Checkbox, FormControlLabel, Button } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
@@ -11,8 +11,9 @@ const mealPrices = [
   { breakfast: 30, lunch: 51, dinner: 54 }   // High
 ];
 
-const TripPlanner = () => {
+const TripHome = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const formData = location.state || {
     days: 1,
     people: 1,
@@ -38,11 +39,11 @@ const TripPlanner = () => {
     });
   };
 
-  const totalCost = {
+  const totalCost = budget >= 0 && budget < mealPrices.length ? {
     breakfast: meals.breakfast ? mealPrices[budget].breakfast * formData.days * formData.people : 0,
     lunch: meals.lunch ? mealPrices[budget].lunch * formData.days * formData.people : 0,
     dinner: meals.dinner ? mealPrices[budget].dinner * formData.days * formData.people : 0,
-  };
+  } : { breakfast: 0, lunch: 0, dinner: 0 };
 
   const position = [48.8566, 2.3522]; // Default Paris position
   const [mapCenter, setMapCenter] = useState(position);
@@ -60,6 +61,10 @@ const TripPlanner = () => {
       fetchCoordinates(formData.destination);
     }
   }, [formData.destination]);
+
+  const handleNext = () => {
+    navigate('/next-step', { state: { ...formData, budget, meals } });
+  };
 
   return (
     <Container className="flex flex-row min-h-screen">
@@ -116,14 +121,16 @@ const TripPlanner = () => {
             label={
               <Box>
                 <Typography variant="body1">{meal.charAt(0).toUpperCase() + meal.slice(1)}</Typography>
-                <Typography variant="body2">
-                  {`$${totalCost[meal]} ($${mealPrices[budget][meal]} per meal)`}
-                </Typography>
+                {budget >= 0 && budget < mealPrices.length && (
+                  <Typography variant="body2">
+                    {`$${totalCost[meal]} ($${mealPrices[budget][meal]} per meal)`}
+                  </Typography>
+                )}
               </Box>
             }
           />
         ))}
-        <Button variant="contained" color="primary" className="mt-4">
+        <Button variant="contained" color="primary" className="mt-4" onClick={handleNext}>
           Next
         </Button>
       </Box>
@@ -144,4 +151,4 @@ const TripPlanner = () => {
   );
 };
 
-export default TripPlanner;
+export default TripHome;
