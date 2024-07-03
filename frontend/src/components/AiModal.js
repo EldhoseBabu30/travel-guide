@@ -1,9 +1,8 @@
-
-const {
+import {
     GoogleGenerativeAI,
     HarmCategory,
     HarmBlockThreshold,
-  } = require("@google/generative-ai");
+  }  from "@google/generative-ai";
   
   const apiKey = process.env.GEMINI_API_KEY;
   const genAI = new GoogleGenerativeAI(apiKey);
@@ -20,8 +19,8 @@ const {
     responseMimeType: "application/json",
   };
   
-  async function run() {
-    const chatSession = model.startChat({
+
+    export const chatSession = model.startChat({
       generationConfig,
    // safetySettings: Adjust safety settings
    // See https://ai.google.dev/gemini-api/docs/safety-settings
@@ -29,8 +28,6 @@ const {
       ],
     });
   
-    const result = await chatSession.sendMessage("INSERT_INPUT_HERE");
-    console.log(result.response.text());
-  }
+    // const result = await chatSession.sendMessage("INSERT_INPUT_HERE");
+    // console.log(result.response.text());
   
-  run();

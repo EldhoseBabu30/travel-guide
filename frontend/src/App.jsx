@@ -16,12 +16,7 @@ import FloatingButton from './components/FloatingButton'
 import HotelMap from './Pages/Hotel/HotelListings'
 import FoodSpots from './Pages/FoodSpots/Foodspots'
 import Community from './Pages/Community/Community'
-import TripForm from './components/AI Travel Planner/TripForm';
-import Suggestions from './components/AI Travel Planner/Suggestions';
-import Finalize from './components/AI Travel Planner/Finalize';
-import CreateTrip from './components/AI Travel Planner/CreateTrip';
-import TripHome from './components/AI Travel Planner/TripHome'
-import FoodSpot from './components/AI Travel Planner/FoodSpots'
+
 
 
 function App() {
@@ -46,13 +41,7 @@ function App() {
           <Route path="/hotels" element={<HotelMap />} />
           <Route path="/food-spots" element={<FoodSpots />} />
           <Route path="/community" element={<Community />} />
-          <Route path="/trip-form" element={<TripForm />} />
-        <Route path="/suggestions" element={<Suggestions />} />
-        <Route path="/finalize" element={<Finalize />} />
-        <Route path="/create-trip" element={<CreateTrip />} />
-        <Route path="/trip-home" element={<TripHome />} />
-        <Route path="/foodspots" element={<FoodSpot />} />
-
+         
 
 
 
