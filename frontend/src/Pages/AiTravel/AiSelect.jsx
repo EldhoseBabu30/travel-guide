@@ -4,8 +4,23 @@ import { useNavigate } from 'react-router-dom';
 const AiSelect = () => {
   const navigate = useNavigate();
   const [selectedOption, setSelectedOption] = useState('');
+  const [numPersons, setNumPersons] = useState(1);
+  const [showAlert, setShowAlert] = useState(false);
 
   const handleScheduleTrip = () => {
+    if (
+      (selectedOption === 'Work 🧳' || selectedOption === 'Family 👨‍👩‍👧‍👦' || selectedOption === 'Friends 🌟') &&
+      numPersons <= 0
+    ) {
+      setShowAlert(true);
+      return;
+    }
+
+    if (!selectedOption) {
+      setShowAlert(true);
+      return;
+    }
+
     navigate('/ai-schedule');
   };
 
@@ -27,11 +42,18 @@ const AiSelect = () => {
               className={`p-4 mb-4 rounded-lg border-2 transition-all duration-300 ease-in-out ${
                 selectedOption === option.label ? 'border-orange-400 bg-orange-100' : 'border-gray-300'
               } hover:bg-orange-100 hover:border-orange-400 cursor-pointer flex flex-col`}
+              onClick={() => {
+                setSelectedOption(option.label);
+                if (option.label === 'Only Me 🧍' || option.label === 'A Couple ❤️') {
+                  setNumPersons(1);
+                }
+              }}
             >
               <input
                 type="radio"
                 name="travelOption"
                 value={option.label}
+                checked={selectedOption === option.label}
                 onChange={(e) => setSelectedOption(e.target.value)}
                 className="hidden"
               />
@@ -40,6 +62,38 @@ const AiSelect = () => {
             </label>
           ))}
         </div>
+        {(selectedOption === 'Family 👨‍👩‍👧‍👦' || selectedOption === 'Friends 🌟' || selectedOption === 'Work 🧳') && (
+          <div className="flex flex-col items-center justify-center mt-4">
+            <label className="text-lg font-semibold mb-2">How many people are going?</label>
+            <div className="flex items-center border rounded-lg px-4 py-2 w-full max-w-lg">
+              <div className="flex items-center mr-4">
+                <div className="bg-orange-400 text-white px-4 py-2 rounded-lg text-lg font-semibold mr-2">
+                  {numPersons}
+                </div>
+                <span>{numPersons > 1 ? 'People' : 'Person'} {numPersons > 1 ? '👨‍👩‍👧‍👦' : '🧍'}</span>
+              </div>
+              <div className="flex items-center ml-auto">
+                <button
+                  onClick={() => setNumPersons((prev) => Math.max(prev - 1, 1))}
+                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg mr-2"
+                >
+                  -
+                </button>
+                <button
+                  onClick={() => setNumPersons((prev) => prev + 1)}
+                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+        {showAlert && (
+          <div className="text-red-500 text-center mt-4">
+            Please select an option and ensure the number of persons is correct.
+          </div>
+        )}
         <div className="flex justify-center mt-8">
           <button
             onClick={handleScheduleTrip}
