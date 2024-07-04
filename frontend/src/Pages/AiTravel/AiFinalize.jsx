@@ -55,7 +55,7 @@ const AiFood = () => {
           }}
           style={{ width: '100%', height: '400px' }}
           mapStyle="mapbox://styles/mapbox/streets-v11"
-          mapboxAccessToken={process.env.REACT_APP_MAPBOX_API_KEY}
+          mapboxAccessToken={"pk.eyJ1IjoiYWJzaGFuIiwiYSI6ImNseHZ1ajUybTBtbGcyanF6eGFid216OHAifQ.1AXCW22VbJsmDC-2oIm0yw"}
         />
         <div className="mt-4">
           <button
