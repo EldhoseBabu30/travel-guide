@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -7,6 +7,18 @@ const AiSchedule = () => {
   const navigate = useNavigate();
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+
+  useEffect(() => {
+    // Ensure the left calendar shows the current month and the right calendar shows the next month
+    const currentMonth = new Date();
+    setLeftMonth(currentMonth);
+    const nextMonth = new Date(currentMonth);
+    nextMonth.setMonth(currentMonth.getMonth() + 1);
+    setRightMonth(nextMonth);
+  }, []);
+
+  const [leftMonth, setLeftMonth] = useState(new Date());
+  const [rightMonth, setRightMonth] = useState(new Date());
 
   const handleContinue = () => {
     navigate('/ai-budget');
@@ -28,11 +40,19 @@ const AiSchedule = () => {
             inline
             className="w-full text-center border rounded-lg"
             calendarClassName="bg-white p-4 shadow rounded-lg"
-            dayClassName={(date) =>
-              "text-gray-700 hover:bg-gray-200 rounded-md transition-colors duration-200 ease-in-out" +
-              (date >= startDate && date <= endDate ? " bg-orange-400 text-white" : "")
-            }
+            dayClassName={(date) => {
+              const dateClass = date >= startDate && date <= endDate
+                ? date === startDate || date === endDate
+                  ? "bg-orange-400 text-white"
+                  : "bg-orange-400 bg-opacity-50 text-white"
+                : "text-gray-700 hover:bg-gray-200 rounded-md transition-colors duration-200 ease-in-out";
+              return dateClass;
+            }}
             monthClassName="text-gray-700 font-semibold"
+            renderCustomHeader={({ monthDate }) => {
+              setLeftMonth(monthDate);
+              return null;
+            }}
           />
         </div>
         <div className="w-full max-w-md">
@@ -47,11 +67,19 @@ const AiSchedule = () => {
             inline
             className="w-full text-center border rounded-lg"
             calendarClassName="bg-white p-4 shadow rounded-lg"
-            dayClassName={(date) =>
-              "text-gray-700 hover:bg-gray-200 rounded-md transition-colors duration-200 ease-in-out" +
-              (date >= startDate && date <= endDate ? " bg-orange-400 text-white" : "")
-            }
+            dayClassName={(date) => {
+              const dateClass = date >= startDate && date <= endDate
+                ? date === startDate || date === endDate
+                  ? "bg-orange-400 text-white"
+                  : "bg-orange-400 bg-opacity-50 text-white"
+                : "text-gray-700 hover:bg-gray-200 rounded-md transition-colors duration-200 ease-in-out";
+              return dateClass;
+            }}
             monthClassName="text-gray-700 font-semibold"
+            renderCustomHeader={({ monthDate }) => {
+              setRightMonth(monthDate);
+              return null;
+            }}
           />
         </div>
       </div>
