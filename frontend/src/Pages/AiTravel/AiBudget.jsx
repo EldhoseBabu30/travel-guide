@@ -20,7 +20,7 @@ const AiBudget = () => {
   const handlePreferenceChange = (value) => {
     // Toggle selection of preferences
     setSelectedPreferences((prev) =>
-      prev.includes(value) ? prev.filter((pref) => prev !== value) : [...prev, value]
+      prev.includes(value) ? prev.filter((pref) => pref !== value) : [...prev, value]
     );
   };
 
@@ -59,6 +59,7 @@ const AiBudget = () => {
                     ? 'border-orange-400 bg-orange-100'
                     : 'border-gray-300'
                 } hover:bg-orange-100 hover:border-orange-400 cursor-pointer flex items-center justify-center`}
+                style={{ minWidth: '150px' }} // Ensure consistent width
               >
                 <input
                   type="checkbox"
@@ -71,25 +72,24 @@ const AiBudget = () => {
                 <span className="text-lg font-semibold ml-2">{preference.value}</span>
               </label>
             ))}
-            <div className="col-span-2 sm:col-span-5 flex justify-center">
-              <label
-                className={`p-4 rounded-lg border-2 transition-all duration-300 ease-in-out ${
-                  selectedPreferences.includes('Eco-Tourism')
-                    ? 'border-orange-400 bg-orange-100'
-                    : 'border-gray-300'
-                } hover:bg-orange-100 hover:border-orange-400 cursor-pointer flex items-center justify-center`}
-              >
-                <input
-                  type="checkbox"
-                  name="preference"
-                  value="Eco-Tourism"
-                  onChange={() => handlePreferenceChange('Eco-Tourism')}
-                  className="hidden"
-                />
-                <span className="text-lg font-semibold">🌍</span>
-                <span className="text-lg lg:px-8 sm:px-2  font-semibold ml-2">Eco-Tourism</span>
-              </label>
-            </div>
+            <label
+              className={`p-4 rounded-lg border-2 transition-all duration-300 ease-in-out ${
+                selectedPreferences.includes('Eco-Tourism')
+                  ? 'border-orange-400 bg-orange-100'
+                  : 'border-gray-300'
+              } hover:bg-orange-100 hover:border-orange-400 cursor-pointer flex items-center justify-center`}
+              style={{ minWidth: '150px' }} // Ensure consistent width
+            >
+              <input
+                type="checkbox"
+                name="preference"
+                value="Eco-Tourism"
+                onChange={() => handlePreferenceChange('Eco-Tourism')}
+                className="hidden"
+              />
+              <span className="text-lg font-semibold">🌍</span>
+              <span className="text-lg font-semibold ml-2">Eco-Tourism</span>
+            </label>
           </div>
         </div>
         <h1 className="text-2xl font-bold mb-4 text-center">Set your trip budget</h1>

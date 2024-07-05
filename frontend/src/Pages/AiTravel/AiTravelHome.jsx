@@ -1,4 +1,3 @@
-// src/components/AiTravelHome.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Player } from '@lottiefiles/react-lottie-player';
@@ -8,17 +7,24 @@ import travel from '../../assets/Lottiefiles/travel.json';
 const AiTravelHome = () => {
   const navigate = useNavigate();
   const [destination, setDestination] = useState('');
+  const [alertMessage, setAlertMessage] = useState('');
 
   const handlePlanTrip = () => {
+    if (!destination) {
+      setAlertMessage('Please enter your destination before planning your trip.');
+      return;
+    }
+    setAlertMessage('');
     navigate('/ai-select');
   };
 
   const handleDestinationSelect = (suggestion) => {
     setDestination(suggestion.place_name);
+    setAlertMessage('');
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen  p-6">
+    <div className="flex flex-col items-center justify-center h-screen p-6">
       <Player
         autoplay
         loop
@@ -29,6 +35,11 @@ const AiTravelHome = () => {
       <div className="w-full max-w-md">
         <MapboxAutoSuggest onSelect={handleDestinationSelect} />
       </div>
+      {alertMessage && (
+        <div className="text-red-600 font-semibold mt-4 text-center">
+          {alertMessage}
+        </div>
+      )}
       <button
         onClick={handlePlanTrip}
         className="bg-orange-400 text-white py-3 px-6 rounded-lg mt-8 text-lg font-semibold hover:bg-orange-500 transition duration-300"

@@ -6,14 +6,21 @@ import 'react-datepicker/dist/react-datepicker.css';
 const AiSchedule = () => {
   const navigate = useNavigate();
   const [dateRange, setDateRange] = useState([null, null]);
+  const [alertMessage, setAlertMessage] = useState('');
   const [startDate, endDate] = dateRange;
 
   const handleContinue = () => {
+    if (!startDate || !endDate) {
+      setAlertMessage('Please select both start and end dates before continuing.');
+      return;
+    }
+    setAlertMessage('');
     navigate('/ai-budget');
   };
 
   const handleReset = () => {
     setDateRange([null, null]);
+    setAlertMessage('');
   };
 
   return (
@@ -32,10 +39,15 @@ const AiSchedule = () => {
             inline
             className="w-full text-center border rounded-lg"
             calendarClassName="bg-white p-4 shadow rounded-lg"
-            dayClassName={(date) =>
-              "text-gray-700 hover:bg-gray-200 rounded-md transition-colors duration-200 ease-in-out" +
-              (date >= startDate && date <= endDate ? " bg-orange-400 text-white" : "")
-            }
+            dayClassName={(date) => {
+              const isInRange = startDate && endDate && date > startDate && date < endDate;
+              const isSelected = date >= startDate && date <= endDate;
+              return (
+                "text-gray-700 hover:bg-gray-200 rounded-md transition-colors duration-200 ease-in-out" +
+                (isSelected ? " bg-orange-400 text-white" : "") +
+                (isInRange ? " bg-orange-400 opacity-50" : "")
+              );
+            }}
             renderCustomHeader={({ date, decreaseMonth, increaseMonth }) => (
               <div className="flex justify-between items-center">
                 <button onClick={decreaseMonth} className="focus:outline-none">
@@ -61,8 +73,13 @@ const AiSchedule = () => {
           {`End Date: ${endDate ? endDate.toDateString() : 'Not selected'}`}
         </p>
       </div>
+      {alertMessage && (
+        <div className="mb-4 text-center text-red-600 font-semibold">
+          {alertMessage}
+        </div>
+      )}
       <div className="flex space-x-4">
-      <button
+        <button
           onClick={handleReset}
           className="bg-gray-400 text-white py-2 px-8 rounded-full font-semibold shadow-lg hover:bg-gray-500 transition-all duration-300"
         >
@@ -74,7 +91,6 @@ const AiSchedule = () => {
         >
           Continue
         </button>
-       
       </div>
     </div>
   );
