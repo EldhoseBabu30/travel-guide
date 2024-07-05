@@ -3,11 +3,23 @@ import { useNavigate } from 'react-router-dom';
 
 const AiBudget = () => {
   const navigate = useNavigate();
-  const [selectedPreference, setSelectedPreference] = useState('');
+  const [selectedPreferences, setSelectedPreferences] = useState([]);
   const [selectedBudget, setSelectedBudget] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
 
   const handleContinue = () => {
-    navigate('/ai-hotel');
+    if (selectedPreferences.length === 0 || !selectedBudget) {
+      setShowAlert(true);
+    } else {
+      setShowAlert(false);
+      navigate('/ai-hotel');
+    }
+  };
+
+  const handlePreferenceChange = (value) => {
+    setSelectedPreferences((prev) =>
+      prev.includes(value) ? prev.filter((pref) => pref !== value) : [...prev, value]
+    );
   };
 
   const preferences = [
@@ -32,35 +44,38 @@ const AiBudget = () => {
   ];
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-100">
-      <div className="w-full max-w-4xl bg-white rounded-lg shadow-md p-6">
+    <div className="flex flex-col items-center justify-center min-h-screen p-4">
+      <div className="w-full bg-white rounded-lg shadow-md p-6">
         <h1 className="text-2xl font-bold mb-4 text-center">Tailor your adventure to your tastes</h1>
         <p className="mb-6 text-center">Select your travel preferences to customize your trip plan.</p>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8" style={{ width: '90%', margin: '0 auto' }}>
-          {preferences.map((preference, index) => (
-            <label
-              key={index}
-              className={`p-4 rounded-lg border-2 transition-all duration-300 ease-in-out ${
-                selectedPreference === preference.value ? 'border-orange-400 bg-orange-100' : 'border-gray-300'
-              } hover:bg-orange-100 hover:border-orange-400 cursor-pointer flex items-center justify-center text-center`}
-              style={{ height: '80px' }}
-            >
-              <input
-                type="radio"
-                name="preference"
-                value={preference.value}
-                onChange={(e) => setSelectedPreference(e.target.value)}
-                className="hidden"
-              />
-              <span className="text-lg font-semibold">
-                {preference.emoji} {preference.value}
-              </span>
-            </label>
-          ))}
+        <div className="flex justify-center">
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-8">
+            {preferences.map((preference, index) => (
+              <label
+                key={index}
+                className={`p-4 rounded-lg border-2 transition-all duration-300 ease-in-out ${
+                  selectedPreferences.includes(preference.value)
+                    ? 'border-orange-400 bg-orange-100'
+                    : 'border-gray-300'
+                } hover:bg-orange-100 hover:border-orange-400 cursor-pointer flex items-center justify-center`}
+              >
+                <input
+                  type="checkbox"
+                  name="preference"
+                  value={preference.value}
+                  onChange={() => handlePreferenceChange(preference.value)}
+                  className="hidden"
+                />
+                <span className="text-lg font-semibold">{preference.emoji}</span>
+                <span className="text-lg font-semibold ml-2">{preference.value}</span>
+              </label>
+            ))}
+          </div>
         </div>
         <h1 className="text-2xl font-bold mb-4 text-center">Set your trip budget</h1>
         <p className="mb-6 text-center">Let us know your budget preference, and we'll craft an itinerary that suits your financial comfort.</p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8" style={{ width: '90%', margin: '0 auto' }}>
+        <div className="flex justify-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
           {budgets.map((budget, index) => (
             <label
               key={index}
@@ -81,6 +96,12 @@ const AiBudget = () => {
             </label>
           ))}
         </div>
+        </div>
+        {showAlert && (
+          <div className="text-red-500 text-center mb-4">
+            Please select at least one preference and a budget to continue.
+          </div>
+        )}
         <div className="flex py-6 justify-center">
           <button
             onClick={handleContinue}
