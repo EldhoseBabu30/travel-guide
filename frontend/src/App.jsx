@@ -25,11 +25,13 @@ import AiHotel from './Pages/AiTravel/AiHotel'
 import AiFinalize from './Pages/AiTravel/AiFinalize'
 import AiItinerary from './Pages/AiTravel/AiItenerary';
 import AiFood from './Pages/AiTravel/AiFinalize';
+import { TravelProvider } from './Pages/AiTravel/AiContext/AiContext';
 
 function App() {
   return (
     <div>
       <BrowserRouter>
+      <TravelProvider>
         <Nav />
         <Routes>
           <Route path="/" element={<Hero />} />
@@ -57,6 +59,7 @@ function App() {
         <Route path="/ai-itinerary" element={<AiItinerary />} />
         </Routes>
         <FloatingButton />
+        </TravelProvider>
       </BrowserRouter>
     </div>
   );

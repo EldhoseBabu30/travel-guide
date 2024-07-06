@@ -1,89 +1,31 @@
-// src/components/AiFinalize.jsx
+// src/pages/AiFinalize.jsx
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FaMapMarkerAlt, FaUserFriends, FaCalendarAlt, FaStar, FaMoneyBillWave } from 'react-icons/fa';
+import { useTravelContext } from '../AiTravel/AiContext/AiContext';
 
-const AiFinalize = ({
-  destination = 'Unknown Destination',
-  destinationImage = 'default-image.jpg',
-  travelers = 'Unknown Travelers',
-  tripDates = 'Unknown Dates',
-  interests = [],
-  budget = 'Unknown Budget'
-}) => {
-  const navigate = useNavigate();
-
-  const handleBuildItinerary = () => {
-    navigate('/build-itinerary');
-  };
+const AiFinalize = () => {
+  const { travelData } = useTravelContext();
 
   return (
-    <div className="flex flex-col items-center bg-gray-100 min-h-screen p-4">
-      <header className="bg-white text-black p-4 w-full text-center shadow-md">
-        <h1 className="text-2xl font-bold">Review Summary</h1>
-      </header>
-      <div className="bg-white shadow-md rounded p-6 mt-6 w-full max-w-4xl">
-        <section className="mb-6">
-          <h2 className="text-lg font-semibold flex items-center">
-            <FaMapMarkerAlt className="mr-2" /> Destination
-          </h2>
-          <div className="flex items-center mt-2">
-            <img src={destinationImage} alt="Destination" className="w-16 h-16 rounded mr-4" />
-            <div>
-              <p className="font-bold">{destination}</p>
-              <p>Japan</p>
-            </div>
-          </div>
-        </section>
-
-        <section className="mb-6">
-          <h2 className="text-lg font-semibold flex items-center">
-            <FaUserFriends className="mr-2" /> Party
-          </h2>
-          <p className="mt-2">{travelers}</p>
-        </section>
-
-        <section className="mb-6">
-          <h2 className="text-lg font-semibold flex items-center">
-            <FaCalendarAlt className="mr-2" /> Trip Dates
-          </h2>
-          <p className="mt-2">{tripDates}</p>
-        </section>
-
-        <section className="mb-6">
-          <h2 className="text-lg font-semibold flex items-center">
-            <FaStar className="mr-2" /> 5 Interests
-          </h2>
-          <div className="flex flex-wrap mt-2">
-            {interests.length > 0 ? (
-              interests.map((interest, index) => (
-                <span
-                  key={index}
-                  className="bg-gray-200 rounded-full px-4 py-2 m-1 text-sm"
-                >
-                  {interest}
-                </span>
-              ))
-            ) : (
-              <p>No interests selected</p>
-            )}
-          </div>
-        </section>
-
-        <section className="mb-6">
-          <h2 className="text-lg font-semibold flex items-center">
-            <FaMoneyBillWave className="mr-2" /> Budget
-          </h2>
-          <p className="mt-2">{budget}</p>
-        </section>
-
-        <button
-          onClick={handleBuildItinerary}
-          className="bg-green-500 text-white py-2 px-4 rounded mt-4 w-full"
-        >
-          Build My Itinerary
-        </button>
+    <div className="flex flex-col items-center justify-center h-screen p-6 bg-white">
+      <h1 className="text-4xl font-bold mb-4">Your Trip Summary</h1>
+      <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-lg">
+        <h2 className="text-2xl font-bold mb-4">Destination</h2>
+        <p className="text-lg mb-4">{travelData.destination}</p>
+        {travelData.destinationImage && (
+          <img src={travelData.destinationImage} alt="Destination" className="w-full h-48 object-cover mb-4 rounded-lg" />
+        )}
+        <h2 className="text-2xl font-bold mb-4">Travelers</h2>
+        <p className="text-lg mb-4">{travelData.travelers}</p>
+        <h2 className="text-2xl font-bold mb-4">Trip Dates</h2>
+        <p className="text-lg mb-4">{travelData.startDate}{travelData.endDate}</p>
+        <h2 className="text-2xl font-bold mb-4">Interests</h2>
+        <p className="text-lg mb-4">{travelData.preferences}</p>
+        <h2 className="text-2xl font-bold mb-4">Budget</h2>
+        <p className="text-lg mb-4">{travelData.budget}</p>
       </div>
+      <button className="bg-orange-400 text-white py-3 px-6 rounded-lg mt-8 text-lg font-semibold hover:bg-orange-500 transition duration-300">
+        Build My Itinerary
+      </button>
     </div>
   );
 };

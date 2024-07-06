@@ -1,24 +1,30 @@
+// src/pages/AiBudget.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTravelContext } from '../AiTravel/AiContext/AiContext';
 
 const AiBudget = () => {
   const navigate = useNavigate();
+  const { setTravelData } = useTravelContext();
   const [selectedPreferences, setSelectedPreferences] = useState([]);
   const [selectedBudget, setSelectedBudget] = useState('');
   const [showAlert, setShowAlert] = useState(false);
 
   const handleContinue = () => {
-    // Show alert if no preferences or budget is selected
     if (selectedPreferences.length === 0 || !selectedBudget) {
       setShowAlert(true);
     } else {
       setShowAlert(false);
+      setTravelData(prevData => ({
+        ...prevData,
+        preferences: selectedPreferences,
+        budget: selectedBudget
+      }));
       navigate('/ai-hotel');
     }
   };
 
   const handlePreferenceChange = (value) => {
-    // Toggle selection of preferences
     setSelectedPreferences((prev) =>
       prev.includes(value) ? prev.filter((pref) => pref !== value) : [...prev, value]
     );

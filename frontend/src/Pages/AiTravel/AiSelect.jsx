@@ -1,8 +1,11 @@
+// src/pages/AiSelect.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTravelContext } from '../../Pages/AiTravel/AiContext/AiContext';
 
 const AiSelect = () => {
   const navigate = useNavigate();
+  const { setTravelData } = useTravelContext();
   const [selectedOption, setSelectedOption] = useState('');
   const [numPersons, setNumPersons] = useState(1);
   const [showAlert, setShowAlert] = useState(false);
@@ -20,6 +23,11 @@ const AiSelect = () => {
       setShowAlert(true);
       return;
     }
+
+    setTravelData(prevData => ({
+      ...prevData,
+      travelers: `${selectedOption} (${numPersons} ${numPersons > 1 ? 'People' : 'Person'})`,
+    }));
 
     navigate('/ai-schedule');
   };

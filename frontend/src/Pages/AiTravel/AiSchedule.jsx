@@ -1,10 +1,13 @@
+// src/pages/AiSchedule.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { useTravelContext } from '../AiTravel/AiContext/AiContext';
 
 const AiSchedule = () => {
   const navigate = useNavigate();
+  const { setTravelData } = useTravelContext();
   const [dateRange, setDateRange] = useState([null, null]);
   const [alertMessage, setAlertMessage] = useState('');
   const [startDate, endDate] = dateRange;
@@ -15,6 +18,7 @@ const AiSchedule = () => {
       return;
     }
     setAlertMessage('');
+    setTravelData(prevData => ({ ...prevData, startDate, endDate }));
     navigate('/ai-budget');
   };
 

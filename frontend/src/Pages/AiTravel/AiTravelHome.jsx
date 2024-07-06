@@ -1,11 +1,14 @@
+// src/pages/AiTravelHome.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Player } from '@lottiefiles/react-lottie-player';
 import MapboxAutoSuggest from './MapboxAutoSuggest';
 import travel from '../../assets/Lottiefiles/travel.json';
+import { useTravelContext } from '../../Pages/AiTravel/AiContext/AiContext';
 
 const AiTravelHome = () => {
   const navigate = useNavigate();
+  const { setTravelData } = useTravelContext();
   const [destination, setDestination] = useState('');
   const [alertMessage, setAlertMessage] = useState('');
 
@@ -15,11 +18,17 @@ const AiTravelHome = () => {
       return;
     }
     setAlertMessage('');
+    setTravelData(prevData => ({ ...prevData, destination }));
     navigate('/ai-select');
   };
 
   const handleDestinationSelect = (suggestion) => {
     setDestination(suggestion.place_name);
+    setTravelData(prevData => ({
+      ...prevData,
+      destination: suggestion.place_name,
+      destinationImage: suggestion.image_url, // Assuming you get an image URL from the Mapbox API
+    }));
     setAlertMessage('');
   };
 
