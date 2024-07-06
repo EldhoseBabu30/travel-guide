@@ -40,7 +40,7 @@
     "js-cookie": "^3.0.5",
     "leaflet": "^1.9.4",
     "lottie-react": "^2.4.0",
-    "mapbox-gl": "^3.4.0",
+    "mapbox-gl": "^3.5.1",
     "mongoose": "^8.4.0",
     "rc-slider": "^10.6.2",
     "rc-tooltip": "^6.2.0",
