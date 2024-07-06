@@ -105,9 +105,9 @@ const AiSelect = () => {
         <div className="flex justify-center mt-8">
           <button
             onClick={handleScheduleTrip}
-            className="bg-orange-400 text-white py-2 px-8 rounded-full font-semibold shadow-lg hover:bg-orange-500 transition-all duration-300"
+            className="bg-orange-400 text-white py-2 px-8 rounded-full font-semibold shadow-lg hover:bg-orange-500 transition duration-300"
           >
-            Continue
+            Schedule Trip
           </button>
         </div>
       </div>

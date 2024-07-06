@@ -18,7 +18,11 @@ const AiSchedule = () => {
       return;
     }
     setAlertMessage('');
-    setTravelData(prevData => ({ ...prevData, startDate, endDate }));
+    setTravelData(prevData => ({
+      ...prevData,
+      startDate: startDate.toDateString(),
+      endDate: endDate.toDateString(),
+    }));
     navigate('/ai-budget');
   };
 

@@ -22,10 +22,10 @@ import AiSelect from './Pages/AiTravel/AiSelect'
 import AiSchedule from './Pages/AiTravel/AiSchedule'
 import AiBudget from './Pages/AiTravel/AiBudget'
 import AiHotel from './Pages/AiTravel/AiHotel'
-import AiFinalize from './Pages/AiTravel/AiFinalize'
 import AiItinerary from './Pages/AiTravel/AiItenerary';
-import AiFood from './Pages/AiTravel/AiFinalize';
 import { TravelProvider } from './Pages/AiTravel/AiContext/AiContext';
+import AiFood from './Pages/AiTravel/AiFood';
+import AiFinalize from './Pages/AiTravel/AiFinalize';
 
 function App() {
   return (
@@ -56,6 +56,7 @@ function App() {
         <Route path="/ai-hotel" element={<AiHotel />} />
         <Route path="/ai-food" element={<AiFood />} />
         <Route path="/ai-finalize" element={<AiFinalize />} />
+   
         <Route path="/ai-itinerary" element={<AiItinerary />} />
         </Routes>
         <FloatingButton />

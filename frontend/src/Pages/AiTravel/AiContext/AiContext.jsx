@@ -1,15 +1,15 @@
-// src/context/TravelContext.jsx
-import React, { createContext, useState, useContext } from 'react';
+// src/AiTravel/AiContext/AiContext.js
+import React, { createContext, useContext, useState } from 'react';
 
 const TravelContext = createContext();
 
 export const TravelProvider = ({ children }) => {
   const [travelData, setTravelData] = useState({
     destination: '',
-    destinationImage: '',
     travelers: '',
-    tripDates: '',
-    interests: [],
+    startDate: '',
+    endDate: '',
+    preferences: [],
     budget: '',
   });
 

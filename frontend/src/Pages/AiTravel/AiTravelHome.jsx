@@ -1,4 +1,3 @@
-// src/pages/AiTravelHome.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Player } from '@lottiefiles/react-lottie-player';
