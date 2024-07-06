@@ -1,4 +1,3 @@
-// src/components/AiHotel.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MapGL, { Marker, Popup } from 'react-map-gl';
@@ -14,7 +13,7 @@ const AiHotel = () => {
   const [selectedHotel, setSelectedHotel] = useState(null);
   const [viewport, setViewport] = useState({
     width: '100%',
-    height: 400,
+    height: '100%',
     latitude: 40,
     longitude: -100,
     zoom: 3
@@ -45,8 +44,19 @@ const AiHotel = () => {
     navigate('/ai-food');
   };
 
+  const handleContinueWithoutHotel = () => {
+    navigate('/ai-food');
+  };
+
   return (
     <div className="flex flex-col h-screen bg-gray-100">
+      <header className="bg-blue-500 text-white p-4">
+        <h1 className="text-2xl font-bold">AI Hotel Finder</h1>
+        <nav>
+          <button onClick={() => navigate('/login')} className="mr-4">Login</button>
+          <button onClick={() => navigate('/signup')}>Sign Up</button>
+        </nav>
+      </header>
       <div className="flex flex-1">
         <div className="w-1/3 p-4">
           <h2 className="text-xl font-bold mb-4">Select Hotel Star Rating</h2>
@@ -80,43 +90,51 @@ const AiHotel = () => {
           ))}
         </div>
         <div className="w-2/3 p-4">
-          <MapGL
-            {...viewport}
-            mapStyle="mapbox://styles/mapbox/streets-v11"
-            mapboxApiAccessToken={'pk.eyJ1IjoiYWJzaGFuIiwiYSI6ImNseHZ1ajUybTBtbGcyanF6eGFid216OHAifQ.1AXCW22VbJsmDC-2oIm0yw'}
-            onViewportChange={(nextViewport) => setViewport(nextViewport)}
-          >
-            {hotels.map((hotel) => (
-              <Marker key={hotel.id} latitude={hotel.latitude} longitude={hotel.longitude}>
-                <button
-                  className="bg-red-500 rounded-full p-1"
-                  onClick={() => setSelectedHotel(hotel)}
+          <div className="relative w-full h-96">
+            <MapGL
+              {...viewport}
+              mapStyle="mapbox://styles/mapbox/streets-v11"
+              mapboxApiAccessToken={'pk.eyJ1IjoiYWJzaGFuIiwiYSI6ImNseHZ1ajUybTBtbGcyanF6eGFid216OHAifQ.1AXCW22VbJsmDC-2oIm0yw'}
+              onViewportChange={(nextViewport) => setViewport(nextViewport)}
+            >
+              {hotels.map((hotel) => (
+                <Marker key={hotel.id} latitude={hotel.latitude} longitude={hotel.longitude}>
+                  <button
+                    className="bg-red-500 rounded-full p-1"
+                    onClick={() => setSelectedHotel(hotel)}
+                  >
+                    <img src="/marker.svg" alt="Marker" />
+                  </button>
+                </Marker>
+              ))}
+              {selectedHotel && (
+                <Popup
+                  latitude={selectedHotel.latitude}
+                  longitude={selectedHotel.longitude}
+                  onClose={() => setSelectedHotel(null)}
+                  closeOnClick={false}
+                  offsetTop={-10}
                 >
-                  <img src="/marker.svg" alt="Marker" />
-                </button>
-              </Marker>
-            ))}
-            {selectedHotel && (
-              <Popup
-                latitude={selectedHotel.latitude}
-                longitude={selectedHotel.longitude}
-                onClose={() => setSelectedHotel(null)}
-                closeOnClick={false}
-                offsetTop={-10}
-              >
-                <div>
-                  <h2>{selectedHotel.name}</h2>
-                  <p>{selectedHotel.description}</p>
-                </div>
-              </Popup>
-            )}
-          </MapGL>
-          <div className="mt-4">
+                  <div>
+                    <h2>{selectedHotel.name}</h2>
+                    <p>{selectedHotel.description}</p>
+                  </div>
+                </Popup>
+              )}
+            </MapGL>
+          </div>
+          <div className="mt-4 flex">
             <button
               onClick={handleContinue}
-              className="bg-blue-500 text-white py-2 px-4 rounded"
+              className="bg-blue-500 text-white py-2 px-4 rounded mr-2"
             >
               Continue
+            </button>
+            <button
+              onClick={handleContinueWithoutHotel}
+              className="bg-gray-500 text-white py-2 px-4 rounded"
+            >
+              Continue without Hotel
             </button>
           </div>
         </div>
