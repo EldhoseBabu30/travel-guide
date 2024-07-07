@@ -31,4 +31,6 @@ const travelSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Travel', travelSchema);
+const Travel = mongoose.model('Travel', travelSchema);
+
+export default Travel;

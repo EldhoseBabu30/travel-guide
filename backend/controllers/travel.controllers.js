@@ -1,7 +1,7 @@
 // controllers/travelController.js
-import travelSchema from '../models/trip.model.js'
+import Travel from '../models/trip.model.js';
 
-const createTravelData = async (req, res) => {
+export const createTravelData = async (req, res) => {
   try {
     const travelData = new Travel(req.body);
     await travelData.save();
@@ -11,7 +11,7 @@ const createTravelData = async (req, res) => {
   }
 };
 
-const getTravelData = async (req, res) => {
+export const getTravelData = async (req, res) => {
   try {
     const travelData = await Travel.find();
     res.status(200).json(travelData);
@@ -20,7 +20,7 @@ const getTravelData = async (req, res) => {
   }
 };
 
-const getTravelDataById = async (req, res) => {
+export const getTravelDataById = async (req, res) => {
   try {
     const travelData = await Travel.findById(req.params.id);
     if (!travelData) {
@@ -32,7 +32,7 @@ const getTravelDataById = async (req, res) => {
   }
 };
 
-const updateTravelData = async (req, res) => {
+export const updateTravelData = async (req, res) => {
   try {
     const travelData = await Travel.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
     if (!travelData) {
@@ -44,7 +44,7 @@ const updateTravelData = async (req, res) => {
   }
 };
 
-const deleteTravelData = async (req, res) => {
+export const deleteTravelData = async (req, res) => {
   try {
     const travelData = await Travel.findByIdAndDelete(req.params.id);
     if (!travelData) {
@@ -54,12 +54,4 @@ const deleteTravelData = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-};
-
-module.exports = {
-  createTravelData,
-  getTravelData,
-  getTravelDataById,
-  updateTravelData,
-  deleteTravelData,
 };
