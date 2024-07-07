@@ -26,7 +26,7 @@ const AiTravelHome = () => {
     setTravelData(prevData => ({
       ...prevData,
       destination: suggestion.place_name,
-      destinationImage: suggestion.image_url, // Assuming you get an image URL from the Mapbox API
+      destinationImage: suggestion.image_url,
     }));
     setAlertMessage('');
   };

@@ -1,5 +1,6 @@
 // src/components/MapboxAutoSuggest.jsx
 import React, { useState } from 'react';
+import axios from 'axios';
 import mapboxSdk from '@mapbox/mapbox-sdk';
 import MapboxGeocoder from '@mapbox/mapbox-sdk/services/geocoding';
 
@@ -28,10 +29,24 @@ const MapboxAutoSuggest = ({ onSelect }) => {
     }
   };
 
-  const handleSelect = (suggestion) => {
+  const handleSelect = async (suggestion) => {
     setQuery(suggestion.place_name);
     setSuggestions([]);
-    onSelect(suggestion);
+
+    // Fetch photo from Unsplash API
+    const placeImage = await fetchPlaceImage(suggestion.place_name);
+
+    onSelect({ ...suggestion, image_url: placeImage });
+  };
+
+  const fetchPlaceImage = async (place) => {
+    const UNSPLASH_ACCESS_KEY = 'MyLdu5v_8FGkBtxsCZXGezAd9csefcvbUCaLCoVSJ5A';
+    const response = await axios.get(
+      `https://api.unsplash.com/search/photos?query=${place}&client_id=${UNSPLASH_ACCESS_KEY}`
+    );
+
+    const photos = response.data.results;
+    return photos.length > 0 ? photos[0].urls.regular : '';
   };
 
   return (

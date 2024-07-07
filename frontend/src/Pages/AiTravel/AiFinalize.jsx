@@ -1,3 +1,4 @@
+// src/pages/AiFinalize.jsx
 import React from 'react';
 import { useTravelContext } from '../../Pages/AiTravel/AiContext/AiContext';
 import { useNavigate } from 'react-router-dom';
@@ -35,7 +36,12 @@ const AiFinalize = () => {
             <strong>Budget:</strong> {travelData.budget}
           </p>
           {travelData.destinationImage && (
-            <img src={travelData.destinationImage} alt="Destination" className="w-full h-auto mt-4 rounded-lg" />
+            <img
+              src={travelData.destinationImage}
+              alt={travelData.destination}
+              className="mt-4 rounded-lg shadow-md"
+              style={{ maxHeight: '300px', maxWidth: '100%' }}
+            />
           )}
         </div>
         <button
