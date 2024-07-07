@@ -1,31 +1,65 @@
-import Trip from '../models/trip.model.js'
-import { generateTravelPlan } from '../services/geminiService.js';
+// controllers/travelController.js
+import travelSchema from '../models/trip.model.js'
 
-export const getTrips = async (req, res) => {
-    try {
-        const trips = await Trip.find();
-        res.json(trips);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
+const createTravelData = async (req, res) => {
+  try {
+    const travelData = new Travel(req.body);
+    await travelData.save();
+    res.status(201).json(travelData);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
 };
 
-export const createTrip = async (req, res) => {
-    const trip = new Trip(req.body);
-    try {
-        const newTrip = await trip.save();
-        res.status(201).json(newTrip);
-    } catch (err) {
-        res.status(400).json({ message: err.message });
-    }
+const getTravelData = async (req, res) => {
+  try {
+    const travelData = await Travel.find();
+    res.status(200).json(travelData);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
-export const planTrip = async (req, res) => {
-    const { destination, dates, activities, people, travelWith } = req.body;
-    try {
-        const itinerary = await generateTravelPlan(destination, dates, activities, people, travelWith);
-        res.json(itinerary);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
+const getTravelDataById = async (req, res) => {
+  try {
+    const travelData = await Travel.findById(req.params.id);
+    if (!travelData) {
+      return res.status(404).json({ message: 'Travel data not found' });
     }
+    res.status(200).json(travelData);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const updateTravelData = async (req, res) => {
+  try {
+    const travelData = await Travel.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    if (!travelData) {
+      return res.status(404).json({ message: 'Travel data not found' });
+    }
+    res.status(200).json(travelData);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+const deleteTravelData = async (req, res) => {
+  try {
+    const travelData = await Travel.findByIdAndDelete(req.params.id);
+    if (!travelData) {
+      return res.status(404).json({ message: 'Travel data not found' });
+    }
+    res.status(200).json({ message: 'Travel data deleted' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = {
+  createTravelData,
+  getTravelData,
+  getTravelDataById,
+  updateTravelData,
+  deleteTravelData,
 };

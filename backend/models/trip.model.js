@@ -1,29 +1,34 @@
+// models/Travel.js
 import mongoose from 'mongoose';
 
-const tripSchema = new mongoose.Schema({
-    destination: {
-        type: String,
-        required: true
-    },
-    dates: {
-        type: String,
-        required: true
-    },
-    activities: {
-        type: [String],
-        required: true
-    },
-    people: {
-        type: Number,
-        required: true
-    },
-    travelWith: {
-        type: String,
-        required: true
-    }
+const travelSchema = new mongoose.Schema({
+  destination: {
+    type: String,
+    required: true,
+  },
+  travelers: {
+    type: String,
+    required: true,
+  },
+  startDate: {
+    type: String,
+    required: true,
+  },
+  endDate: {
+    type: String,
+    required: true,
+  },
+  preferences: {
+    type: [String],
+    required: true,
+  },
+  budget: {
+    type: String,
+    required: true,
+  },
+  destinationImage: {
+    type: String,
+  },
 });
 
-const Trip = mongoose.model('Trip', tripSchema);
-
-export default Trip;
-
+module.exports = mongoose.model('Travel', travelSchema);
