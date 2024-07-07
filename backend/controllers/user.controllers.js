@@ -45,7 +45,7 @@ export const test = (req, res) => {
       res.status(200).json('User has been deleted!');
     } catch (error) {
       next(error);
-    }
+   }
   };
 
 export const getUser = async (req, res, next) => {

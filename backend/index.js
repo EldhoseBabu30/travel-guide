@@ -32,6 +32,9 @@ app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/trips', travelPlannerRouter);
 
+
+
+
 // Error-handling middleware
 app.use((err, req, res, next) => {
   console.error('Error:', err.message);
