@@ -18,48 +18,52 @@ import OAuth from '../../components/Authentication/OAuth';
 
 
 const SignIn = () => {
+  const [formData, setFormData] = useState({});
+  const { loading, error } = useSelector((state) => state.user);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    });
+  };
 
-    const [formData, setFormData] = useState({});
-    const { loading, error } = useSelector((state) => state.user);
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const handleChange = (e) => {
-      setFormData({
-        ...formData,
-        [e.target.id]: e.target.value,
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      dispatch(signInStart());
+      const res = await fetch('http://localhost:3000/api/auth/sign-in', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
       });
-    };
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-      try {
-        dispatch(signInStart());
-        const res = await fetch('http://localhost:3000/api/auth/sign-in', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
-        });
-        const data = await res.json();
-        console.log(data);
-        if (data.success === false) {
-          dispatch(signInFailure(data.message));
-          return;
-        }
-        dispatch(signInSuccess(data));
-        Swal.fire({
-          icon: 'success',
-          title: 'Sign in Successful',
-          text: 'You have successfully Signed in.',
-        }).then(() => {
-          navigate('/');
-        });
-      } catch (error) {
-        dispatch(signInFailure(error.message));
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(signInFailure(data.message));
+        return;
       }
-      console.log(formData);
-    };
+  
+      // Store the token in localStorage
+      localStorage.setItem('authorization', data.token);
+  
+      dispatch(signInSuccess(data));
+      Swal.fire({
+        icon: 'success',
+        title: 'Sign in Successful',
+        text: 'You have successfully signed in.',
+      }).then(() => {
+        navigate('/');
+      });
+    } catch (error) {
+      dispatch(signInFailure(error.message));
+    }
+  };
+  
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4">
       <div className="flex flex-col lg:flex-row w-full max-w-5xl bg-white shadow-md rounded-tl-3xl rounded-br-3xl rounded-tr-md rounded-bl-md overflow-hidden">
@@ -108,6 +112,8 @@ const SignIn = () => {
             >
             {loading ? 'Loading...' : 'Sign In'}
             </button>
+            {error && <p className='text-red-500 mt-5'>{error}</p>}
+
           </form>
           <div className="flex items-center justify-between mt-6 w-full">
             <hr className="w-full border-gray-300" />
@@ -121,7 +127,6 @@ const SignIn = () => {
           > <img className='rounded-tl-3xl rounded-bl-md rounded-tr-md rounded-br-3xl' src={vintage_car} alt="" /></div>
         </div>
       </div>
-      {error && <p className='text-red-500 mt-5'>{error}</p>}
     </div>
   );
 };

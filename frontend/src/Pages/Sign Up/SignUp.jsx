@@ -36,10 +36,11 @@ const SignUp = () => {
         setError(data.message || "Sign-up failed");
         setLoading(false);
         console.log(data);
-
         return;
-        
       }
+            // Store the token in localStorage
+            localStorage.setItem('authorization', data.token);
+            
       Swal.fire({
         icon: 'success',
         title: 'Success',

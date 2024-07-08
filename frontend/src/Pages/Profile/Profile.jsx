@@ -36,7 +36,6 @@ export default function Profile() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-
   useEffect(() => {
     if (file) {
       handleFileUpload(file);
@@ -75,51 +74,64 @@ export default function Profile() {
     e.preventDefault();
     try {
       dispatch(updateUserStart());
-      const token = Cookies.get('access_token');
+
+      const token = localStorage.getItem('authorization'); // Retrieve token from localStorage
+      if (!token) {
+        throw new Error('Authorization token is missing');
+      }
       console.log('Token for update:', token); // Debugging token
+
       const res = await fetch(`http://localhost:3000/api/user/update/${currentUser._id}`, {
-        method: 'POST',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`, // Ensure token is prefixed with Bearer
+          'Authorization': `${token}`,
         },
         body: JSON.stringify(formData),
       });
+
       const data = await res.json();
       if (!res.ok) {
         dispatch(updateUserFailure(data.message));
         return;
       }
+
       dispatch(updateUserSuccess(data));
       setUpdateSuccess(true);
     } catch (error) {
       dispatch(updateUserFailure(error.message));
     }
   };
-  
+
   const handleDeleteUser = async () => {
     try {
       dispatch(deleteUserStart());
-      const token = Cookies.get('access_token');
+      const token = localStorage.getItem('authorization'); // Retrieve token from localStorage
+      if (!token) {
+        throw new Error('Authorization token is missing');
+      }
       console.log('Token for delete:', token); // Debugging token
+
       const res = await fetch(`http://localhost:3000/api/user/delete/${currentUser._id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`, // Ensure token is prefixed with Bearer
+          'Authorization': `${token}`, // Ensure token is prefixed with Bearer
         },
       });
+
       const data = await res.json();
       if (!res.ok) {
         dispatch(deleteUserFailure(data.message));
         return;
       }
+
       dispatch(deleteUserSuccess(data));
-      navigate('/');
+      localStorage.removeItem('authorization'); // Remove token from localStorage
+      navigate('/'); // Redirect to home page after account deletion
     } catch (error) {
       dispatch(deleteUserFailure(error.message));
     }
   };
-  
 
   const handleSignOut = async () => {
     try {
