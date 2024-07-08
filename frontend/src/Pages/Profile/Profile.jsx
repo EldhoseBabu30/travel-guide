@@ -80,7 +80,7 @@ export default function Profile() {
         throw new Error('Authorization token is missing');
       }
       console.log('Token for update:', token); // Debugging token
-
+      console.log('currentUser._id:', currentUser); // Debugging currentUser._id
       const res = await fetch(`http://localhost:3000/api/user/update/${currentUser._id}`, {
         method: 'PUT',
         headers: {

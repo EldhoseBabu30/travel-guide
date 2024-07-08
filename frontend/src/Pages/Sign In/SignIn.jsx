@@ -48,8 +48,9 @@ const SignIn = () => {
       }
   
       // Store the token in localStorage
+      console.log(data)
       localStorage.setItem('authorization', data.token);
-  
+      
       dispatch(signInSuccess(data));
       Swal.fire({
         icon: 'success',
