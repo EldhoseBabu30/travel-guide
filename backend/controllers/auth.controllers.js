@@ -1,13 +1,14 @@
+// controllers/auth.controllers.js
 import { errorHandler } from "../utils/error.js";
 import User from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { createToken } from "../utils/JwtHandler.js";
 
 export const signup = async (req, res, next) => {
   const { username, email, password } = req.body;
 
   try {
-    // Check if the user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ success: false, message: "User already exists" });
@@ -19,17 +20,23 @@ export const signup = async (req, res, next) => {
       email,
       password: hashedPassword
     });
+    console.log(newUser);
+    let payload = { id: newUser._id, username: newUser.username, email: newUser.email };
+    const token = await createToken(payload);
 
     await newUser.save();
     res.status(201).json({
       success: true,
       message: "User created successfully"
+      , token
     });
   } catch (error) {
+    console.log(error);
     next(error);
   }
 };
 
+// controllers/auth.controllers.js
 
 export const signin = async (req, res, next) => {
   const { email, password } = req.body;
@@ -43,13 +50,14 @@ export const signin = async (req, res, next) => {
     const { password: pass, ...rest } = validUser._doc;
     res.cookie('access_token', token, { 
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // Use secure in production
-      sameSite: 'strict' // Helps prevent CSRF attacks
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict'
     }).status(200).json(rest);
   } catch (error) {
     next(error);
   }
 };
+
 
 export const google = async (req, res, next) => {
   try {
@@ -88,11 +96,10 @@ export const google = async (req, res, next) => {
 };
 
 export const signOut = async (req, res, next) => {
-    try {
-      res.clearCookie('access_token');
-      res.status(200).json('User has been logged out!');
-    } catch (error) {
-      next(error);
-    }
-  };
-  
+  try {
+    res.clearCookie('access_token');
+    res.status(200).json('User has been logged out!');
+  } catch (error) {
+    next(error);
+  }
+};

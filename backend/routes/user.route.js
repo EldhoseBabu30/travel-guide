@@ -1,6 +1,7 @@
+// routes/user.route.js
 import express from 'express';
-import { updateUser,test, deleteUser,getUser } from '../controllers/user.controllers.js';
-import { verifyToken } from '../utils/VerifyUser.js';
+import { updateUser, deleteUser, getUser, test } from '../controllers/user.controllers.js';
+import { verifyToken } from '../utils/JwtHandler.js';
 
 const router = express.Router();
 

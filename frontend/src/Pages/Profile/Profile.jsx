@@ -76,11 +76,12 @@ export default function Profile() {
     try {
       dispatch(updateUserStart());
       const token = Cookies.get('access_token');
+      console.log('Token for update:', token); // Debugging token
       const res = await fetch(`http://localhost:3000/api/user/update/${currentUser._id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`, // Include the token
+          'Authorization': `Bearer ${token}`, // Ensure token is prefixed with Bearer
         },
         body: JSON.stringify(formData),
       });
@@ -100,10 +101,11 @@ export default function Profile() {
     try {
       dispatch(deleteUserStart());
       const token = Cookies.get('access_token');
+      console.log('Token for delete:', token); // Debugging token
       const res = await fetch(`http://localhost:3000/api/user/delete/${currentUser._id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`, // Include the token
+          'Authorization': `Bearer ${token}`, // Ensure token is prefixed with Bearer
         },
       });
       const data = await res.json();
@@ -117,8 +119,6 @@ export default function Profile() {
       dispatch(deleteUserFailure(error.message));
     }
   };
-  
-  
   
 
   const handleSignOut = async () => {

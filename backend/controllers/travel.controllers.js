@@ -3,7 +3,10 @@ import Travel from '../models/trip.model.js';
 
 export const createTravelData = async (req, res) => {
   try {
-    const travelData = new Travel(req.body);
+    const travelData = new Travel({
+      userId: req.user.id,
+      ...req.body,
+    });
     await travelData.save();
     res.status(201).json(travelData);
   } catch (error) {
@@ -13,7 +16,7 @@ export const createTravelData = async (req, res) => {
 
 export const getTravelData = async (req, res) => {
   try {
-    const travelData = await Travel.find();
+    const travelData = await Travel.find({ userId: req.user.id });
     res.status(200).json(travelData);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -22,7 +25,7 @@ export const getTravelData = async (req, res) => {
 
 export const getTravelDataById = async (req, res) => {
   try {
-    const travelData = await Travel.findById(req.params.id);
+    const travelData = await Travel.findOne({ _id: req.params.id, userId: req.user.id });
     if (!travelData) {
       return res.status(404).json({ message: 'Travel data not found' });
     }
@@ -34,7 +37,11 @@ export const getTravelDataById = async (req, res) => {
 
 export const updateTravelData = async (req, res) => {
   try {
-    const travelData = await Travel.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    const travelData = await Travel.findOneAndUpdate(
+      { _id: req.params.id, userId: req.user.id },
+      req.body,
+      { new: true, runValidators: true }
+    );
     if (!travelData) {
       return res.status(404).json({ message: 'Travel data not found' });
     }
@@ -46,7 +53,7 @@ export const updateTravelData = async (req, res) => {
 
 export const deleteTravelData = async (req, res) => {
   try {
-    const travelData = await Travel.findByIdAndDelete(req.params.id);
+    const travelData = await Travel.findOneAndDelete({ _id: req.params.id, userId: req.user.id });
     if (!travelData) {
       return res.status(404).json({ message: 'Travel data not found' });
     }
