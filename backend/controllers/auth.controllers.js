@@ -20,23 +20,22 @@ export const signup = async (req, res, next) => {
       email,
       password: hashedPassword
     });
-    console.log(newUser);
-    let payload = { id: newUser._id, username: newUser.username, email: newUser.email };
+    await newUser.save();
+
+    const payload = { id: newUser._id, username: newUser.username, email: newUser.email };
     const token = await createToken(payload);
 
-    await newUser.save();
     res.status(201).json({
       success: true,
-      message: "User created successfully"
-      , token
+      message: "User created successfully",
+      token,
+      user: payload
     });
   } catch (error) {
     console.log(error);
     next(error);
   }
 };
-
-// controllers/auth.controllers.js
 
 export const signin = async (req, res, next) => {
   const { email, password } = req.body;
@@ -47,19 +46,19 @@ export const signin = async (req, res, next) => {
     if (!validPassword) return next(errorHandler(401, 'Wrong credentials!'));
    
     const { password: pass, ...rest } = validUser._doc;
-    let payload = { id: validUser._id, username: validUser.username, email: validUser.email };
+    const payload = { id: validUser._id, username: validUser.username, email: validUser.email };
     const token = await createToken(payload);
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
-      message: "Logined successfully"
-      , token
+      message: "Logged in successfully",
+      token,
+      user: payload
     });
   } catch (error) {
     next(error);
   }
 };
-
 
 export const google = async (req, res, next) => {
   try {
@@ -77,9 +76,7 @@ export const google = async (req, res, next) => {
         Math.random().toString(36).slice(-8);
       const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
       const newUser = new User({
-        username:
-          req.body.name.split(' ').join('').toLowerCase() +
-          Math.random().toString(36).slice(-4),
+        username: req.body.name.split(' ').join('').toLowerCase() + Math.random().toString(36).slice(-4),
         email: req.body.email,
         password: hashedPassword,
         avatar: req.body.photo,

@@ -28,13 +28,23 @@ export default function Profile() {
   const [filePerc, setFilePerc] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({
-    username: currentUser?.username,
-    email: currentUser?.email,
-    avatar: currentUser?.avatar,
+    username: '',
+    email: '',
+    avatar: '',
   });
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (currentUser) {
+      setFormData({
+        username: currentUser.username,
+        email: currentUser.email,
+        avatar: currentUser.avatar,
+      });
+    }
+  }, [currentUser]);
 
   useEffect(() => {
     if (file) {
@@ -74,14 +84,16 @@ export default function Profile() {
     e.preventDefault();
     try {
       dispatch(updateUserStart());
-
-      const token = localStorage.getItem('authorization'); // Retrieve token from localStorage
+      const token = localStorage.getItem('authorization');
       if (!token) {
         throw new Error('Authorization token is missing');
       }
-      console.log('Token for update:', token); // Debugging token
-      console.log('currentUser._id:', currentUser); // Debugging currentUser._id
-      const res = await fetch(`http://localhost:3000/api/user/update/${currentUser._id}`, {
+
+      if (!currentUser || !currentUser.id) {
+        throw new Error('currentUser.id is undefined');
+      }
+
+      const res = await fetch(`http://localhost:3000/api/user/update/${currentUser.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -89,13 +101,11 @@ export default function Profile() {
         },
         body: JSON.stringify(formData),
       });
-
       const data = await res.json();
       if (!res.ok) {
         dispatch(updateUserFailure(data.message));
         return;
       }
-
       dispatch(updateUserSuccess(data));
       setUpdateSuccess(true);
     } catch (error) {
@@ -106,16 +116,19 @@ export default function Profile() {
   const handleDeleteUser = async () => {
     try {
       dispatch(deleteUserStart());
-      const token = localStorage.getItem('authorization'); // Retrieve token from localStorage
+      const token = localStorage.getItem('authorization');
       if (!token) {
         throw new Error('Authorization token is missing');
       }
-      console.log('Token for delete:', token); // Debugging token
 
-      const res = await fetch(`http://localhost:3000/api/user/delete/${currentUser._id}`, {
+      if (!currentUser || !currentUser.id) {
+        throw new Error('currentUser.id is undefined');
+      }
+
+      const res = await fetch(`http://localhost:3000/api/user/delete/${currentUser.id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `${token}`, // Ensure token is prefixed with Bearer
+          'Authorization': `${token}`,
         },
       });
 
@@ -126,8 +139,8 @@ export default function Profile() {
       }
 
       dispatch(deleteUserSuccess(data));
-      localStorage.removeItem('authorization'); // Remove token from localStorage
-      navigate('/'); // Redirect to home page after account deletion
+      localStorage.removeItem('authorization');
+      navigate('/');
     } catch (error) {
       dispatch(deleteUserFailure(error.message));
     }
@@ -164,7 +177,7 @@ export default function Profile() {
         <div className='relative self-center'>
           <img
             onClick={() => fileRef.current.click()}
-            src={formData.avatar || currentUser.avatar}
+            src={formData.avatar || currentUser?.avatar}
             alt='profile'
             className='rounded-full h-32 w-32 object-cover cursor-pointer border-4 border-gray-200'
           />

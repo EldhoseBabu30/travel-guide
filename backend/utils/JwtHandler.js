@@ -1,9 +1,8 @@
-// utils/verifyUser.js
 import jwt from 'jsonwebtoken';
 import { errorHandler } from './error.js';
 
 export const verifyToken = (req, res, next) => {
-  let token = req.headers['Authorization'] || req.headers['authorization'];
+  let token = req.headers['authorization'];
 
   console.log('Token received:', token); // Debugging token
 
@@ -22,7 +21,7 @@ export const verifyToken = (req, res, next) => {
   });
 };
 
-export const createToken =async (user) => {
+export const createToken = async (user) => {
   console.log(user);
   return jwt.sign(user, process.env.JWT_SECRET);
 }
