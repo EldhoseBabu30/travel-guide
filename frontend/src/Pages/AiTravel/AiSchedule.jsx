@@ -1,7 +1,6 @@
 // src/components/AiSchedule.jsx
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, Center, Heading, VStack, HStack, Text } from '@chakra-ui/react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { TripContext } from '../AiTravel/context/TripContext';
@@ -22,25 +21,25 @@ const AiSchedule = () => {
   };
 
   return (
-    <Center minH="100vh" bg="white">
-      <VStack spacing={6} textAlign="center">
-        <Heading as="h1" size="2xl" color="orange.400">📅 Select Trip Dates 🗓️</Heading>
-        <HStack spacing={4}>
-          <VStack>
-            <Text>Start Date</Text>
+    <div className="flex items-center justify-center min-h-screen bg-white">
+      <div className="w-full max-w-2xl p-6">
+        <h1 className="text-4xl font-bold text-orange-400 mb-8 text-center">📅 Select Trip Dates 🗓️</h1>
+        <div className="flex justify-center space-x-8 mb-8">
+          <div className="flex flex-col items-center">
+            <span className="text-lg mb-2">Start Date</span>
             <DatePicker
               selected={startDate}
               onChange={date => setStartDate(date)}
               selectsStart
               startDate={startDate}
               endDate={endDate}
-              className="border border-orange-400 p-2 rounded-lg"
+              className="border border-orange-400 p-2 rounded-lg text-center"
               wrapperClassName="w-full"
               calendarClassName="border border-orange-400"
             />
-          </VStack>
-          <VStack>
-            <Text>End Date</Text>
+          </div>
+          <div className="flex flex-col items-center">
+            <span className="text-lg mb-2">End Date</span>
             <DatePicker
               selected={endDate}
               onChange={date => setEndDate(date)}
@@ -48,17 +47,19 @@ const AiSchedule = () => {
               startDate={startDate}
               endDate={endDate}
               minDate={startDate}
-              className="border border-orange-400 p-2 rounded-lg"
+              className="border border-orange-400 p-2 rounded-lg text-center"
               wrapperClassName="w-full"
               calendarClassName="border border-orange-400"
             />
-          </VStack>
-        </HStack>
-        <Button colorScheme="orange" onClick={handleContinue}>
-          👉 Continue
-        </Button>
-      </VStack>
-    </Center>
+          </div>
+        </div>
+        <div className="flex justify-center">
+          <button onClick={handleContinue} className="bg-orange-400 text-white w-48 h-12 text-lg rounded-lg">
+            👉 Continue
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
 
