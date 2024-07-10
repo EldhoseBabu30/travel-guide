@@ -17,21 +17,21 @@ import FloatingButton from './components/FloatingButton';
 import HotelMap from './Pages/Hotel/HotelListings';
 import FoodSpots from './Pages/FoodSpots/Foodspots';
 import Community from './Pages/Community/Community';
-import AiTravelHome from './Pages/AiTravel/AiTravelHome'
-import AiSelect from './Pages/AiTravel/AiSelect'
-import AiSchedule from './Pages/AiTravel/AiSchedule'
-import AiBudget from './Pages/AiTravel/AiBudget'
-import AiHotel from './Pages/AiTravel/AiHotel'
-import AiItinerary from './Pages/AiTravel/AiItenerary';
-import { TravelProvider } from './Pages/AiTravel/AiContext/AiContext';
+import AiTravelHome from './Pages/AiTravel/AiTravelHome';
+import AiTraveller from './Pages/AiTravel/AiTraveller';
+import AiSelect from './Pages/AiTravel/AiSelect';
+import AiSchedule from './Pages/AiTravel/AiSchedule';
+import AiHotel from './Pages/AiTravel/AiHotel';
 import AiFood from './Pages/AiTravel/AiFood';
+import AiSummary from './Pages/AiTravel/AiSummary';
 import AiFinalize from './Pages/AiTravel/AiFinalize';
+import { TripProvider } from './Pages/AiTravel/context/TripContext';
 
 function App() {
   return (
     <div>
       <BrowserRouter>
-      <TravelProvider>
+        <TripProvider>
         <Nav />
         <Routes>
           <Route path="/" element={<Hero />} />
@@ -48,19 +48,19 @@ function App() {
           <Route path="/hotels" element={<HotelMap />} />
           <Route path="/food-spots" element={<FoodSpots />} />
           <Route path="/community" element={<Community />} />
-   
           <Route path="/ai-home" element={<AiTravelHome />} />
-        <Route path="/ai-select" element={<AiSelect />} />
-        <Route path="/ai-schedule" element={<AiSchedule />} />
-        <Route path="/ai-budget" element={<AiBudget />} />
-        <Route path="/ai-hotel" element={<AiHotel />} />
-        <Route path="/ai-food" element={<AiFood />} />
-        <Route path="/ai-finalize" element={<AiFinalize />} />
-   
-        <Route path="/ai-itinerary" element={<AiItinerary />} />
+          <Route path="/traveller" element={<AiTraveller />} />
+          <Route path="/select" element={<AiSelect />} />
+          <Route path="/schedule" element={<AiSchedule />} />
+          <Route path="/hotel" element={<AiHotel />} />
+          <Route path="/food" element={<AiFood />} />
+          <Route path="/summary" element={<AiSummary />} />
+          <Route path="/finalize" element={<AiFinalize />} />
+
+
         </Routes>
         <FloatingButton />
-        </TravelProvider>
+        </TripProvider>
       </BrowserRouter>
     </div>
   );

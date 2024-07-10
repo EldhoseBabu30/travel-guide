@@ -1,11 +1,10 @@
-// src/components/MapboxAutoSuggest.jsx
 import React, { useState } from 'react';
-import axios from 'axios';
 import mapboxSdk from '@mapbox/mapbox-sdk';
 import MapboxGeocoder from '@mapbox/mapbox-sdk/services/geocoding';
 
-const mapboxClient = mapboxSdk({ accessToken: 'pk.eyJ1IjoiYWJzaGFuIiwiYSI6ImNseHZ1ajUybTBtbGcyanF6eGFid216OHAifQ.1AXCW22VbJsmDC-2oIm0yw' });
-const geocodingService = MapboxGeocoder(mapboxClient);
+// Access the environment variable correctly using import.meta.env
+const mapboxClient = mapboxSdk({ accessToken: import.meta.env.VITE_MAPBOX_API_KEY });
+const geocodingService = mapboxClient.geocoding;
 
 const MapboxAutoSuggest = ({ onSelect }) => {
   const [query, setQuery] = useState('');
@@ -29,24 +28,10 @@ const MapboxAutoSuggest = ({ onSelect }) => {
     }
   };
 
-  const handleSelect = async (suggestion) => {
+  const handleSelect = (suggestion) => {
     setQuery(suggestion.place_name);
     setSuggestions([]);
-
-    // Fetch photo from Unsplash API
-    const placeImage = await fetchPlaceImage(suggestion.place_name);
-
-    onSelect({ ...suggestion, image_url: placeImage });
-  };
-
-  const fetchPlaceImage = async (place) => {
-    const UNSPLASH_ACCESS_KEY = 'MyLdu5v_8FGkBtxsCZXGezAd9csefcvbUCaLCoVSJ5A';
-    const response = await axios.get(
-      `https://api.unsplash.com/search/photos?query=${place}&client_id=${UNSPLASH_ACCESS_KEY}`
-    );
-
-    const photos = response.data.results;
-    return photos.length > 0 ? photos[0].urls.regular : '';
+    onSelect(suggestion);
   };
 
   return (

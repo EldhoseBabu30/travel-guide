@@ -1,0 +1,144 @@
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 16px;
+    min-height: 100vh;
+    background-color: white;
+  }
+
+  .sidebar {
+    padding: 16px;
+  }
+
+  .heading {
+    font-size: 2rem;
+    color: orange;
+  }
+
+  .button-group {
+    margin-top: 16px;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 12px 24px;
+    margin-right: 8px;
+    background-color: orange;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn:hover {
+    background-color: darkorange;
+  }
+
+  .section {
+    margin-top: 32px;
+  }
+
+  .sub-heading {
+    font-size: 1.5rem;
+    margin-bottom: 16px;
+  }
+
+  .rating-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .rating-btn {
+    padding: 8px 16px;
+    border: 1px solid orange;
+    background-color: white;
+    cursor: pointer;
+  }
+
+  .rating-btn.selected {
+    background-color: orange;
+    color: white;
+  }
+
+  .slider {
+    width: 100%;
+  }
+
+  .slider-value {
+    margin-top: 8px;
+    font-size: 1.2rem;
+  }
+
+  .checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .checkbox-item {
+    display: flex;
+    align-items: center;
+  }
+
+  .selected-hotel {
+    margin-top: 32px;
+    padding: 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+  }
+
+  .hotel-image {
+    width: 100%;
+    height: auto;
+    margin-top: 16px;
+  }
+
+  .map-container {
+    position: relative;
+    height: 100%;
+  }
+
+  .search-input {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 300px;
+    padding: 12px;
+    font-size: 1rem;
+    z-index: 1;
+  }
+
+  .carousel-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    padding: 16px;
+  }
+
+  .carousel-item {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    margin: 8px;
+  }
+
+  .carousel-image {
+    width: 100%;
+    height: auto;
+  }
+
+  .carousel-content {
+    padding: 16px;
+  }
+
+  .carousel h4 {
+    margin: 0 0 8px;
+  }
+
+  .carousel p {
+    margin: 0;
+  }
