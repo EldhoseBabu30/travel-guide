@@ -47,6 +47,7 @@ const Modal = ({ show, onClose, currentStory, handleNextStory, handlePrevStory }
 const UserStories = () => {
   const [stories, setStories] = useState(initialStories);
   const [currentStory, setCurrentStory] = useState(null);
+  const fileInputRef = useRef(null);
 
   const sectionStyle = {
     width: '100%',
@@ -109,6 +110,7 @@ const UserStories = () => {
   };
 
   const handleNextStory = () => {
+    setStories(prevStories => prevStories.map(s => s.id === currentStory.id ? { ...s, viewed: true } : s));
     const currentIndex = stories.findIndex(s => s.id === currentStory.id);
     if (currentIndex < stories.length - 1) {
       setCurrentStory(stories[currentIndex + 1]);
@@ -118,6 +120,7 @@ const UserStories = () => {
   };
 
   const handlePrevStory = () => {
+    setStories(prevStories => prevStories.map(s => s.id === currentStory.id ? { ...s, viewed: true } : s));
     const currentIndex = stories.findIndex(s => s.id === currentStory.id);
     if (currentIndex > 0) {
       setCurrentStory(stories[currentIndex - 1]);
@@ -130,7 +133,26 @@ const UserStories = () => {
   };
 
   const handleAddStory = () => {
-    alert("Add story functionality to be implemented.");
+    fileInputRef.current.click();
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const newStory = {
+          id: stories.length + 1,
+          user: 'You',
+          img: reader.result,
+          viewed: false,
+          type: file.type.startsWith('image/') ? 'image' : 'video',
+          timestamp: new Date().getTime(),
+        };
+        setStories(prevStories => [newStory, ...prevStories]);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -163,6 +185,12 @@ const UserStories = () => {
         currentStory={currentStory}
         handleNextStory={handleNextStory}
         handlePrevStory={handlePrevStory}
+      />
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        style={{ display: 'none' }}
       />
     </div>
   );
