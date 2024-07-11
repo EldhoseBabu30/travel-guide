@@ -4,13 +4,14 @@ export const TripContext = createContext();
 
 export const TripProvider = ({ children }) => {
   const [tripData, setTripData] = useState({
-    destination: 'defaultDestination',
-    travelers: { type: 'defaultType', count: 1 },
-    tripDates: { startDate: new Date().toISOString().split('T')[0], endDate: new Date().toISOString().split('T')[0] },
-    tripType: 'defaultTripType',
-    budget: 'defaultBudget',
-    accommodation: { name: 'defaultAccommodation', location: 'defaultLocation', roomType: 'defaultRoomType' },
-    dining: { meals: ['defaultMeal'], dietaryRequirements: 'None' },
+    destination: '',
+    destinationCoordinates: [],
+    travelers: { type: '', count: 1 },
+    tripDates: { startDate: '', endDate: '' },
+    tripType: '',
+    budget: '',
+    accommodation: { name: '', location: '', roomType: '' },
+    dining: { meals: [], dietaryRequirements: '' },
   });
 
   return (

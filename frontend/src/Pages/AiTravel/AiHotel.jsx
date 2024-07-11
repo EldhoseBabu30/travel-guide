@@ -1,4 +1,3 @@
-// src/components/AiHotel.jsx
 import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -7,6 +6,7 @@ import Map from './Map';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 import { TripContext } from '../AiTravel/context/TripContext';
+import mapboxgl from 'mapbox-gl';
 
 const AiHotel = () => {
   const { tripData, setTripData } = useContext(TripContext);
@@ -21,28 +21,31 @@ const AiHotel = () => {
 
   useEffect(() => {
     const fetchHotels = async () => {
-      const response = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/hotel.json`, {
-        params: {
-          proximity: '76.2711,10.8505',
-          limit: 10,
-          access_token: 'pk.eyJ1IjoiYWJzaGFuIiwiYSI6ImNseHZ1ajUybTBtbGcyanF6eGFid216OHAifQ.1AXCW22VbJsmDC-2oIm0yw',
-        },
-      });
+      if (tripData.destinationCoordinates.length === 2) {
+        const [lon, lat] = tripData.destinationCoordinates;
+        const response = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/hotel.json`, {
+          params: {
+            proximity: `${lon},${lat}`,
+            limit: 10,
+            access_token: mapboxgl.accessToken,
+          },
+        });
 
-      const fetchedHotels = response.data.features.map((feature, index) => ({
-        id: feature.id,
-        name: feature.text,
-        rating: Math.floor(Math.random() * 5) + 1,
-        location: feature.geometry.coordinates,
-        price: Math.floor(Math.random() * 100) * 80 + 4000,
-        image: `https://source.unsplash.com/200x200/?hotel,${index}`,
-        address: feature.place_name,
-      }));
-      setHotels(fetchedHotels);
-      setFilteredHotels(fetchedHotels); // Initialize filteredHotels with all hotels
+        const fetchedHotels = response.data.features.map((feature, index) => ({
+          id: feature.id,
+          name: feature.text,
+          rating: Math.floor(Math.random() * 5) + 1,
+          location: feature.geometry.coordinates,
+          price: Math.floor(Math.random() * 100) * 80 + 4000,
+          image: `https://source.unsplash.com/200x200/?hotel,${index}`,
+          address: feature.place_name,
+        }));
+        setHotels(fetchedHotels);
+        setFilteredHotels(fetchedHotels);
+      }
     };
     fetchHotels();
-  }, [radius]);
+  }, [tripData.destinationCoordinates, radius]);
 
   const handleHotelSelect = (hotel) => {
     setSelectedHotel(hotel);
@@ -95,8 +98,8 @@ const AiHotel = () => {
   const handleSearch = async (query) => {
     const response = await axios.get('https://api.mapbox.com/geocoding/v5/mapbox.places/hotel.json', {
       params: {
-        access_token: 'pk.eyJ1IjoiYWJzaGFuIiwiYSI6ImNseHZ1ajUybTBtbGcyanF6eGFid216OHAifQ.1AXCW22VbJsmDC-2oIm0yw',
-        proximity: '76.2711,10.8505',
+        access_token: mapboxgl.accessToken,
+        proximity: tripData.destinationCoordinates.join(','),
         types: 'poi',
         query: query,
       },
@@ -116,6 +119,28 @@ const AiHotel = () => {
     }));
 
     setSearchResults(features);
+  };
+
+  const handleMapMove = async (center) => {
+    const response = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/hotel.json`, {
+      params: {
+        proximity: `${center.lng},${center.lat}`,
+        limit: 10,
+        access_token: mapboxgl.accessToken,
+      },
+    });
+
+    const fetchedHotels = response.data.features.map((feature, index) => ({
+      id: feature.id,
+      name: feature.text,
+      rating: Math.floor(Math.random() * 5) + 1,
+      location: feature.geometry.coordinates,
+      price: Math.floor(Math.random() * 100) * 80 + 4000,
+      image: `https://source.unsplash.com/200x200/?hotel,${index}`,
+      address: feature.place_name,
+    }));
+    setHotels(fetchedHotels);
+    setFilteredHotels(fetchedHotels);
   };
 
   return (
@@ -198,10 +223,12 @@ const AiHotel = () => {
           className="absolute top-4 left-4 z-10 w-72 p-2 border border-gray-300 rounded-lg"
         />
         <Map
-          hotels={filteredHotels} // Use filteredHotels instead of hotels
+          hotels={filteredHotels}
           searchResults={searchResults}
           onHotelSelect={handleHotelSelect}
           selectedHotel={selectedHotel}
+          onMapMove={handleMapMove}
+          initialCenter={tripData.destinationCoordinates}
         />
         <div className="absolute bottom-0 left-0 w-full bg-white p-4">
           <Carousel
