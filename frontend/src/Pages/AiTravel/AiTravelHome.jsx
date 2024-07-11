@@ -140,7 +140,7 @@ const AiTravelHome = () => {
     )}
 
     {/* New Section Start */}
-    <div className="relative flex flex-col items-center justify-center py-12 bg-white text-black text-center lg:px-40">
+    <div className="relative  flex flex-col items-center justify-center py-12 bg-white text-black text-center lg:px-[15%]">
       <h2 className="text-3xl md:text-4xl font-bold mb-6">Why Choose NjanSanchari's AI-Powered Trip</h2>
       
       <div className="flex flex-col md:flex-row items-center justify-center mb-8 w-full">
