@@ -64,8 +64,8 @@ const AiSelect = () => {
                 key={preference.name}
                 className={`flex items-center justify-center w-40 h-16 p-4 text-lg rounded-lg border-2 transition-colors duration-300 ${
                   selectedPreferences.includes(preference.name)
-                    ? 'bg-orange-400 text-white border-orange-400'
-                    : 'bg-white text-black border-orange-400 hover:bg-orange-400 hover:text-white'
+                    ? 'bg-orange-300 text-black border-gray-700'
+                    : 'bg-white text-black border-gray-700 hover:bg-orange-200 hover:text-black'
                 }`}
                 onClick={() => handlePreferenceToggle(preference.name)}
               >
@@ -84,8 +84,8 @@ const AiSelect = () => {
                 key={option.name}
                 className={`flex items-center justify-center w-40 h-16 p-4 text-lg rounded-lg border-2 transition-colors duration-300 ${
                   budget === option.name
-                    ? 'bg-orange-400 text-white border-orange-400'
-                    : 'bg-white text-black border-orange-400 hover:bg-orange-400 hover:text-white'
+                    ? 'bg-orange-300 text-black border-gray-700'
+                    : 'bg-white text-black border-gray-700 hover:bg-orange-200 hover:text-black'
                 }`}
                 onClick={() => setBudget(option.name)}
               >
@@ -97,7 +97,7 @@ const AiSelect = () => {
         </div>
 
         <div className="flex justify-center mt-8">
-          <button onClick={handleContinue} className="bg-orange-400 text-white w-48 h-12 text-lg rounded-lg">
+          <button onClick={handleContinue} className="bg-orange-400 text-white hover:bg-orange-500 w-48 h-12 text-lg rounded-lg">
             👉 Continue
           </button>
         </div>

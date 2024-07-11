@@ -40,8 +40,8 @@ const AiTraveller = () => {
               key={type}
               className={`w-full max-w-xs p-4 text-lg rounded-lg border-2 transition-colors duration-300 ${
                 travelerType === type
-                  ? 'bg-orange-400 text-white border-orange-400'
-                  : 'bg-white text-black border-orange-400 hover:bg-orange-400 hover:text-white'
+                  ? 'bg-orange-200 text-black border-orange-400'
+                  : 'bg-white text-black border-orange-400 hover:bg-orange-100 hover:text-black'
               }`}
               onClick={() => {
                 setTravelerType(type);
@@ -58,13 +58,13 @@ const AiTraveller = () => {
         </div>
         {(travelerType === 'Family' || travelerType === 'Friends' || travelerType === 'Work') && (
           <div className="flex justify-center items-center mt-8">
-            <button onClick={handleDecrement} className="bg-orange-400 text-white w-10 h-10 mr-4 rounded-lg">-</button>
+            <button onClick={handleDecrement} className="bg-orange-300 text-black w-10 h-10 mr-4 rounded-lg">-</button>
             <span className="text-xl">{peopleCount} {peopleCount === 1 ? 'person' : 'people'}</span>
-            <button onClick={handleIncrement} className="bg-orange-400 text-white w-10 h-10 ml-4 rounded-lg">+</button>
+            <button onClick={handleIncrement} className="bg-orange-300 text-black w-10 h-10 ml-4 rounded-lg">+</button>
           </div>
         )}
         <div className="flex justify-center mt-8">
-          <button onClick={handleContinue} className="bg-orange-400 text-white w-48 h-12 text-lg rounded-lg">
+          <button onClick={handleContinue} className="bg-orange-400 hover:bg-orange-500  text-white w-48 h-12 text-lg rounded-lg">
             👉 Continue
           </button>
         </div>
