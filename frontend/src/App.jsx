@@ -26,6 +26,7 @@ import AiFood from './Pages/AiTravel/AiFood';
 import AiSummary from './Pages/AiTravel/AiSummary';
 import AiFinalize from './Pages/AiTravel/AiFinalize';
 import { TripProvider } from './Pages/AiTravel/context/TripContext';
+import Footer from './components/Footer/Footer';
 
 function App() {
   return (
@@ -60,6 +61,7 @@ function App() {
 
         </Routes>
         <FloatingButton />
+        <Footer/>
         </TripProvider>
       </BrowserRouter>
     </div>

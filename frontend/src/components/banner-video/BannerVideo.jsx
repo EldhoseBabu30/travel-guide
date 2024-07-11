@@ -21,11 +21,12 @@ const App = () => {
           Discover the Untouched Paradise
         </h1>
 
-        <Link to="/packages">
+        <Link to="https://travellakshadweep.com" target="_blank">
           <button className="mt-8 shadow-md rounded-md px-6 py-3 bg-orange-400 text-white hover:bg-white hover:text-orange-400 transition-all text-sm font-inter flex items-center justify-center">
             View All Packages
           </button>
         </Link>
+
       </div>
     </div>
   );
