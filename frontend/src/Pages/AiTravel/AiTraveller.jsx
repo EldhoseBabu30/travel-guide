@@ -1,4 +1,3 @@
-// src/components/AiTraveller.jsx
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TripContext } from '../AiTravel/context/TripContext';
@@ -24,7 +23,7 @@ const AiTraveller = () => {
     } else {
       setTripData({
         ...tripData,
-        travelers: { type: travelerType, count: peopleCount },
+        travelers: { type: travelerType, count: travelerType === 'A Couple' ? 2 : peopleCount },
       });
       navigate('/select');
     }
@@ -47,6 +46,8 @@ const AiTraveller = () => {
                 setTravelerType(type);
                 if (type === 'Only Me') {
                   setPeopleCount(1);
+                } else if (type === 'A Couple') {
+                  setPeopleCount(2);
                 } else {
                   setPeopleCount(0);
                 }
@@ -64,7 +65,7 @@ const AiTraveller = () => {
           </div>
         )}
         <div className="flex justify-center mt-8">
-          <button onClick={handleContinue} className="bg-orange-400 hover:bg-orange-500  text-white w-48 h-12 text-lg rounded-lg">
+          <button onClick={handleContinue} className="bg-orange-400 hover:bg-orange-500 text-white w-48 h-12 text-lg rounded-lg">
             👉 Continue
           </button>
         </div>

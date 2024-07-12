@@ -29,46 +29,57 @@ const AiTravelHome = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedDestination, setSelectedDestination] = useState('');
   const geocoderContainerRef = useRef(null);
-  const geocoderRef = useRef(null); // Ref to store the geocoder instance
-  const modalRef = useRef(null); // Ref to store the modal instance
+  const geocoderRef = useRef(null);
+  const modalRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
-
-
+  const [geocoder, setGeocoder] = useState(null);
 
   useEffect(() => {
-    if (showModal && geocoderContainerRef.current) {
-      if (geocoderRef.current) {
-        geocoderRef.current.clear();
-      }
-
-      const geocoder = new MapboxGeocoder({
+    if (showModal && geocoderContainerRef.current && !geocoder) {
+      const newGeocoder = new MapboxGeocoder({
         accessToken: mapboxgl.accessToken,
         types: 'place',
         placeholder: 'Search for your destination',
         mapboxgl: mapboxgl,
       });
 
-      geocoderRef.current = geocoder;
+      newGeocoder.addTo(geocoderContainerRef.current);
 
-      geocoder.addTo(geocoderContainerRef.current);
+      // Adjust width of the geocoder input
+      const geocoderEl = geocoderContainerRef.current.querySelector('.mapboxgl-ctrl-geocoder');
+      if (geocoderEl) {
+        geocoderEl.style.width = '100%';
+        geocoderEl.style.maxWidth = '100%';
+      }
 
-      geocoder.on('result', (e) => {
+      newGeocoder.on('result', (e) => {
         setTripData({
           ...tripData,
           destination: e.result.place_name,
           destinationCoordinates: e.result.center,
         });
-        setSelectedDestination(e.result.place_name); // Set selected destination
+        setSelectedDestination(e.result.place_name);
       });
 
+      newGeocoder.on('clear', () => {
+        setSelectedDestination('');
+      });
+
+      setGeocoder(newGeocoder);
     }
 
     return () => {
-      if (geocoderRef.current) {
-        geocoderRef.current.clear();
+      if (geocoder) {
+        geocoder.onRemove();
       }
     };
   }, [showModal, tripData, setTripData]);
+
+  useEffect(() => {
+    if (geocoder && selectedDestination) {
+      geocoder.setInput(selectedDestination);
+    }
+  }, [selectedDestination, geocoder]);
 
   const handleSearch = () => {
     setIsLoading(true);
@@ -114,7 +125,6 @@ const AiTravelHome = () => {
     }
   });
 
-
   return (
     <div className="relative w-full min-h-screen bg-cover bg-center">
       <div className="relative w-full h-screen overflow-hidden">
@@ -129,7 +139,7 @@ const AiTravelHome = () => {
         </video>
         <div className="absolute inset-0 bg-black bg-opacity-50"></div>
         <div className="relative flex flex-col items-center justify-center min-h-screen text-white text-center px-4 z-10">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Discover Your Perfect Trip with NjanSanchari’s AI Travel Planner</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">Discover Your Perfect Trip with NjanSanchari's AI Travel Planner</h1>
           <p className="text-lg md:text-xl mb-6">Personalized Itineraries, Seamless Booking, Budget-Friendly Options</p>
           <button
             className="bg-orange-400 text-white text-lg font-semibold py-3 px-8 rounded-lg transition transform hover:scale-105"
@@ -140,43 +150,40 @@ const AiTravelHome = () => {
         </div>
       </div>
 
-
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-md"></div>
-          <div
-            ref={modalRef}
-            className="relative bg-white rounded-lg shadow-lg w-11/12 md:w-1/3 h-auto p-8 flex flex-col items-center z-60"
+      <div className="fixed inset-0 flex items-center justify-center z-50">
+        <div className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-md"></div>
+        <div
+          ref={modalRef}
+          className="relative bg-white rounded-lg shadow-lg w-11/12 md:w-1/3 h-auto p-8 flex flex-col items-center z-60"
+        >
+          <h2 className="text-2xl font-bold text-center mb-4">🌍 Let's Plan Your Dream Trip! ✈️</h2>
+          <div ref={geocoderContainerRef} className="w-full mb-4"></div>
+          <button
+            className="bg-orange-400 text-white text-lg font-semibold py-2 px-6 rounded-lg w-full transition transform hover:scale-105 flex items-center justify-center"
+            onClick={handleSearch}
+            disabled={!tripData.destination || isLoading}
           >
-            <h2 className="text-2xl font-bold text-center mb-4">🌍 Let's Plan Your Dream Trip! ✈️</h2>
-            <div ref={geocoderContainerRef} className="w-full mb-4"></div>
-            {/* Removed unnecessary input rendering */}
-            <button
-              className="bg-orange-400 text-white text-lg font-semibold py-2 px-6 rounded-lg w-full transition transform hover:scale-105 flex items-center justify-center"
-              onClick={handleSearch}
-              disabled={!tripData.destination || isLoading}
-            >
-              {isLoading ? (
-                <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                </svg>
-              ) : null}
-              {isLoading ? 'Planning...' : 'Start Planning 🚀'}
-            </button>
-          </div>
+            {isLoading ? (
+              <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+            ) : null}
+            {isLoading ? 'Planning...' : 'Start Planning 🚀'}
+          </button>
         </div>
-      )}
-
+      </div>
+    )}
 
       {/* New Section Start */}
-      <div className="relative  flex flex-col items-center justify-center py-12 bg-white text-black text-center lg:px-[15%]">
+      <div className="relative flex flex-col items-center justify-center py-12 bg-white text-black text-center lg:px-[15%]">
         <h2 className="text-3xl md:text-4xl font-bold mb-6">Why Choose NjanSanchari's AI-Powered Trip</h2>
 
         <div className="flex flex-col md:flex-row items-center justify-center mb-8 w-full">
           <div className="md:w-1/2 p-4">
             <h3 className="text-2xl font-semibold mb-2">Personalized Exploration</h3>
-            <p>NjanSanchari’s AI Travel Planner crafts a unique itinerary tailored to your interests. Whether you’re an adventurer, culture enthusiast, or foodie, our AI analyzes your preferences and curates a trip that perfectly matches your desires. Say goodbye to generic travel plans and hello to a personalized journey.</p>
+            <p>NjanSanchari's AI Travel Planner crafts a unique itinerary tailored to your interests. Whether you're an adventurer, culture enthusiast, or foodie, our AI analyzes your preferences and curates a trip that perfectly matches your desires. Say goodbye to generic travel plans and hello to a personalized journey.</p>
           </div>
           <div className="md:w-1/2 p-4">
             <Lottie options={lottieOptions(lottiefile1)} height={150} width={150} />
@@ -189,7 +196,7 @@ const AiTravelHome = () => {
           </div>
           <div className="md:w-1/2 p-4 order-1 md:order-2">
             <h3 className="text-2xl font-semibold mb-2">Stay Ahead with Trends</h3>
-            <p>Discover trending travel spots and hidden gems through our integration with social media. Extract top recommendations from Instagram and TikTok, and seamlessly add them to your itinerary. NjanSanchari ensures you’re always in the know about the latest must-visit locations, making your trip exciting and contemporary.</p>
+            <p>Discover trending travel spots and hidden gems through our integration with social media. Extract top recommendations from Instagram and TikTok, and seamlessly add them to your itinerary. NjanSanchari ensures you're always in the know about the latest must-visit locations, making your trip exciting and contemporary.</p>
           </div>
         </div>
 
@@ -209,14 +216,14 @@ const AiTravelHome = () => {
           </div>
           <div className="md:w-1/2 p-4 order-1 md:order-2">
             <h3 className="text-2xl font-semibold mb-2">Seamless Planning</h3>
-            <p>From start to finish, NjanSanchari’s AI handles all the details. Book flights, hotels, and activities effortlessly through our platform. Our AI ensures every aspect of your journey is well-coordinated, leaving you to relax and enjoy your travel experience.</p>
+            <p>From start to finish, NjanSanchari's AI handles all the details. Book flights, hotels, and activities effortlessly through our platform. Our AI ensures every aspect of your journey is well-coordinated, leaving you to relax and enjoy your travel experience.</p>
           </div>
         </div>
 
         <div className="flex flex-col md:flex-row items-center justify-center mb-8 w-full">
           <div className="md:w-1/2 p-4">
             <h3 className="text-2xl font-semibold mb-2">Local Insights</h3>
-            <p>Gain deeper insights into your destination with NjanSanchari’s AI. Learn about local culture, customs, and off-the-beaten-path spots that traditional guides might miss. Our AI taps into local knowledge, providing a richer, more authentic travel experience.</p>
+            <p>Gain deeper insights into your destination with NjanSanchari's AI. Learn about local culture, customs, and off-the-beaten-path spots that traditional guides might miss. Our AI taps into local knowledge, providing a richer, more authentic travel experience.</p>
           </div>
           <div className="md:w-1/2 p-4">
             <Lottie options={lottieOptions(lottiefile8)} height={150} width={150} />
