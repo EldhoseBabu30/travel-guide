@@ -31,12 +31,7 @@ const ServicesSection = () => {
     fontSize: '2.5rem',
     fontWeight: 'bold',
     marginBottom: '2rem',
-    background: 'linear-gradient(to right, white, #fb923c, white)',
-    backgroundSize: '200% auto',
-    backgroundClip: 'text',
-    WebkitBackgroundClip: 'text',
-    color: 'transparent',
-    animation: 'colorSlide 5s linear infinite',
+    color: '#fb923c', // Tailwind CSS orange-400 hex code
   };
 
   const cardStyle = {

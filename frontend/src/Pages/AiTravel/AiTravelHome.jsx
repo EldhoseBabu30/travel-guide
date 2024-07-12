@@ -15,9 +15,9 @@ import lottiefile6 from '../../assets/Lottiefiles/ai section 6.json';
 import lottiefile7 from '../../assets/Lottiefiles/ai section 7.json';
 import lottiefile8 from '../../assets/Lottiefiles/ai section 8.json';
 import support from '../../assets/Lottiefiles/customer support.json';
-import user1 from '../../assets/testimonials/user1.png';
-import user2 from '../../assets/testimonials/user2.png';
-import user3 from '../../assets/testimonials/user1.png';
+import abshan from '../../assets/testimonials/abshan.jpg';
+import eldho from '../../assets/testimonials/eldho.jpg';
+import jamshi from '../../assets/testimonials/jamshi.jpg';
 import video2 from '../../assets/banner-video.mp4';
 import Footer from '../../components/Footer/Footer';
 
@@ -31,6 +31,9 @@ const AiTravelHome = () => {
   const geocoderContainerRef = useRef(null);
   const geocoderRef = useRef(null); // Ref to store the geocoder instance
   const modalRef = useRef(null); // Ref to store the modal instance
+  const [isLoading, setIsLoading] = useState(false);
+
+
 
   useEffect(() => {
     if (showModal && geocoderContainerRef.current) {
@@ -45,18 +48,19 @@ const AiTravelHome = () => {
         mapboxgl: mapboxgl,
       });
 
-      geocoderRef.current = geocoder; // Save geocoder instance to ref for cleanup
+      geocoderRef.current = geocoder;
 
       geocoder.addTo(geocoderContainerRef.current);
 
       geocoder.on('result', (e) => {
-        setSelectedDestination(e.result.place_name);
         setTripData({
           ...tripData,
           destination: e.result.place_name,
           destinationCoordinates: e.result.center,
         });
+        setSelectedDestination(e.result.place_name); // Set selected destination
       });
+
     }
 
     return () => {
@@ -67,8 +71,12 @@ const AiTravelHome = () => {
   }, [showModal, tripData, setTripData]);
 
   const handleSearch = () => {
-    setShowModal(false);
-    navigate('/traveller');
+    setIsLoading(true);
+    setTimeout(() => {
+      setShowModal(false);
+      setIsLoading(false);
+      navigate('/traveller');
+    }, 1000);
   };
 
   const handleCloseModal = (e) => {
@@ -89,58 +97,77 @@ const AiTravelHome = () => {
     };
   }, [showModal]);
 
+  useEffect(() => {
+    if (showModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+  }, [showModal]);
+
   const lottieOptions = (animationData) => ({
     loop: true,
     autoplay: true,
     animationData: animationData,
     rendererSettings: {
-      preserveAspectRatio: 'xMidYMid slice'
+      preserveAspectRatio: 'xMidYMid slice',
     }
   });
 
+
   return (
     <div className="relative w-full min-h-screen bg-cover bg-center">
-      <video autoPlay loop muted className="absolute inset-0 w-full h-full object-cover">
-        <source src={video} type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
-      <div className="absolute inset-0 bg-black bg-opacity-50"></div>
-      <div className="relative flex flex-col items-center justify-center min-h-screen text-white text-center px-4">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4">Discover Your Perfect Trip with Njansanchari’s AI Travel Planner</h1>
-        <p className="text-lg md:text-xl mb-6">Personalized Itineraries, Seamless Booking, Budget-Friendly Options</p>
-
-        <button
-          className="bg-orange-400 text-white text-lg font-semibold py-3 px-8 rounded-lg transition transform hover:scale-105"
-          onClick={() => setShowModal(true)}
+      <div className="relative w-full h-screen overflow-hidden">
+        <video
+          autoPlay
+          loop
+          muted
+          className="absolute inset-0 w-full h-full object-cover"
         >
-          Create a New Trip
-        </button>
+          <source src={video} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div className="relative flex flex-col items-center justify-center min-h-screen text-white text-center px-4 z-10">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">Discover Your Perfect Trip with NjanSanchari’s AI Travel Planner</h1>
+          <p className="text-lg md:text-xl mb-6">Personalized Itineraries, Seamless Booking, Budget-Friendly Options</p>
+          <button
+            className="bg-orange-400 text-white text-lg font-semibold py-3 px-8 rounded-lg transition transform hover:scale-105"
+            onClick={() => setShowModal(true)}
+          >
+            Create a New Trip
+          </button>
+        </div>
       </div>
 
+
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center">
+        <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-md"></div>
-          <div ref={modalRef} className="relative bg-white rounded-lg shadow-lg w-11/12 md:w-1/3 h-auto p-8 flex flex-col items-center">
-            <h2 className="text-2xl font-bold text-center mb-4 animate-bounce">🌍 Let's Plan Your Dream Trip! ✈️</h2>
+          <div
+            ref={modalRef}
+            className="relative bg-white rounded-lg shadow-lg w-11/12 md:w-1/3 h-auto p-8 flex flex-col items-center z-60"
+          >
+            <h2 className="text-2xl font-bold text-center mb-4">🌍 Let's Plan Your Dream Trip! ✈️</h2>
             <div ref={geocoderContainerRef} className="w-full mb-4"></div>
-            {selectedDestination && (
-              <input
-                type="text"
-                value={selectedDestination}
-                readOnly
-                className="w-full text-center mb-4 border-2 border-gray-300 rounded-lg py-2 px-4"
-              />
-            )}
+            {/* Removed unnecessary input rendering */}
             <button
-              className="bg-orange-400 text-white text-lg font-semibold py-2 px-6 rounded-lg w-full transition transform hover:scale-105"
+              className="bg-orange-400 text-white text-lg font-semibold py-2 px-6 rounded-lg w-full transition transform hover:scale-105 flex items-center justify-center"
               onClick={handleSearch}
-              disabled={!tripData.destination}
+              disabled={!tripData.destination || isLoading}
             >
-              Start Planning 🚀
+              {isLoading ? (
+                <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+              ) : null}
+              {isLoading ? 'Planning...' : 'Start Planning 🚀'}
             </button>
           </div>
         </div>
       )}
+
 
       {/* New Section Start */}
       <div className="relative  flex flex-col items-center justify-center py-12 bg-white text-black text-center lg:px-[15%]">
@@ -236,8 +263,8 @@ const AiTravelHome = () => {
 
         <div className="flex flex-col md:flex-row items-center justify-center space-y-6 md:space-y-0 md:space-x-6">
           <div className="bg-gray-200 p-6 rounded-lg shadow-lg flex flex-col items-center w-full md:w-[30%]">
-            <img src={user1} alt="User 1" className="w-20 h-20 rounded-full mb-4" />
-            <h3 className="text-xl font-semibold mb-2">John Doe</h3>
+            <img src={abshan} alt="User 1" className="w-20 h-20 rounded-full mb-4" />
+            <h3 className="text-xl font-semibold mb-2">Abshan</h3>
             <div className="flex mb-4">
               {[...Array(5)].map((star, index) => (
                 <svg key={index} className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 24 24">
@@ -249,8 +276,8 @@ const AiTravelHome = () => {
           </div>
 
           <div className="bg-gray-200 p-6 rounded-lg shadow-lg flex flex-col items-center w-full md:w-[30%]">
-            <img src={user2} alt="User 2" className="w-20 h-20 rounded-full mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Jane Smith</h3>
+            <img src={jamshi} alt="User 2" className="w-20 h-20 rounded-full mb-4" />
+            <h3 className="text-xl font-semibold mb-2">Jamsheed</h3>
             <div className="flex mb-4">
               {[...Array(5)].map((star, index) => (
                 <svg key={index} className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 24 24">
@@ -263,8 +290,8 @@ const AiTravelHome = () => {
           </div>
 
           <div className="bg-gray-200 p-6 rounded-lg shadow-lg flex flex-col items-center w-full md:w-[30%]">
-            <img src={user3} alt="User 3" className="w-20 h-20 rounded-full mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Alex Johnson</h3>
+            <img src={eldho} alt="User 3" className="w-20 h-20 rounded-full mb-4" />
+            <h3 className="text-xl font-semibold mb-2">Eldhose Parayil Babu</h3>
             <div className="flex mb-4">
               {[...Array(5)].map((star, index) => (
                 <svg key={index} className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 24 24">
@@ -280,12 +307,14 @@ const AiTravelHome = () => {
 
       {/* Video Banner Section */}
 
-        <div className="relative w-full h-64 overflow-hidden">
-          <video autoPlay loop muted className="absolute inset-0 w-full h-full object-cover">
+      <div className="flex justify-center px-4 my-12">
+        <div className="relative w-full max-w-screen-lg h-60 overflow-hidden rounded-3xl">
+          <video autoPlay loop muted className="absolute inset-0 w-full h-full object-cover rounded-3xl">
             <source src={video2} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
-          <div className="absolute inset-0 bg-black bg-opacity-30 flex flex-col items-center justify-center">
+          <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+          <div className="absolute inset-0 bg-black bg-opacity-30 flex flex-col items-center justify-center rounded-3xl">
             <h2 className="text-3xl font-bold mb-4 text-white text-center px-4">Ready to Plan Your Perfect Trip?</h2>
             <button
               className="bg-orange-400 hover:bg-orange-500 text-white text-lg font-semibold py-2 px-8 rounded-lg transition duration-300"
@@ -296,6 +325,8 @@ const AiTravelHome = () => {
           </div>
         </div>
       </div>
+      <Footer />
+    </div>   
 
   );
 };
