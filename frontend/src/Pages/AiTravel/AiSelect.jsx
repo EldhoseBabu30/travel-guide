@@ -4,7 +4,7 @@ import { TripContext } from '../AiTravel/context/TripContext';
 import { motion } from 'framer-motion';
 
 const AiSelect = () => {
-  const { tripData, setTripData } = useContext(TripContext);
+  const { tripData, updateTripData } = useContext(TripContext);
   const [selectedPreferences, setSelectedPreferences] = useState([]);
   const [budget, setBudget] = useState('');
   const navigate = useNavigate();
@@ -42,8 +42,7 @@ const AiSelect = () => {
     if (selectedPreferences.length === 0 || !budget) {
       alert('Please select at least one travel preference and a budget.');
     } else {
-      setTripData({
-        ...tripData,
+      updateTripData({
         tripType: selectedPreferences.join(', '),
         budget
       });

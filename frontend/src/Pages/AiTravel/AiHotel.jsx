@@ -20,7 +20,7 @@ import "rc-slider/assets/index.css";
 mapboxgl.accessToken = "pk.eyJ1IjoiYWJzaGFuIiwiYSI6ImNseHZ1ajUybTBtbGcyanF6eGFid216OHAifQ.1AXCW22VbJsmDC-2oIm0yw";
 
 const AiHotel = () => {
-  const { tripData, setTripData } = useContext(TripContext);
+  const { tripData, updateTripData } = useContext(TripContext);
   const [selectedHotel, setSelectedHotel] = useState(null);
   const [hotels, setHotels] = useState([]);
   const [filteredHotels, setFilteredHotels] = useState([]);
@@ -93,7 +93,7 @@ const AiHotel = () => {
 
   const handleHotelSelect = (hotel) => {
     setSelectedHotel(hotel);
-    setTripData({
+    updateTripData({
       ...tripData,
       accommodation: {
         name: hotel.name,

@@ -22,7 +22,7 @@ mapboxgl.accessToken =
   "pk.eyJ1IjoiYWJzaGFuIiwiYSI6ImNseHZ1ajUybTBtbGcyanF6eGFid216OHAifQ.1AXCW22VbJsmDC-2oIm0yw";
 
 const AiFood = () => {
-  const { tripData, setTripData } = useContext(TripContext);
+  const { tripData, updateTripData } = useContext(TripContext);
   const [selectedSpot, setSelectedSpot] = useState(null);
   const [foodSpots, setFoodSpots] = useState([]);
   const [filteredSpots, setFilteredSpots] = useState([]);

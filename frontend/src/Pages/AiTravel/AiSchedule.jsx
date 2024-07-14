@@ -7,7 +7,7 @@ import { useMediaQuery } from 'react-responsive';
 import { motion } from 'framer-motion';
 
 const AiSchedule = () => {
-  const { tripData, setTripData } = useContext(TripContext);
+  const { tripData, updateTripData } = useContext(TripContext);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ const AiSchedule = () => {
     if (!startDate || !endDate) {
       alert('Please select start and end dates for your trip.');
     } else {
-      setTripData({ ...tripData, tripDates: { startDate, endDate } });
+      updateTripData({ ...tripData, tripDates: { startDate, endDate } });
       navigate('/hotel');
     }
   };

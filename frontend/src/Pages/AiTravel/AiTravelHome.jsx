@@ -25,11 +25,10 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiYWJzaGFuIiwiYSI6ImNseHZ1ajUybTBtbGcyanF6eGFid
 
 const AiTravelHome = () => {
   const navigate = useNavigate();
-  const { tripData, setTripData } = useContext(TripContext);
+  const { tripData, updateTripData } = useContext(TripContext);
   const [showModal, setShowModal] = useState(false);
   const [selectedDestination, setSelectedDestination] = useState('');
   const geocoderContainerRef = useRef(null);
-  const geocoderRef = useRef(null);
   const modalRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
   const [geocoder, setGeocoder] = useState(null);
@@ -45,7 +44,6 @@ const AiTravelHome = () => {
 
       newGeocoder.addTo(geocoderContainerRef.current);
 
-      // Adjust width of the geocoder input
       const geocoderEl = geocoderContainerRef.current.querySelector('.mapboxgl-ctrl-geocoder');
       if (geocoderEl) {
         geocoderEl.style.width = '100%';
@@ -53,8 +51,7 @@ const AiTravelHome = () => {
       }
 
       newGeocoder.on('result', (e) => {
-        setTripData({
-          ...tripData,
+        updateTripData({
           destination: e.result.place_name,
           destinationCoordinates: e.result.center,
         });
@@ -73,7 +70,7 @@ const AiTravelHome = () => {
         geocoder.onRemove();
       }
     };
-  }, [showModal, tripData, setTripData]);
+  }, [showModal, updateTripData]);
 
   useEffect(() => {
     if (geocoder && selectedDestination) {

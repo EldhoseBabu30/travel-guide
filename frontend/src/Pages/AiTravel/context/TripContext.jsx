@@ -11,11 +11,15 @@ export const TripProvider = ({ children }) => {
     tripType: "",
     budget: "",
     accommodation: { name: "", location: "", roomType: "" },
-    dining: { meals: [], dietaryRequirements: "" },
+    dining: { name: "", location: "", cuisine: "", mealTime: "" },
   });
 
+  const updateTripData = (newData) => {
+    setTripData(prevData => ({ ...prevData, ...newData }));
+  };
+
   return (
-    <TripContext.Provider value={{ tripData, setTripData }}>
+    <TripContext.Provider value={{ tripData, updateTripData }}>
       {children}
     </TripContext.Provider>
   );

@@ -4,7 +4,7 @@ import { TripContext } from '../AiTravel/context/TripContext';
 import { motion } from 'framer-motion';
 
 const AiTraveller = () => {
-  const { tripData, setTripData } = useContext(TripContext);
+  const { tripData, updateTripData } = useContext(TripContext);
   const [travelerType, setTravelerType] = useState('');
   const [peopleCount, setPeopleCount] = useState(0);
   const navigate = useNavigate();
@@ -16,13 +16,13 @@ const AiTraveller = () => {
     if ((travelerType === 'Family' || travelerType === 'Friends' || travelerType === 'Work') && peopleCount === 0) {
       alert('Please select the number of people traveling.');
     } else if (travelerType === 'Only Me') {
-      setTripData({
+      updateTripData({
         ...tripData,
         travelers: { type: travelerType, count: 1 },
       });
       navigate('/select');
     } else {
-      setTripData({
+      updateTripData({
         ...tripData,
         travelers: { type: travelerType, count: travelerType === 'A Couple' ? 2 : peopleCount },
       });
