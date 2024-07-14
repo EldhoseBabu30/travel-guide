@@ -4,6 +4,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { TripContext } from '../AiTravel/context/TripContext';
 import { useMediaQuery } from 'react-responsive';
+import { motion } from 'framer-motion';
 
 const AiSchedule = () => {
   const { tripData, setTripData } = useContext(TripContext);
@@ -23,10 +24,18 @@ const AiSchedule = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-white">
-      <div className="w-full max-w-2xl p-6">
-        <h1 className="text-4xl font-bold text-orange-400 mb-8 text-center">📅 Select Trip Dates 🗓️</h1>
-        <div className="flex justify-center space-x-8 mb-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 flex items-center justify-center p-4">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="bg-white rounded-3xl shadow-xl w-full max-w-2xl p-8 relative overflow-hidden"
+      >
+        <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400"></div>
+        <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">
+          Plan Your Perfect Dates 🗓️✨
+        </h1>
+        <div className={`flex ${isMobile ? 'flex-col' : 'flex-row'} justify-center space-y-8 md:space-y-0 md:space-x-8 mb-8`}>
           {isMobile ? (
             <div className="flex flex-col items-center">
               <DatePicker
@@ -40,14 +49,17 @@ const AiSchedule = () => {
                 endDate={endDate}
                 selectsRange
                 inline
-                className="border border-orange-400 p-2 rounded-lg"
-                calendarClassName="border border-orange-400"
+                className="border-2 border-purple-300 rounded-lg shadow-md"
+                calendarClassName="bg-white rounded-lg shadow-lg"
               />
             </div>
           ) : (
             <>
-              <div className="flex flex-col items-center">
-                <span className="text-lg mb-2">Start Date</span>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                className="flex flex-col items-center"
+              >
+                <span className="text-lg mb-2 font-semibold text-purple-600">Start Date</span>
                 <DatePicker
                   selected={startDate}
                   onChange={date => setStartDate(date)}
@@ -55,12 +67,15 @@ const AiSchedule = () => {
                   startDate={startDate}
                   endDate={endDate}
                   inline
-                  className="border border-orange-400 p-2 rounded-lg"
-                  calendarClassName="border border-orange-400"
+                  className="border-2 border-purple-300 rounded-lg shadow-md"
+                  calendarClassName="bg-white rounded-lg shadow-lg"
                 />
-              </div>
-              <div className="flex flex-col items-center">
-                <span className="text-lg mb-2">End Date</span>
+              </motion.div>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                className="flex flex-col items-center"
+              >
+                <span className="text-lg mb-2 font-semibold text-purple-600">End Date</span>
                 <DatePicker
                   selected={endDate}
                   onChange={date => setEndDate(date)}
@@ -69,19 +84,24 @@ const AiSchedule = () => {
                   endDate={endDate}
                   minDate={startDate}
                   inline
-                  className="border border-orange-400 p-2 rounded-lg"
-                  calendarClassName="border border-orange-400"
+                  className="border-2 border-purple-300 rounded-lg shadow-md"
+                  calendarClassName="bg-white rounded-lg shadow-lg"
                 />
-              </div>
+              </motion.div>
             </>
           )}
         </div>
-        <div className="flex justify-center">
-          <button onClick={handleContinue} className="bg-orange-400 text-white w-48 h-12 text-lg rounded-lg">
-            👉 Continue
-          </button>
+        <div className="flex justify-center mt-8">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={handleContinue}
+            className="bg-gradient-to-r from-purple-400 to-pink-500 text-white px-8 py-3 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition-all"
+          >
+            Let's Go! 🚀
+          </motion.button>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

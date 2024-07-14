@@ -1,182 +1,275 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { FaStar } from 'react-icons/fa';
-import Map from './Map';
-import Carousel from 'react-multi-carousel';
-import 'react-multi-carousel/lib/styles.css';
-import { TripContext } from '../AiTravel/context/TripContext';
-import mapboxgl from 'mapbox-gl';
+import React, { useContext, useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import {
+  FaStar,
+  FaBed,
+  FaHome,
+  FaHotel,
+  FaWarehouse,
+  FaUsers,
+  FaMapMarkerAlt,
+} from "react-icons/fa";
+import Map, { Marker, Popup } from "react-map-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
+import { TripContext } from "../AiTravel/context/TripContext";
+import mapboxgl from "mapbox-gl";
+import Slider from "rc-slider";
+import "rc-slider/assets/index.css";
+
+mapboxgl.accessToken = "pk.eyJ1IjoiYWJzaGFuIiwiYSI6ImNseHZ1ajUybTBtbGcyanF6eGFid216OHAifQ.1AXCW22VbJsmDC-2oIm0yw";
 
 const AiHotel = () => {
   const { tripData, setTripData } = useContext(TripContext);
   const [selectedHotel, setSelectedHotel] = useState(null);
   const [hotels, setHotels] = useState([]);
   const [filteredHotels, setFilteredHotels] = useState([]);
-  const [searchResults, setSearchResults] = useState([]);
-  const [radius, setRadius] = useState(2500); // in meters
+  const [viewport, setViewport] = useState({
+    latitude: tripData.destinationCoordinates[1],
+    longitude: tripData.destinationCoordinates[0],
+    zoom: 12,
+  });
+  const [popupInfo, setPopupInfo] = useState(null);
+  const [radius, setRadius] = useState(2500);
   const [hotelRatings, setHotelRatings] = useState([]);
   const [customerReviews, setCustomerReviews] = useState([]);
+  const [priceRange, setPriceRange] = useState([0, 10000]);
+  const [stayCategories, setStayCategories] = useState([]);
+  const [avgPrice, setAvgPrice] = useState(0);
+  const mapRef = useRef();
   const navigate = useNavigate();
 
+  const stayTypes = [
+    { name: "Hotel", icon: FaHotel },
+    { name: "Homestay", icon: FaHome },
+    { name: "Cottage", icon: FaWarehouse },
+    { name: "Hostel", icon: FaUsers },
+  ];
+
   useEffect(() => {
-    const fetchHotels = async () => {
-      if (tripData.destinationCoordinates.length === 2) {
-        const [lon, lat] = tripData.destinationCoordinates;
-        const response = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/hotel.json`, {
+    fetchHotelsForLocation(
+      tripData.destinationCoordinates[0],
+      tripData.destinationCoordinates[1]
+    );
+  }, [tripData.destinationCoordinates, radius]);
+
+  const fetchHotelsForLocation = async (lon, lat) => {
+    try {
+      const response = await axios.get(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/hotel.json`,
+        {
           params: {
             proximity: `${lon},${lat}`,
-            limit: 10,
+            limit: 20,
+            types: 'poi',
             access_token: mapboxgl.accessToken,
           },
-        });
+        }
+      );
 
-        const fetchedHotels = response.data.features.map((feature, index) => ({
-          id: feature.id,
-          name: feature.text,
-          rating: Math.floor(Math.random() * 5) + 1,
-          location: feature.geometry.coordinates,
-          price: Math.floor(Math.random() * 100) * 80 + 4000,
-          image: `https://source.unsplash.com/200x200/?hotel,${index}`,
-          address: feature.place_name,
-        }));
-        setHotels(fetchedHotels);
-        setFilteredHotels(fetchedHotels);
-      }
-    };
-    fetchHotels();
-  }, [tripData.destinationCoordinates, radius]);
+      const fetchedHotels = response.data.features.map((feature) => ({
+        id: feature.id,
+        name: feature.text,
+        rating: Math.floor(Math.random() * 5) + 1,
+        location: feature.center,
+        price: Math.floor(Math.random() * 100) * 80 + 1000,
+        image: `https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/${feature.center[0]},${feature.center[1]},15,0/300x200@2x?access_token=${mapboxgl.accessToken}`,
+        address: feature.place_name,
+        category: stayTypes[Math.floor(Math.random() * stayTypes.length)].name,
+      }));
+
+      setHotels(fetchedHotels);
+      setFilteredHotels(fetchedHotels);
+      calculateAvgPrice(fetchedHotels);
+    } catch (error) {
+      console.error("Error fetching hotels:", error);
+    }
+  };
+
+  const calculateAvgPrice = (hotelList) => {
+    const total = hotelList.reduce((sum, hotel) => sum + hotel.price, 0);
+    setAvgPrice(Math.round(total / hotelList.length));
+  };
 
   const handleHotelSelect = (hotel) => {
     setSelectedHotel(hotel);
     setTripData({
       ...tripData,
-      accommodation: { name: hotel.name, location: hotel.address, roomType: `${hotel.rating} Star` },
+      accommodation: {
+        name: hotel.name,
+        location: hotel.address,
+        roomType: `${hotel.rating} Star`,
+      },
     });
+    setViewport({
+      ...viewport,
+      latitude: hotel.location[1],
+      longitude: hotel.location[0],
+      zoom: 14,
+    });
+    setPopupInfo(hotel);
   };
 
   const handleContinue = () => {
     if (!selectedHotel) {
-      alert('Please select a hotel.');
+      alert("Please select a hotel.");
     } else {
-      navigate('/food');
+      navigate("/food");
     }
   };
 
   const handleContinueWithoutHotel = () => {
-    navigate('/food');
+    navigate("/food");
   };
 
-  const handleRadiusChange = (event) => {
-    setRadius(event.target.value);
+  const handleRadiusChange = (value) => {
+    setRadius(value);
+    setViewport({
+      ...viewport,
+      zoom: 12 - Math.log2(value / 1000),
+    });
+    filterHotels();
   };
 
   const handleHotelRatingChange = (rating) => {
     setHotelRatings((prevRatings) =>
-      prevRatings.includes(rating) ? prevRatings.filter((r) => r !== rating) : [...prevRatings, rating]
+      prevRatings.includes(rating)
+        ? prevRatings.filter((r) => r !== rating)
+        : [...prevRatings, rating]
     );
-    filterHotels(hotels, rating, customerReviews);
+    filterHotels();
   };
 
   const handleCustomerReviewChange = (event) => {
     const value = event.target.value;
     setCustomerReviews((prevReviews) =>
-      prevReviews.includes(value) ? prevReviews.filter((r) => r !== value) : [...prevReviews, value]
+      prevReviews.includes(value)
+        ? prevReviews.filter((r) => r !== value)
+        : [...prevReviews, value]
     );
-    filterHotels(hotels, hotelRatings, value);
+    filterHotels();
   };
 
-  const filterHotels = (allHotels, ratings, reviews) => {
-    const filtered = allHotels.filter((hotel) => {
-      const matchesRating = ratings.length === 0 || ratings.includes(hotel.rating.toString());
-      const matchesReview = reviews.length === 0 || reviews.includes(hotel.rating.toString());
-      return matchesRating && matchesReview;
+  const handlePriceRangeChange = (newValue) => {
+    setPriceRange(newValue);
+    filterHotels();
+  };
+
+  const handleCategoryChange = (category) => {
+    setStayCategories((prevCategories) =>
+      prevCategories.includes(category)
+        ? prevCategories.filter((c) => c !== category)
+        : [...prevCategories, category]
+    );
+    filterHotels();
+  };
+
+  const filterHotels = () => {
+    const filtered = hotels.filter((hotel) => {
+      const matchesRating =
+        hotelRatings.length === 0 ||
+        hotelRatings.includes(hotel.rating.toString());
+      const matchesReview =
+        customerReviews.length === 0 ||
+        customerReviews.includes(hotel.rating.toString());
+      const matchesPrice =
+        hotel.price >= priceRange[0] && hotel.price <= priceRange[1];
+      const matchesCategory =
+        stayCategories.length === 0 || stayCategories.includes(hotel.category);
+      return matchesRating && matchesReview && matchesPrice && matchesCategory;
     });
     setFilteredHotels(filtered);
+    calculateAvgPrice(filtered);
   };
 
-  const handleSearch = async (query) => {
-    const response = await axios.get('https://api.mapbox.com/geocoding/v5/mapbox.places/hotel.json', {
-      params: {
-        access_token: mapboxgl.accessToken,
-        proximity: tripData.destinationCoordinates.join(','),
-        types: 'poi',
-        query: query,
-      },
-    });
-
-    const features = response.data.features.map((feature) => ({
-      type: 'Feature',
-      properties: {
-        id: feature.id,
-        name: feature.text,
-        address: feature.place_name,
-      },
-      geometry: {
-        type: 'Point',
-        coordinates: feature.center,
-      },
-    }));
-
-    setSearchResults(features);
-  };
-
-  const handleMapMove = async (center) => {
-    const response = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/hotel.json`, {
-      params: {
-        proximity: `${center.lng},${center.lat}`,
-        limit: 10,
-        access_token: mapboxgl.accessToken,
-      },
-    });
-
-    const fetchedHotels = response.data.features.map((feature, index) => ({
-      id: feature.id,
-      name: feature.text,
-      rating: Math.floor(Math.random() * 5) + 1,
-      location: feature.geometry.coordinates,
-      price: Math.floor(Math.random() * 100) * 80 + 4000,
-      image: `https://source.unsplash.com/200x200/?hotel,${index}`,
-      address: feature.place_name,
-    }));
-    setHotels(fetchedHotels);
-    setFilteredHotels(fetchedHotels);
+  const handleMapMove = () => {
+    if (mapRef.current) {
+      const newCenter = mapRef.current.getMap().getCenter();
+      fetchHotelsForLocation(newCenter.lng, newCenter.lat);
+    }
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 min-h-screen bg-white">
-      <div className="p-4 col-span-1 md:col-span-1">
-        <h1 className="text-4xl font-bold text-orange-500 mb-4">🏨 Select Your Stay 🏩</h1>
-        <div className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">Select the Hotel</h2>
-          <div className="flex flex-wrap gap-4">
+    <div className="flex flex-col md:flex-row h-screen bg-gray-100">
+      <div className="w-full md:w-1/3 p-4 overflow-y-auto bg-white shadow-lg">
+        <h1 className="text-3xl font-bold text-orange-500 mb-6">
+          🏨 Find Your Perfect Stay
+        </h1>
+        <p className="text-gray-600 mb-4">
+          Discover comfortable and convenient accommodations for your trip. Use
+          the filters below to find your ideal stay.
+        </p>
+
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold mb-3">Hotel Rating</h2>
+          <div className="flex flex-wrap gap-2">
             {[1, 2, 3, 4, 5].map((star) => (
               <button
                 key={star}
-                className={`py-2 px-4 border ${hotelRatings.includes(star.toString()) ? 'bg-orange-500 text-white' : 'bg-white text-orange-500'} border-orange-500`}
+                className={`py-1 px-3 rounded-full text-sm ${
+                  hotelRatings.includes(star.toString())
+                    ? "bg-orange-500 text-white"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                }`}
                 onClick={() => handleHotelRatingChange(star.toString())}
               >
-                {star} ⭐ Hotel
+                {star} ⭐
               </button>
             ))}
           </div>
         </div>
-        <div className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">Search Hotels within the Radius</h2>
-          <input
-            type="range"
-            min="500"
-            max="5000"
-            step="100"
+
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold mb-3">Search Radius</h2>
+          <Slider
+            min={500}
+            max={5000}
+            step={100}
             value={radius}
             onChange={handleRadiusChange}
-            className="w-full"
           />
-          <p className="mt-2 text-lg">Radius: {radius / 1000} km</p>
+          <p className="mt-2 text-sm text-gray-600">
+            Radius: {radius / 1000} km
+          </p>
         </div>
-        <div className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">Hotel Based on Customer Reviews</h2>
-          <div className="flex flex-col gap-4">
+
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold mb-3">Price Range</h2>
+          <Slider
+            range
+            min={0}
+            max={10000}
+            step={500}
+            value={priceRange}
+            onChange={handlePriceRangeChange}
+          />
+          <p className="mt-2 text-sm text-gray-600">
+            Price: ₹{priceRange[0]} - ₹{priceRange[1]}
+          </p>
+        </div>
+
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold mb-3">Stay Category</h2>
+          <div className="flex flex-wrap gap-2">
+            {stayTypes.map((type) => (
+              <button
+                key={type.name}
+                className={`py-1 px-3 rounded-full text-sm flex items-center ${
+                  stayCategories.includes(type.name)
+                    ? "bg-orange-500 text-white"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                }`}
+                onClick={() => handleCategoryChange(type.name)}
+              >
+                <type.icon className="mr-1" /> {type.name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold mb-3">Customer Reviews</h2>
+          <div className="flex flex-col gap-2">
             {[1, 2, 3, 4, 5].map((star) => (
               <label key={star} className="flex items-center">
                 <input
@@ -186,101 +279,127 @@ const AiHotel = () => {
                   className="mr-2"
                 />
                 {[...Array(star)].map((_, i) => (
-                  <FaStar key={i} color="gold" />
+                  <FaStar key={i} className="text-yellow-400" />
                 ))}
-                <span className="ml-2">{star} Star</span>
+                <span className="ml-2 text-sm text-gray-700">{star} Star</span>
               </label>
             ))}
           </div>
         </div>
+
         <div className="mt-8 flex flex-col gap-4">
-          <button className="py-2 px-4 bg-orange-500 text-white" onClick={handleContinueWithoutHotel}>
+          <button
+            className="py-2 px-4 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
+            onClick={handleContinueWithoutHotel}
+          >
             Continue Without Hotel
           </button>
-          <button className="py-2 px-4 bg-orange-500 text-white" onClick={handleContinue}>
-            Continue
+          <button
+            className="py-2 px-4 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
+            onClick={handleContinue}
+          >
+            Continue with{" "}
+            {selectedHotel ? selectedHotel.name : "Selected Hotel"}
           </button>
         </div>
-        {selectedHotel && (
-          <div className="mt-8 p-4 border border-gray-300 rounded-lg">
-            <h4 className="text-xl font-semibold">{selectedHotel.name}</h4>
-            <p className="mt-2">Address: {selectedHotel.address}</p>
-            <p>Price: ₹{selectedHotel.price}</p>
-            <p>Rating: {selectedHotel.rating} ⭐</p>
-            <img src={selectedHotel.image} alt={selectedHotel.name} className="mt-4 w-full h-auto" />
-          </div>
-        )}
       </div>
-      <div className="col-span-2 relative">
-        <input
-          type="text"
-          placeholder="Search for hotels"
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              handleSearch(e.target.value);
-            }
-          }}
-          className="absolute top-4 left-4 z-10 w-72 p-2 border border-gray-300 rounded-lg"
-        />
+
+      <div className="w-full md:w-2/3 h-full relative">
         <Map
-          hotels={filteredHotels}
-          searchResults={searchResults}
-          onHotelSelect={handleHotelSelect}
-          selectedHotel={selectedHotel}
-          onMapMove={handleMapMove}
-          initialCenter={tripData.destinationCoordinates}
-        />
-        <div className="absolute bottom-0 left-0 w-full bg-white p-4">
-          <Carousel
-            swipeable={true}
-            draggable={true}
-            showDots={true}
-            responsive={{
-              superLargeDesktop: {
-                breakpoint: { max: 4000, min: 3000 },
-                items: 5,
-              },
-              desktop: {
-                breakpoint: { max: 3000, min: 1024 },
-                items: 3,
-              },
-              tablet: {
-                breakpoint: { max: 1024, min: 464 },
-                items: 2,
-              },
-              mobile: {
-                breakpoint: { max: 464, min: 0 },
-                items: 1,
-              },
-            }}
-            infinite={true}
-            autoPlay={true}
-            autoPlaySpeed={3000}
-            keyBoardControl={true}
-            customTransition="all .5"
-            transitionDuration={500}
-            containerClass="carousel-container"
-            removeArrowOnDeviceType={['tablet', 'mobile']}
-            dotListClass="custom-dot-list-style"
-            itemClass="carousel-item-padding-40-px"
-          >
+          ref={mapRef}
+          {...viewport}
+          onMove={(evt) => {
+            setViewport(evt.viewState);
+            handleMapMove();
+          }}
+          style={{ width: "100%", height: "100%" }}
+          mapStyle="mapbox://styles/mapbox/streets-v11"
+          mapboxAccessToken={mapboxgl.accessToken}
+        >
+          {filteredHotels.map((hotel) => (
+            <Marker
+              key={hotel.id}
+              latitude={hotel.location[1]}
+              longitude={hotel.location[0]}
+            >
+              <button
+                className="marker-btn"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setPopupInfo(hotel);
+                }}
+              >
+                <div className="bg-white rounded-full p-2 shadow-lg">
+                  <FaMapMarkerAlt className="text-orange-500" />
+                  <span className="text-xs font-bold text-black">
+                    ₹{hotel.price}
+                  </span>
+                </div>
+              </button>
+            </Marker>
+          ))}
+
+          {popupInfo && (
+            <Popup
+              anchor="top"
+              latitude={popupInfo.location[1]}
+              longitude={popupInfo.location[0]}
+              onClose={() => setPopupInfo(null)}
+            >
+              <div className="p-2 max-w-xs">
+                <h3 className="font-bold">{popupInfo.name}</h3>
+                <p className="text-sm">{popupInfo.address}</p>
+                <p className="text-sm">Price: ₹{popupInfo.price}</p>
+                <p className="text-sm">Rating: {popupInfo.rating} ⭐</p>
+                <p className="text-sm">Category: {popupInfo.category}</p>
+                <button
+                  className="mt-2 bg-orange-500 text-white px-2 py-1 rounded text-sm"
+                  onClick={() => handleHotelSelect(popupInfo)}
+                >
+                  Select Hotel
+                </button>
+              </div>
+            </Popup>
+          )}
+        </Map>
+        <div className="absolute top-4 left-4 bg-white p-2 rounded-lg shadow-md">
+          <p className="text-sm font-semibold">Average Price: ₹{avgPrice}</p>
+        </div>
+        <div className="absolute bottom-0 left-0 w-full bg-white p-4 overflow-x-auto">
+          <div className="flex space-x-4">
             {filteredHotels.map((hotel) => (
               <div
                 key={hotel.id}
-                className="border border-gray-300 rounded-lg overflow-hidden cursor-pointer m-2"
+                className="flex-shrink-0 w-48 border border-gray-300 rounded-lg overflow-hidden cursor-pointer shadow-md hover:shadow-lg transition-shadow"
                 onClick={() => handleHotelSelect(hotel)}
               >
-                <img src={hotel.image} alt={hotel.name} className="w-full h-auto" />
-                <div className="p-4">
-                  <h4 className="text-lg font-semibold">{hotel.name}</h4>
-                  <p className="mt-2">Price: ₹{hotel.price}</p>
-                  <p>Rating: {hotel.rating}</p>
+                <img
+                  src={hotel.image}
+                  alt={hotel.name}
+                  className="w-full h-32 object-cover"
+                />
+                <div className="p-2">
+                  <h4 className="font-semibold text-sm">{hotel.name}</h4>
+                  <p className="text-xs text-black">₹{hotel.price}</p>
+                  <p className="text-xs">{hotel.rating} ⭐</p>
+                  <p className="text-xs text-gray-600">{hotel.category}</p>
                 </div>
               </div>
             ))}
-          </Carousel>
+          </div>
         </div>
       </div>
+      {selectedHotel && (
+        <div className="absolute bottom-4 right-4 bg-white p-4 rounded-lg shadow-lg">
+          <h3 className="font-bold text-lg mb-2">Selected Stay</h3>
+          <p className="text-sm">
+            <strong>{selectedHotel.name}</strong>
+          </p>
+          <p className="text-sm">₹{selectedHotel.price} per night</p>
+          <p className="text-sm">{selectedHotel.rating} ⭐</p>
+          <p className="text-sm text-gray-600">{selectedHotel.category}</p>
+        </div>
+      )}
     </div>
   );
 };
