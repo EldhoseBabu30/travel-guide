@@ -64,7 +64,7 @@ const AiFinalize = () => {
       
       <section>
         <h2>Flight Details</h2>
-        <p>Price: {itineraryData.flightDetails?.price || 'Not available'}</p>
+        <p>Price: {itineraryData.flightDetails?.flightPrice || 'Not available'}</p>
         <p>Booking URL: {itineraryData.flightDetails?.bookingUrl ? 
           <a href={itineraryData.flightDetails.bookingUrl} target="_blank" rel="noopener noreferrer">Book Flight</a> :
           'Not available'}
@@ -75,14 +75,12 @@ const AiFinalize = () => {
         <h2>Hotel Options</h2>
         {itineraryData.hotelOptions?.map((hotel, index) => (
           <div key={index} className="hotel-option">
-            <h3>{hotel.name || 'Unnamed Hotel'}</h3>
-            <p>Location: {hotel.location || 'Not specified'}</p>
-            <p>Room Type: {hotel.roomType || 'Not specified'}</p>
-            <p>Address: {hotel.address || 'Not available'}</p>
-            <p>Price: {hotel.price || 'Not available'}</p>
+            <h3>{hotel.hotelName || 'Unnamed Hotel'}</h3>
+            <p>Address: {hotel.hotelAddress || 'Not available'}</p>
+            <p>Price: {hotel.hotelPrice || 'Not available'}</p>
             <p>Rating: {hotel.rating || 'Not rated'}</p>
             <p>Description: {hotel.description || 'No description available'}</p>
-            {hotel.imageUrl && <img src={hotel.imageUrl} alt={hotel.name} style={{maxWidth: '300px'}} />}
+            {hotel.hotelImageUrl && <img src={hotel.hotelImageUrl} alt={hotel.hotelName} style={{maxWidth: '300px'}} />}
             <p>Coordinates: {formatCoordinates(hotel.geoCoordinates)}</p>
           </div>
         ))}
@@ -92,13 +90,12 @@ const AiFinalize = () => {
         <h2>Dining Options</h2>
         {itineraryData.diningOptions?.map((dining, index) => (
           <div key={index} className="dining-option">
-            <h3>{dining.name || 'Unnamed Restaurant'}</h3>
-            <p>Cuisine: {dining.cuisine || 'Not specified'}</p>
-            <p>Address: {dining.address || 'Not available'}</p>
-            <p>Price: {dining.price || 'Not available'}</p>
+            <h3>{dining.diningName || 'Unnamed Restaurant'}</h3>
+            <p>Address: {dining.diningAddress || 'Not available'}</p>
+            <p>Price: {dining.diningPrice || 'Not available'}</p>
             <p>Rating: {dining.rating || 'Not rated'}</p>
             <p>Description: {dining.description || 'No description available'}</p>
-            {dining.imageUrl && <img src={dining.imageUrl} alt={dining.name} style={{maxWidth: '300px'}} />}
+            {dining.diningImageUrl && <img src={dining.diningImageUrl} alt={dining.diningName} style={{maxWidth: '300px'}} />}
             <p>Coordinates: {formatCoordinates(dining.geoCoordinates)}</p>
           </div>
         ))}
@@ -108,12 +105,12 @@ const AiFinalize = () => {
         <h2>Places to Visit</h2>
         {itineraryData.placesToVisit?.map((place, index) => (
           <div key={index} className="place-to-visit">
-            <h3>{place.name || 'Unnamed Place'}</h3>
-            <p>Details: {place.details || 'No details available'}</p>
-            {place.imageUrl && <img src={place.imageUrl} alt={place.name} style={{maxWidth: '300px'}} />}
+            <h3>{place.placeName || 'Unnamed Place'}</h3>
+            <p>Details: {place.placeDetails || 'No details available'}</p>
+            {place.placeImageUrl && <img src={place.placeImageUrl} alt={place.placeName} style={{maxWidth: '300px'}} />}
             <p>Coordinates: {formatCoordinates(place.geoCoordinates)}</p>
-            <p>Ticket Price: {place.ticketPrice || 'Not available'}</p>
-            <p>Travel Time: {place.travelTime || 'Not specified'}</p>
+            <p>Ticket Price: {place.ticketPricing || 'Not available'}</p>
+            <p>Travel Time: {place.timeToTravel || 'Not specified'}</p>
           </div>
         ))}
       </section>
@@ -123,11 +120,11 @@ const AiFinalize = () => {
         {itineraryData.dailyItinerary?.map((day, index) => (
           <div key={index} className="daily-plan">
             <h3>Day {index + 1}</h3>
-            <p>Date: {day.date || 'Not specified'}</p>
+            <p>Date: {day.day || 'Not specified'}</p>
             <ul>
               {day.activities?.map((activity, actIndex) => (
                 <li key={actIndex}>
-                  <strong>{activity.time || 'No time specified'}</strong>: {activity.description || 'No description'}
+                  <strong>{activity.time || 'No time specified'}</strong>: {activity.activity || 'No description'}
                 </li>
               ))}
             </ul>
