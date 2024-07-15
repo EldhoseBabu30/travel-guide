@@ -1,156 +1,451 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
-import Slider from 'rc-slider';
-import Tooltip from 'rc-tooltip';
-import 'rc-slider/assets/index.css';
-import 'tailwindcss/tailwind.css';
+// AiFood.js
+import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import {
+  FaStar,
+  FaUtensils,
+  FaCoffee,
+  FaPizzaSlice,
+  FaHamburger,
+  FaLeaf,
+  FaDrumstickBite,
+  FaMapMarkerAlt,
+} from "react-icons/fa";
+import Map, { Marker, Popup } from "react-map-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
+import mapboxgl from "mapbox-gl";
+import Slider from "rc-slider";
+import "rc-slider/assets/index.css";
+import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
+import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 
-// Import images
-import image1 from '../../assets/munnar.jpg';
-import image2 from '../../assets/munnar1.jpg';
-import image3 from '../../assets/kodaikanal.jpg';
+mapboxgl.accessToken = "pk.eyJ1IjoiYWJzaGFuIiwiYSI6ImNseHZ1ajUybTBtbGcyanF6eGFid216OHAifQ.1AXCW22VbJsmDC-2oIm0yw";
 
-const libraries = ['places'];
-
-
-const mapContainerStyle = {
-  height: "100vh",
-  width: "100%"
-};
-
-const center = {
-  lat: 10.972399,
-  lng: 76.282667
-};
-
-// Declare the spots array with imported images
-const spots = [
-  { id: 1, name: 'Hamhdhi Restaurant and Catering', rating: 4.3, place: 'Kappumugam', open: '9:00 AM', close: '12:00 AM', facilities: 'Dine-in, Takeaway, Delivery', position: { lat: 10.971, lng: 76.283 }, image: image1 },
-  { id: 2, name: 'EMS Hospital Canteen', rating: 3.4, place: 'X7G3+GVW', open: '9:00 AM', close: '10:00 PM', facilities: 'Dine-in, Takeaway', position: { lat: 10.973, lng: 76.285 }, image: image2 },
-  { id: 3, name: 'Jidha\'s Restaurant', rating: 4.8, place: 'Valamkulam, Bus Stop', open: '10:00 AM', close: '10:00 PM', facilities: 'Dine-in, Takeaway', position: { lat: 10.974, lng: 76.286 }, image: image3 },
-  // Add more spots with image imports
-];
-
-// Custom Tooltip component for slider
-const handleRender = (node, { value }) => (
-  <Tooltip
-    overlay={`₹${value}`}
-    placement="top"
-    visible
-  >
-    {node}
-  </Tooltip>
-);
-
-const marks = {
-  0: '₹0',
-  2500: '₹2500',
-  5000: '₹5000',
-  7500: '₹7500',
-  10000: '₹10000'
-};
-
-const App = () => {
+const FoodSpots = () => {
   const [selectedSpot, setSelectedSpot] = useState(null);
-  const [price, setPrice] = useState([0, 10000]);
-  const [searchText, setSearchText] = useState('');
-  const [filteredSpots, setFilteredSpots] = useState(spots);
+  const [foodSpots, setFoodSpots] = useState([]);
+  const [filteredSpots, setFilteredSpots] = useState([]);
+  const [viewport, setViewport] = useState({
+    latitude: 37.7749,
+    longitude: -122.4194,
+    zoom: 12,
+  });
+  const [popupInfo, setPopupInfo] = useState(null);
+  const [radius, setRadius] = useState(2500);
+  const [foodRatings, setFoodRatings] = useState([]);
+  const [customerReviews, setCustomerReviews] = useState([]);
+  const [priceRange, setPriceRange] = useState([0, 2000]);
+  const [foodCategories, setFoodCategories] = useState([]);
+  const [mealTimes, setMealTimes] = useState([]);
+  const [avgPrice, setAvgPrice] = useState(0);
   const mapRef = useRef();
+  const navigate = useNavigate();
 
-  const handlePriceChange = (value) => {
-    setPrice(value);
-  };
+  const cuisineTypes = [
+    { name: "Indian", icon: FaUtensils },
+    { name: "Chinese", icon: FaUtensils },
+    { name: "Mexican", icon: FaUtensils },
+    { name: "Arabian", icon: FaUtensils },
+    { name: "Non-Veg", icon: FaDrumstickBite },
+    { name: "Veg", icon: FaLeaf },
+  ];
 
-  const handleSearch = (event) => {
-    const text = event.target.value.toLowerCase();
-    setSearchText(text);
-    const filtered = spots.filter(spot => spot.name.toLowerCase().includes(text));
-    setFilteredSpots(filtered);
-  };
-
-
+  const mealTimeOptions = [
+    { name: "Breakfast", icon: FaCoffee },
+    { name: "Lunch", icon: FaPizzaSlice },
+    { name: "Dinner", icon: FaHamburger },
+  ];
 
   useEffect(() => {
-    if (selectedSpot) {
-      mapRef.current.panTo(selectedSpot.position);
+    const geocoder = new MapboxGeocoder({
+      accessToken: mapboxgl.accessToken,
+      mapboxgl: mapboxgl,
+      marker: false,
+      types: 'place,poi',
+    });
+
+    geocoder.addTo("#geocoder");
+
+    geocoder.on("result", (e) => {
+      const { center, text } = e.result;
+      setViewport({
+        latitude: center[1],
+        longitude: center[0],
+        zoom: 12,
+      });
+      fetchFoodSpotsForLocation(center[0], center[1]);
+    });
+
+    fetchFoodSpotsForLocation(viewport.longitude, viewport.latitude);
+  }, []);
+
+  const fetchFoodSpotsForLocation = async (lon, lat) => {
+    try {
+      const response = await axios.get(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/restaurant.json`,
+        {
+          params: {
+            proximity: `${lon},${lat}`,
+            limit: 20,
+            access_token: mapboxgl.accessToken,
+          },
+        }
+      );
+
+      const fetchedSpots = response.data.features.map((feature) => ({
+        id: feature.id,
+        name: feature.text,
+        rating: Math.floor(Math.random() * 5) + 1,
+        location: feature.center,
+        price: Math.floor(Math.random() * 100) * 10 + 100,
+        image: `https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/${feature.center[0]},${feature.center[1]},15,0/300x200@2x?access_token=${mapboxgl.accessToken}`,
+        address: feature.place_name,
+        category:
+          cuisineTypes[Math.floor(Math.random() * cuisineTypes.length)].name,
+        mealTime:
+          mealTimeOptions[Math.floor(Math.random() * mealTimeOptions.length)]
+            .name,
+      }));
+
+      setFoodSpots(fetchedSpots);
+      setFilteredSpots(fetchedSpots);
+      calculateAvgPrice(fetchedSpots);
+    } catch (error) {
+      console.error("Error fetching food spots:", error);
     }
-  }, [selectedSpot]);
+  };
+
+  const calculateAvgPrice = (spotList) => {
+    const total = spotList.reduce((sum, spot) => sum + spot.price, 0);
+    setAvgPrice(Math.round(total / spotList.length));
+  };
+
+  const handleSpotSelect = (spot) => {
+    setSelectedSpot(spot);
+    setViewport({
+      ...viewport,
+      latitude: spot.location[1],
+      longitude: spot.location[0],
+      zoom: 14,
+    });
+    setPopupInfo(spot);
+  };
+
+  const handleContinue = () => {
+    if (!selectedSpot) {
+      alert("Please select a food spot.");
+    } else {
+      navigate("/summary");
+    }
+  };
+
+  const handleContinueWithoutFood = () => {
+    navigate("/summary");
+  };
+
+  const handleRadiusChange = (value) => {
+    setRadius(value);
+    setViewport({
+      ...viewport,
+      zoom: 12 - Math.log2(value / 1000),
+    });
+    filterSpots();
+  };
+
+  const handleFoodRatingChange = (rating) => {
+    setFoodRatings((prevRatings) =>
+      prevRatings.includes(rating.toString())
+        ? prevRatings.filter((r) => r !== rating.toString())
+        : [...prevRatings, rating.toString()]
+    );
+    filterSpots();
+  };
+
+  const handleCustomerReviewChange = (event) => {
+    const value = event.target.value;
+    setCustomerReviews((prevReviews) =>
+      prevReviews.includes(value)
+        ? prevReviews.filter((r) => r !== value)
+        : [...prevReviews, value]
+    );
+    filterSpots();
+  };
+
+  const handlePriceRangeChange = (newValue) => {
+    setPriceRange(newValue);
+    filterSpots();
+  };
+
+  const handleCategoryChange = (category) => {
+    setFoodCategories((prevCategories) =>
+      prevCategories.includes(category)
+        ? prevCategories.filter((c) => c !== category)
+        : [...prevCategories, category]
+    );
+    filterSpots();
+  };
+
+  const handleMealTimeChange = (mealTime) => {
+    setMealTimes((prevMealTimes) =>
+      prevMealTimes.includes(mealTime)
+        ? prevMealTimes.filter((m) => m !== mealTime)
+        : [...prevMealTimes, mealTime]
+    );
+    filterSpots();
+  };
+
+  const filterSpots = () => {
+    const filtered = foodSpots.filter((spot) => {
+      const matchesRating =
+        foodRatings.length === 0 ||
+        foodRatings.includes(spot.rating.toString());
+      const matchesReview =
+        customerReviews.length === 0 ||
+        customerReviews.includes(spot.rating.toString());
+      const matchesPrice =
+        spot.price >= priceRange[0] && spot.price <= priceRange[1];
+      const matchesCategory =
+        foodCategories.length === 0 || foodCategories.includes(spot.category);
+      const matchesMealTime =
+        mealTimes.length === 0 || mealTimes.includes(spot.mealTime);
+      return (
+        matchesRating &&
+        matchesReview &&
+        matchesPrice &&
+        matchesCategory &&
+        matchesMealTime
+      );
+    });
+    setFilteredSpots(filtered);
+    calculateAvgPrice(filtered);
+  };
+
+  const handleMapMove = () => {
+    if (mapRef.current) {
+      const newCenter = mapRef.current.getMap().getCenter();
+      fetchFoodSpotsForLocation(newCenter.lng, newCenter.lat);
+    }
+  };
 
   return (
-    <div className="flex pt-28 justify-center">
-      <div className="w-4/5 p-4 bg-white shadow-lg rounded-lg border border-gray-300">
-        <input
-          type="text"
-          placeholder="Search"
-          className="w-full p-2 border rounded mb-4"
-          value={searchText}
-          onChange={handleSearch}
-        />
-        <div className="mb-4">
-          <label>Price Range: ₹{price[0]} - ₹{price[1]}</label>
-          <Slider
-            min={0}
-            max={10000}
-            value={price}
-            onChange={handlePriceChange}
-            marks={marks}
-            handleRender={handleRender}
-            className="w-full"
-          />
+    <div className="flex flex-col md:flex-row h-screen bg-gray-100">
+      <div className="w-full md:w-1/3 p-4 overflow-y-auto bg-white shadow-lg">
+        <h1 className="text-3xl font-bold text-orange-500 mb-6">
+          🍽️ Find Your Perfect Meal
+        </h1>
+        <p className="text-gray-600 mb-4">
+          Discover delicious dining options for your trip. Use the filters below
+          to find your ideal meal.
+        </p>
+
+        <div id="geocoder" className="mb-6"></div>
+
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold mb-3">Meal Time 🕒</h2>
+          <div className="flex flex-wrap gap-2">
+            {mealTimeOptions.map((time) => (
+              <button
+                key={time.name}
+                className={`py-1 px-3 rounded-full text-sm flex items-center ${
+                  mealTimes.includes(time.name)
+                    ? "bg-orange-500 text-white"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                }`}
+                onClick={() => handleMealTimeChange(time.name)}
+              >
+                <time.icon className="mr-1" /> {time.name}
+              </button>
+            ))}
+          </div>
         </div>
-        <div>
-          {filteredSpots.length > 0 ? (
-            filteredSpots.map(spot => (
+
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold mb-3">Cuisine Type 🍲</h2>
+          <div className="flex flex-wrap gap-2">
+            {cuisineTypes.map((type) => (
+              <button
+                key={type.name}
+                className={`py-1 px-3 rounded-full text-sm flex items-center ${
+                  foodCategories.includes(type.name)
+                    ? "bg-orange-500 text-white"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                }`}
+                onClick={() => handleCategoryChange(type.name)}
+              >
+                <type.icon className="mr-1" /> {type.name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold mb-3">Search Radius 🔍</h2>
+          <Slider
+            min={500}
+            max={5000}
+            step={100}
+            value={radius}
+            onChange={handleRadiusChange}
+          />
+          <p className="mt-2 text-sm text-gray-600">
+            Radius: {radius / 1000} km
+          </p>
+        </div>
+
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold mb-3">Price Range 💰</h2>
+          <Slider
+            range
+            min={0}
+            max={2000}
+            step={100}
+            value={priceRange}
+            onChange={handlePriceRangeChange}
+          />
+          <p className="mt-2 text-sm text-gray-600">
+            Price: ₹{priceRange[0]} - ₹{priceRange[1]}
+          </p>
+        </div>
+
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold mb-3">Customer Reviews ⭐</h2>
+          <div className="flex flex-col gap-2">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <label key={star} className="flex items-center">
+                <input
+                  type="checkbox"
+                  value={star.toString()}
+                  onChange={handleCustomerReviewChange}
+                  className="mr-2"
+                />
+                {[...Array(star)].map((_, i) => (
+                  <FaStar key={i} className="text-yellow-400" />
+                ))}
+                <span className="ml-2 text-sm text-gray-700">{star} Star</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-8 flex flex-col gap-4">
+          <button
+            className="py-2 px-4 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
+            onClick={handleContinueWithoutFood}
+          >
+            Continue Without Food 🚫🍽️
+          </button>
+          <button
+            className="py-2 px-4 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
+            onClick={handleContinue}
+          >
+            Continue with{" "}
+            {selectedSpot ? selectedSpot.name : "Selected Food Spot"} 🍽️
+          </button>
+        </div>
+      </div>
+
+      <div className="w-full md:w-2/3 h-full relative">
+        <Map
+          ref={mapRef}
+          {...viewport}
+          onMove={(evt) => {
+            setViewport(evt.viewState);
+            handleMapMove();
+          }}
+          style={{ width: "100%", height: "100%" }}
+          mapStyle="mapbox://styles/mapbox/streets-v11"
+          mapboxAccessToken={mapboxgl.accessToken}
+        >
+          {filteredSpots.map((spot) => (
+            <Marker
+              key={spot.id}
+              latitude={spot.location[1]}
+              longitude={spot.location[0]}
+            >
+              <button
+                className="marker-btn"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setPopupInfo(spot);
+                }}
+              >
+                <div className="bg-white rounded-full p-2 shadow-lg">
+                  <FaMapMarkerAlt className="text-orange-500" />
+                  <span className="text-xs font-bold text-black">
+                    ₹{spot.price}
+                  </span>
+                </div>
+              </button>
+            </Marker>
+          ))}
+
+          {popupInfo && (
+            <Popup
+              anchor="top"
+              latitude={popupInfo.location[1]}
+              longitude={popupInfo.location[0]}
+              onClose={() => setPopupInfo(null)}
+            >
+              <div className="p-2 max-w-xs">
+                <h3 className="font-bold">{popupInfo.name}</h3>
+                <p className="text-sm">{popupInfo.address}</p>
+                <p className="text-sm">Price: ₹{popupInfo.price}</p>
+                <p className="text-sm">Rating: {popupInfo.rating} ⭐</p>
+                <p className="text-sm">Category: {popupInfo.category}</p>
+                <p className="text-sm">Meal Time: {popupInfo.mealTime}</p>
+                <button
+                  className="mt-2 bg-orange-500 text-white px-2 py-1 rounded text-sm"
+                  onClick={() => handleSpotSelect(popupInfo)}
+                >
+                  Select Food Spot
+                </button>
+              </div>
+            </Popup>
+          )}
+        </Map>
+        <div className="absolute top-4 left-4 bg-white p-2 rounded-lg shadow-md">
+          <p className="text-sm font-semibold">Average Price: ₹{avgPrice}</p>
+        </div>
+        <div className="absolute bottom-0 left-0 w-full bg-white p-4 overflow-x-auto">
+          <div className="flex space-x-4">
+            {filteredSpots.map((spot) => (
               <div
                 key={spot.id}
-                className={`p-4 mb-4 rounded-lg shadow-md ${selectedSpot?.id === spot.id ? 'bg-gray-200' : 'hover:bg-gray-100'}`}
-                onClick={() => setSelectedSpot(spot)}
+                className="flex-shrink-0 w-48 border border-gray-300 rounded-lg overflow-hidden cursor-pointer shadow-md hover:shadow-lg transition-shadow"
+                onClick={() => handleSpotSelect(spot)}
               >
-                <div className="flex justify-between items-center">
-                  <div>
-                    <h2 className="text-lg font-bold">{spot.name}</h2>
-                    <p>Rating: {spot.rating}</p>
-                    <p>Location: {spot.place}</p>
-                    <p>Open: {spot.open} - Close: {spot.close}</p>
-                    <p>Facilities: {spot.facilities}</p>
-                  </div>
-                  <img src={spot.image} alt={spot.name} className="w-16 h-16 object-cover rounded ml-4" />
+                <img
+                  src={spot.image}
+                  alt={spot.name}
+                  className="w-full h-32 object-cover"
+                />
+                <div className="p-2">
+                  <h4 className="font-semibold text-sm">{spot.name}</h4>
+                  <p className="text-xs text-black">₹{spot.price}</p>
+                  <p className="text-xs">{spot.rating} ⭐</p>
+                  <p className="text-xs text-gray-600">{spot.category}</p>
+                  <p className="text-xs text-gray-600">{spot.mealTime}</p>
                 </div>
               </div>
-            ))
-          ) : (
-            <div className="p-4 mb-4 rounded-lg shadow-md text-center text-gray-600">
-              No hotels found.
-            </div>
-          )}
-        </div>
-      </div>
-      <div className="w-2/3 relative ml-4">
-        <LoadScript googleMapsApiKey="AIzaSyC35NX4I4MICHrydn6-sJKA2tOYv6m2Bxc" libraries={libraries}>
-          <GoogleMap
-            mapContainerStyle={mapContainerStyle}
-            zoom={14}
-            center={center}
-            onLoad={map => mapRef.current = map}
-          >
-            {filteredSpots.map(spot => (
-              <Marker
-                key={spot.id}
-                position={spot.position}
-                onClick={() => setSelectedSpot(spot)}
-              />
             ))}
-          </GoogleMap>
-        </LoadScript>
-        {/* <div className="absolute top-1/2 left-2 transform -translate-y-1/2">
-          <button className="bg-white p-2 rounded" onClick={prevSpot}>‹</button>
+          </div>
         </div>
-        <div className="absolute top-1/2 right-2 transform -translate-y-1/2">
-          <button className="bg-white p-2 rounded" onClick={nextSpot}>›</button>
-        </div> */}
       </div>
+      {selectedSpot && (
+        <div className="absolute bottom-4 right-4 bg-white p-4 rounded-lg shadow-lg">
+          <h3 className="font-bold text-lg mb-2">Selected Food Spot 🍽️</h3>
+          <p className="text-sm">
+            <strong>{selectedSpot.name}</strong>
+          </p>
+          <p className="text-sm">₹{selectedSpot.price} per meal</p>
+          <p className="text-sm">{selectedSpot.rating} ⭐</p>
+          <p className="text-sm text-gray-600">{selectedSpot.category}</p>
+          <p className="text-sm text-gray-600">{selectedSpot.mealTime}</p>
+        </div>
+      )}
     </div>
   );
 };
 
-export default App;
+export default FoodSpots;

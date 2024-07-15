@@ -1,143 +1,139 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { getItinerary } from '../AiTravel/GeminiAPI';
-import { TripContext } from '../AiTravel/context/TripContext';
+import React, { useContext, useEffect, useState } from 'react';
+import { TripContext } from './context/TripContext';
+import { getItinerary } from './GeminiAPI';
 
 const AiFinalize = () => {
   const { tripData } = useContext(TripContext);
-  const [itinerary, setItinerary] = useState(null);
+  const [itineraryData, setItineraryData] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const fetchItinerary = async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      if (!tripData) throw new Error("Trip data is not defined");
-      console.log("Trip data:", JSON.stringify(tripData, null, 2));
-      const response = await getItinerary(tripData);
-      console.log('API Response:', JSON.stringify(response, null, 2));
-      if (!response.success || !response.data) {
-        throw new Error(response.error || 'Failed to fetch itinerary');
-      }
-      console.log('Parsed itinerary data:', JSON.stringify(response.data, null, 2));
-      setItinerary(response.data);
-    } catch (error) {
-      console.error('Error fetching itinerary:', error);
-      setError(error.message || 'An error occurred while fetching the itinerary');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const [rawResponse, setRawResponse] = useState(null);
 
   useEffect(() => {
-    if (tripData) {
-      fetchItinerary();
-    }
+    const fetchItinerary = async () => {
+      setLoading(true);
+      setError(null);
+      setRawResponse(null);
+      try {
+        const response = await getItinerary(tripData);
+        if (response.success) {
+          console.log('Itinerary data:', JSON.stringify(response.data, null, 2));
+          setItineraryData(response.data);
+        } else {
+          setError(response.error);
+          setRawResponse(response.rawResponse);
+        }
+      } catch (err) {
+        setError('Failed to fetch itinerary data: ' + err.message);
+      }
+      setLoading(false);
+    };
+
+    fetchItinerary();
   }, [tripData]);
 
-  const renderHotelOptions = (hotels) => (
-    <div className="hotel-options">
-      <h3>Hotel Options</h3>
-      {hotels.map((hotel, index) => (
-        <div key={index} className="hotel-option">
-          <h4>{hotel.defaultAccommodation}</h4>
-          <p><strong>Location:</strong> {hotel.defaultLocation}</p>
-          <p><strong>Room Type:</strong> {hotel.defaultRoomType}</p>
-          <p><strong>Address:</strong> {hotel.hotelAddress}</p>
-          <p><strong>Price:</strong> {hotel.price}</p>
-          <p><strong>Rating:</strong> {hotel.rating}</p>
-          <p><strong>Description:</strong> {hotel.descriptions}</p>
-          <img src={hotel.hotelImageUrl} alt={hotel.defaultAccommodation} style={{maxWidth: '300px'}} />
-        </div>
-      ))}
-    </div>
-  );
+  const formatCoordinates = (coordinates) => {
+    if (Array.isArray(coordinates)) {
+      return coordinates.join(', ');
+    } else if (typeof coordinates === 'string') {
+      return coordinates;
+    } else if (typeof coordinates === 'object' && coordinates !== null) {
+      return `${coordinates.latitude}, ${coordinates.longitude}`;
+    }
+    return 'Not available';
+  };
 
-  const renderDiningOptions = (dinings) => (
-    <div className="dining-options">
-      <h3>Dining Options</h3>
-      {dinings.map((dining, index) => (
-        <div key={index} className="dining-option">
-          <h4>{dining.defaultMeal}</h4>
-          <p><strong>Dietary Requirements:</strong> {dining['Dietary Requirements']}</p>
-          <p><strong>Address:</strong> {dining['Dining address']}</p>
-          <p><strong>Price:</strong> {dining.price}</p>
-          <p><strong>Rating:</strong> {dining.rating}</p>
-          <p><strong>Description:</strong> {dining.descriptions}</p>
-          <img src={dining['Dining image url']} alt={dining.defaultMeal} style={{maxWidth: '300px'}} />
-        </div>
-      ))}
-    </div>
-  );
-
-  const renderPlacesToVisit = (places) => (
-    <div className="places-to-visit">
-      <h3>Places to Visit</h3>
-      {places.map((place, index) => (
-        <div key={index} className="place">
-          <h4>{place.placeName}</h4>
-          <p><strong>Details:</strong> {place['Place Details']}</p>
-          <p><strong>Ticket Price:</strong> {place.ticketPricing}</p>
-          <p><strong>Travel Time:</strong> {place['Time to travel']}</p>
-          <img src={place['Place Image Url']} alt={place.placeName} style={{maxWidth: '300px'}} />
-        </div>
-      ))}
-    </div>
-  );
-
-  const renderDailyItinerary = (dailyItinerary) => (
-    <div className="daily-itinerary">
-      <h3>Daily Itinerary</h3>
-      {dailyItinerary.map((day, index) => (
-        <div key={index} className="day">
-          <h4>{day.day}</h4>
-          {day.activities.map((activity, actIndex) => (
-            <div key={actIndex} className="activity">
-              <p><strong>{activity.time}:</strong> {activity.activity}</p>
-              <p>{activity.details}</p>
-            </div>
-          ))}
-        </div>
-      ))}
-    </div>
-  );
-
-  if (isLoading) {
-    return <div className="loading-container"><p>Loading travel itinerary...</p></div>;
-  }
-
-  if (error) {
-    return <div className="error-container"><h2>Error</h2><p>{error}</p></div>;
-  }
-
-  if (!itinerary || Object.keys(itinerary).length === 0) {
-    return <div className="no-itinerary-container"><h2>No Itinerary</h2><p>The itinerary could not be generated.</p></div>;
-  }
-
-  return (
-    <div className="itinerary-container" style={{ marginTop: '20px', padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-      <h1>Your Detailed Travel Itinerary</h1>
-
-      <div className="trip-overview">
-        <h2>Trip Overview</h2>
-        <p><strong>Destination:</strong> {itinerary.location}</p>
-        <p><strong>Dates:</strong> {itinerary.startDate} to {itinerary.endDate}</p>
-        <p><strong>Travelers:</strong> {itinerary.travellers}</p>
-        <p><strong>Budget:</strong> {itinerary.budget}</p>
-      </div>
-
-      {itinerary.flightDetails && (
-        <div className="flight-details">
-          <h2>Flight Details</h2>
-          <p><strong>Price:</strong> {itinerary.flightDetails.flightPrice}</p>
-          <p><strong>Booking:</strong> <a href={itinerary.flightDetails.bookingUrl} target="_blank" rel="noopener noreferrer">Book Now</a></p>
+  if (loading) return <div>Loading itinerary...</div>;
+  if (error) return (
+    <div>
+      <h2>Error:</h2>
+      <p>{error}</p>
+      {rawResponse && (
+        <div>
+          <h3>Raw API Response (truncated):</h3>
+          <pre>{rawResponse}</pre>
         </div>
       )}
+    </div>
+  );
+  if (!itineraryData) return <div>No itinerary data available</div>;
 
-      {itinerary.hotelOptions && renderHotelOptions(itinerary.hotelOptions)}
-      {itinerary.diningOptions && renderDiningOptions(itinerary.diningOptions)}
-      {itinerary.placesToVisitNearby && renderPlacesToVisit(itinerary.placesToVisitNearby)}
-      {itinerary.dailyItinerary && renderDailyItinerary(itinerary.dailyItinerary)}
+  return (
+    <div className="ai-finalize">
+      <h1>Your Travel Itinerary</h1>
+      
+      <section>
+        <h2>Flight Details</h2>
+        <p>Price: {itineraryData.flightDetails?.price || 'Not available'}</p>
+        <p>Booking URL: {itineraryData.flightDetails?.bookingUrl ? 
+          <a href={itineraryData.flightDetails.bookingUrl} target="_blank" rel="noopener noreferrer">Book Flight</a> :
+          'Not available'}
+        </p>
+      </section>
+
+      <section>
+        <h2>Hotel Options</h2>
+        {itineraryData.hotelOptions?.map((hotel, index) => (
+          <div key={index} className="hotel-option">
+            <h3>{hotel.name || 'Unnamed Hotel'}</h3>
+            <p>Location: {hotel.location || 'Not specified'}</p>
+            <p>Room Type: {hotel.roomType || 'Not specified'}</p>
+            <p>Address: {hotel.address || 'Not available'}</p>
+            <p>Price: {hotel.price || 'Not available'}</p>
+            <p>Rating: {hotel.rating || 'Not rated'}</p>
+            <p>Description: {hotel.description || 'No description available'}</p>
+            {hotel.imageUrl && <img src={hotel.imageUrl} alt={hotel.name} style={{maxWidth: '300px'}} />}
+            <p>Coordinates: {formatCoordinates(hotel.geoCoordinates)}</p>
+          </div>
+        ))}
+      </section>
+
+      <section>
+        <h2>Dining Options</h2>
+        {itineraryData.diningOptions?.map((dining, index) => (
+          <div key={index} className="dining-option">
+            <h3>{dining.name || 'Unnamed Restaurant'}</h3>
+            <p>Cuisine: {dining.cuisine || 'Not specified'}</p>
+            <p>Address: {dining.address || 'Not available'}</p>
+            <p>Price: {dining.price || 'Not available'}</p>
+            <p>Rating: {dining.rating || 'Not rated'}</p>
+            <p>Description: {dining.description || 'No description available'}</p>
+            {dining.imageUrl && <img src={dining.imageUrl} alt={dining.name} style={{maxWidth: '300px'}} />}
+            <p>Coordinates: {formatCoordinates(dining.geoCoordinates)}</p>
+          </div>
+        ))}
+      </section>
+
+      <section>
+        <h2>Places to Visit</h2>
+        {itineraryData.placesToVisit?.map((place, index) => (
+          <div key={index} className="place-to-visit">
+            <h3>{place.name || 'Unnamed Place'}</h3>
+            <p>Details: {place.details || 'No details available'}</p>
+            {place.imageUrl && <img src={place.imageUrl} alt={place.name} style={{maxWidth: '300px'}} />}
+            <p>Coordinates: {formatCoordinates(place.geoCoordinates)}</p>
+            <p>Ticket Price: {place.ticketPrice || 'Not available'}</p>
+            <p>Travel Time: {place.travelTime || 'Not specified'}</p>
+          </div>
+        ))}
+      </section>
+
+      <section>
+        <h2>Daily Itinerary</h2>
+        {itineraryData.dailyItinerary?.map((day, index) => (
+          <div key={index} className="daily-plan">
+            <h3>Day {index + 1}</h3>
+            <p>Date: {day.date || 'Not specified'}</p>
+            <ul>
+              {day.activities?.map((activity, actIndex) => (
+                <li key={actIndex}>
+                  <strong>{activity.time || 'No time specified'}</strong>: {activity.description || 'No description'}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </section>
     </div>
   );
 };
