@@ -110,7 +110,7 @@ const extractJSONFromText = (text) => {
 };
 
 const cleanJSONString = (jsonString) => {
-  return jsonString.trim();
+  return jsonString.trim().replace(/(\r\n|\n|\r|\t)/gm, "");
 };
 
 const parseResponse = (rawResponse) => {
@@ -144,7 +144,14 @@ export const getItinerary = async (tripData) => {
     const response = await result.response;
     rawResponse = await response.text();
     console.log("Raw API response:", rawResponse);
+
+    // Debugging log before parsing
+    console.log("Attempting to parse the raw response");
     const structuredData = parseResponse(rawResponse);
+
+    // Check and log structured data
+    console.log("Structured data after parsing:", structuredData);
+
     if (!structuredData) {
       throw new Error("Failed to parse API response. Raw response: " + rawResponse.substring(0, 200) + "...");
     }
