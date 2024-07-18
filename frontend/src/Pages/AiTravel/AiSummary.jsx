@@ -22,9 +22,8 @@ const AiSummary = () => {
       label: "Travelers",
       value:
         tripData.travelers?.count > 0
-          ? `${tripData.travelers.type} - ${tripData.travelers.count} ${
-              tripData.travelers.count === 1 ? "person" : "people"
-            }`
+          ? `${tripData.travelers.type} - ${tripData.travelers.count} ${tripData.travelers.count === 1 ? "person" : "people"
+          }`
           : "N/A",
       icon: "👥",
     },
@@ -33,8 +32,8 @@ const AiSummary = () => {
       value:
         tripData.tripDates?.startDate && tripData.tripDates?.endDate
           ? `${formatDate(tripData.tripDates.startDate)} - ${formatDate(
-              tripData.tripDates.endDate
-            )}`
+            tripData.tripDates.endDate
+          )}`
           : "N/A",
       icon: "📅",
     },
@@ -98,7 +97,7 @@ const AiSummary = () => {
             </motion.div>
           )}
 
-          <div className="md:w-1/2 space-y-2 sm:space-y-3 flex-grow overflow-y-auto pr-2 max-h-96">
+          <div className="w-full md:w-1/2 space-y-2 sm:space-y-3 flex-grow overflow-y-auto pr-2 max-h-96">
             {summaryItems.map((item, index) => (
               <motion.div
                 key={item.label}
