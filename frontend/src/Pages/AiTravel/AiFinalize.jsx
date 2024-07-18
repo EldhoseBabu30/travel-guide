@@ -15,7 +15,7 @@ const AiFinalize = () => {
   const [error, setError] = useState(null);
   const mapContainer = useRef(null);
   const map = useRef(null);
-  const [activeDay, setActiveDay] = useState(null);
+  const [selectedDay, setSelectedDay] = useState(null);
 
   useEffect(() => {
     const fetchItinerary = async () => {
@@ -28,11 +28,11 @@ const AiFinalize = () => {
         const response = await result.response;
         const rawResponse = await response.text();
         console.log("Raw response from AI:", rawResponse);
-        
+
         const structuredData = parseResponse(rawResponse);
-        
+
         console.log("Structured data after parsing:", structuredData);
-        
+
         if (structuredData) {
           setItineraryData(structuredData);
         } else {
@@ -52,7 +52,7 @@ const AiFinalize = () => {
   useEffect(() => {
     if (mapContainer.current && !map.current && itineraryData) {
       let coordinates = getValidCoordinates(itineraryData);
-      
+
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/streets-v11',
@@ -60,22 +60,102 @@ const AiFinalize = () => {
         zoom: 12
       });
     }
-  }, [itineraryData]);
+
+    if (map.current && selectedDay) {
+      updateMapForSelectedDay(selectedDay);
+    }
+  }, [itineraryData, selectedDay]);
+
+  const updateMapForSelectedDay = (day) => {
+    if (!map.current || !day) return;
+
+    // Clear existing markers and routes
+    if (map.current.getSource('route')) {
+      map.current.removeLayer('route');
+      map.current.removeSource('route');
+    }
+
+    const markers = document.getElementsByClassName('mapboxgl-marker');
+    while (markers[0]) {
+      markers[0].parentNode.removeChild(markers[0]);
+    }
+
+    // Add markers and create route for the selected day
+    const coordinates = [];
+    const addMarker = (item, color) => {
+      if (item.geoCoordinates) {
+        const [lng, lat] = parseCoordinates(item.geoCoordinates);
+        coordinates.push([lng, lat]);
+
+        new mapboxgl.Marker({ color })
+          .setLngLat([lng, lat])
+          .setPopup(new mapboxgl.Popup().setHTML(`<h3>${item.name || item.activity}</h3><p>${item.time || ''}</p>`))
+          .addTo(map.current);
+      }
+    };
+
+    // Add hotel marker
+    if (day.hotel) addMarker(day.hotel, '#FF0000');
+
+    // Add dining markers
+    day.dining?.forEach(meal => addMarker(meal, '#00FF00'));
+
+    // Add activity markers
+    day.activities?.forEach(activity => addMarker(activity, '#0000FF'));
+
+    if (coordinates.length > 1) {
+      map.current.addSource('route', {
+        'type': 'geojson',
+        'data': {
+          'type': 'Feature',
+          'properties': {},
+          'geometry': {
+            'type': 'LineString',
+            'coordinates': coordinates
+          }
+        }
+      });
+
+      map.current.addLayer({
+        'id': 'route',
+        'type': 'line',
+        'source': 'route',
+        'layout': {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        'paint': {
+          'line-color': '#888',
+          'line-width': 8
+        }
+      });
+
+      map.current.fitBounds(coordinates, { padding: 50 });
+    }
+  };
 
   const getValidCoordinates = (data) => {
-    if (data.hotelOptions && data.hotelOptions.length > 0) {
-      for (let hotel of data.hotelOptions) {
-        if (hotel.geoCoordinates) {
-          let coords = parseCoordinates(hotel.geoCoordinates);
+    if (data.dailyItinerary && data.dailyItinerary.length > 0) {
+      for (let day of data.dailyItinerary) {
+        if (day.hotel && day.hotel.geoCoordinates) {
+          let coords = parseCoordinates(day.hotel.geoCoordinates);
           if (coords) return coords;
         }
-      }
-    }
-    if (data.placesToVisit && data.placesToVisit.length > 0) {
-      for (let place of data.placesToVisit) {
-        if (place.geoCoordinates) {
-          let coords = parseCoordinates(place.geoCoordinates);
-          if (coords) return coords;
+        if (day.dining && day.dining.length > 0) {
+          for (let meal of day.dining) {
+            if (meal.geoCoordinates) {
+              let coords = parseCoordinates(meal.geoCoordinates);
+              if (coords) return coords;
+            }
+          }
+        }
+        if (day.activities && day.activities.length > 0) {
+          for (let activity of day.activities) {
+            if (activity.geoCoordinates) {
+              let coords = parseCoordinates(activity.geoCoordinates);
+              if (coords) return coords;
+            }
+          }
         }
       }
     }
@@ -122,10 +202,10 @@ const AiFinalize = () => {
 
     return `Generate a Travel Plan for Location: ${destination}, for ${formatDateRange(startDate, endDate)} for ${travelerType} - ${travelerCount} ${travelerCount === 1 ? 'person' : 'people'} with a ${budget} budget. Include the following details:
     1. Flight details: Flight Price with Booking url
-    2. Hotels options: List with ${accommodationName}, ${accommodationLocation} - ${accommodationRoomType}, Hotel address, Price, hotel image url, geo coordinates, rating, descriptions
-    3. Dining options: ${diningMeals}, Dietary Requirements: ${diningDietaryRequirements}, Dining address, Price, Dining image url, geo coordinates, rating, descriptions
-    4. Places to visit nearby: placeName, Place Details, Place Image Url, Geo Coordinates, ticket Pricing, Time to travel
-    5. Daily itinerary: Plan for each day from ${formatDateRange(startDate, endDate)} with best time to visit
+    2. Daily itinerary: Plan for each day from ${formatDateRange(startDate, endDate)} with best time to visit, including:
+       - Hotel for the day: Hotel name, address, price, image url, geo coordinates, rating, description
+       - Dining options for the day: Restaurant name, address, price, image url, geo coordinates, rating, description
+       - Activities and places to visit: Activity name, place details, image url, geo coordinates, ticket pricing, time to travel, best time to visit
     IMPORTANT: Provide the response as a valid JSON object. Ensure all property names and string values are enclosed in double quotes. Use proper JSON formatting with commas between properties and no trailing commas. Do not include any explanations or markdown formatting outside the JSON object. All monetary values should be in INR and represented as strings (e.g., "₹1000").`;
   };
 
@@ -166,9 +246,6 @@ const AiFinalize = () => {
 
         const structuredData = {
           flightDetails: travelPlan.flightDetails || [],
-          hotelOptions: travelPlan.hotels || travelPlan.hotelOptions || [],
-          diningOptions: travelPlan.dining || travelPlan.diningOptions || [],
-          placesToVisit: travelPlan.placesToVisit || [],
           dailyItinerary: travelPlan.dailyItinerary || []
         };
 
@@ -180,46 +257,12 @@ const AiFinalize = () => {
       }
     } catch (error) {
       console.error("JSON parsing error:", error);
-      // Attempt to salvage partial data
-      return salvagePartialData(rawResponse);
+      return null;
     }
-  };
-
-  const salvagePartialData = (rawResponse) => {
-    // This function attempts to extract useful information even if the JSON is malformed
-    const data = {
-      flightDetails: [],
-      hotelOptions: [],
-      diningOptions: [],
-      placesToVisit: [],
-      dailyItinerary: []
-    };
-
-    // Use regex to extract information
-    const flightRegex = /Flight Price:\s*([^\n]+)/;
-    const hotelRegex = /Hotel Name:\s*([^\n]+).*?Address:\s*([^\n]+)/s;
-    const placeRegex = /Place Name:\s*([^\n]+).*?Details:\s*([^\n]+)/s;
-
-    const flightMatch = rawResponse.match(flightRegex);
-    if (flightMatch) {
-      data.flightDetails.push({ flightPrice: flightMatch[1] });
-    }
-
-    const hotelMatches = rawResponse.matchAll(new RegExp(hotelRegex, 'g'));
-    for (const match of hotelMatches) {
-      data.hotelOptions.push({ hotelName: match[1], hotelAddress: match[2] });
-    }
-
-    const placeMatches = rawResponse.matchAll(new RegExp(placeRegex, 'g'));
-    for (const match of placeMatches) {
-      data.placesToVisit.push({ placeName: match[1], placeDetails: match[2] });
-    }
-
-    return data;
   };
 
   const toggleDay = (index) => {
-    setActiveDay(activeDay === index ? null : index);
+    setSelectedDay(selectedDay === itineraryData.dailyItinerary[index] ? null : itineraryData.dailyItinerary[index]);
   };
 
   if (loading) return <div className="text-center py-10">Loading itinerary...</div>;
@@ -239,7 +282,7 @@ const AiFinalize = () => {
             itineraryData.flightDetails.map((flight, index) => (
               <div key={index} className="mb-4 p-4 border rounded">
                 <p>Price: {flight.flightPrice || 'Not available'}</p>
-                <p>Booking URL: {flight.bookingUrl ? 
+                <p>Booking URL: {flight.bookingUrl ?
                   <a href={flight.bookingUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Book Flight</a> :
                   'Not available'}
                 </p>
@@ -251,76 +294,54 @@ const AiFinalize = () => {
         </section>
 
         <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">Hotel Options</h2>
-          {itineraryData.hotelOptions && itineraryData.hotelOptions.length > 0 ? (
-            itineraryData.hotelOptions.map((hotel, index) => (
-              <div key={index} className="mb-4 p-4 border rounded">
-                <h3 className="text-xl font-medium">{hotel.hotelName || 'Unnamed Hotel'}</h3>
-                <p>Address: {hotel.hotelAddress || 'Not available'}</p>
-                <p>Price: {hotel.hotelPrice || 'Not available'}</p>
-                <p>Rating: {hotel.hotelRating || 'Not rated'}</p>
-                <p>Description: {hotel.hotelDescription || 'No description available'}</p>
-                {hotel.hotelImageUrl && <img src={hotel.hotelImageUrl} alt={hotel.hotelName} className="mt-2 max-w-full h-auto" />}
-              </div>
-            ))
-          ) : (
-            <p>No hotel options available</p>
-          )}
-        </section>
-
-        <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">Dining Options</h2>
-          {itineraryData.diningOptions && itineraryData.diningOptions.length > 0 ? (
-            itineraryData.diningOptions.map((restaurant, index) => (
-              <div key={index} className="mb-4 p-4 border rounded">
-                <h3 className="text-xl font-medium">{restaurant.diningName || 'Unnamed Restaurant'}</h3>
-                <p>Address: {restaurant.diningAddress || 'Not available'}</p>
-                <p>Price: {restaurant.diningPrice || 'Not available'}</p>
-                <p>Rating: {restaurant.diningRating || 'Not rated'}</p>
-                <p>Description: {restaurant.diningDescription || 'No description available'}</p>
-                {restaurant.diningImageUrl && <img src={restaurant.diningImageUrl} alt={restaurant.diningName} className="mt-2 max-w-full h-auto" />}
-              </div>
-            ))
-          ) : (
-            <p>No dining options available</p>
-          )}
-        </section>
-
-        <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">Places to Visit</h2>
-          {itineraryData.placesToVisit && itineraryData.placesToVisit.length > 0 ? (
-            itineraryData.placesToVisit.map((place, index) => (
-              <div key={index} className="mb-4 p-4 border rounded">
-                <h3 className="text-xl font-medium">{place.placeName || 'Unnamed Place'}</h3>
-                <p>Details: {place.placeDetails || 'No details available'}</p>
-                <p>Ticket Price: {place.ticketPricing || 'Not available'}</p>
-                <p>Time to Travel: {place.timeToTravel || 'Not specified'}</p>
-                {place.placeImageUrl && <img src={place.placeImageUrl} alt={place.placeName} className="mt-2 max-w-full h-auto" />}
-              </div>
-            ))
-          ) : (
-            <p>No places to visit available</p>
-          )}
-        </section>
-
-        <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">Daily Itinerary</h2>
           {itineraryData.dailyItinerary && itineraryData.dailyItinerary.length > 0 ? (
             itineraryData.dailyItinerary.map((day, index) => (
               <div key={index} className="mb-4">
-                <button 
-                  className={`w-full text-left p-4 bg-gray-100 hover:bg-gray-200 ${activeDay === index ? 'bg-gray-300' : ''}`}
+                <button
+                  className={`w-full text-left p-4 bg-gray-100 hover:bg-gray-200 ${selectedDay === day ? 'bg-gray-300' : ''}`}
                   onClick={() => toggleDay(index)}
                 >
-                  <h3 className="text-xl font-semibold">Day {index + 1} - {day.day}</h3>
+                  <h3 className="text-xl font-semibold">Day {index + 1} - {day.date}</h3>
                 </button>
-                {activeDay === index && (
+                {selectedDay === day && (
                   <div className="p-4 border-l border-r border-b">
+                    {day.hotel && (
+                      <div className="mb-4">
+                        <h4 className="font-medium">Hotel:</h4>
+                        <p>{day.hotel.name}</p>
+                        <p>{day.hotel.address}</p>
+                        <p>Price: {day.hotel.price}</p>
+                        <p>Rating: {day.hotel.rating}</p>
+                        <p>{day.hotel.description}</p>
+                        {day.hotel.imageUrl && <img src={day.hotel.imageUrl} alt={day.hotel.name} className="mt-2 max-w-full h-auto" />}
+                      </div>
+                    )}
+                    {day.dining && day.dining.length > 0 && (
+                      <div className="mb-4">
+                        <h4 className="font-medium">Dining:</h4>
+                        {day.dining.map((meal, mealIndex) => (
+                          <div key={mealIndex} className="mb-2">
+                            <p>{meal.time}: {meal.name}</p>
+                            <p>Address: {meal.address}</p>
+                            <p>Price: {meal.price}</p>
+                            <p>Rating: {meal.rating}</p>
+                            <p>{meal.description}</p>
+                            {meal.imageUrl && <img src={meal.imageUrl} alt={meal.name} className="mt-2 max-w-full h-auto" />}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <h4 className="font-medium">Activities:</h4>
                     {day.activities && day.activities.length > 0 ? (
                       day.activities.map((activity, actIndex) => (
-                        <div key={actIndex} className="mb-4">
-                          <h4 className="font-medium">{activity.time}: {activity.activity}</h4>
-                          <p>Description: {activity.description || 'No description available'}</p>
+                        <div key={actIndex} className="mb-2">
+                          <p>{activity.time}: {activity.activity}</p>
+                          <p>{activity.placeDetails}</p>
+                          <p>Ticket Price: {activity.ticketPricing}</p>
+                          <p>Time to Travel: {activity.timeToTravel}</p>
+                          <p>Best Time to Visit: {activity.bestTimeToVisit}</p>
+                          {activity.imageUrl && <img src={activity.imageUrl} alt={activity.activity} className="mt-2 max-w-full h-auto" />}
                         </div>
                       ))
                     ) : (
