@@ -82,26 +82,17 @@ const AiFinalize = () => {
 
     // Add markers and create route for the selected day
     const coordinates = [];
-    const addMarker = (item, color) => {
-      if (item.geoCoordinates) {
-        const [lng, lat] = parseCoordinates(item.geoCoordinates);
+    day.activities.forEach((activity, index) => {
+      if (activity.geoCoordinates) {
+        const [lng, lat] = parseCoordinates(activity.geoCoordinates);
         coordinates.push([lng, lat]);
 
-        new mapboxgl.Marker({ color })
+        new mapboxgl.Marker()
           .setLngLat([lng, lat])
-          .setPopup(new mapboxgl.Popup().setHTML(`<h3>${item.name || item.activity}</h3><p>${item.time || ''}</p>`))
+          .setPopup(new mapboxgl.Popup().setHTML(`<h3>${activity.activity}</h3><p>${activity.time}</p>`))
           .addTo(map.current);
       }
-    };
-
-    // Add hotel marker
-    if (day.hotel) addMarker(day.hotel, '#FF0000');
-
-    // Add dining markers
-    day.dining?.forEach(meal => addMarker(meal, '#00FF00'));
-
-    // Add activity markers
-    day.activities?.forEach(activity => addMarker(activity, '#0000FF'));
+    });
 
     if (coordinates.length > 1) {
       map.current.addSource('route', {
@@ -140,14 +131,6 @@ const AiFinalize = () => {
         if (day.hotel && day.hotel.geoCoordinates) {
           let coords = parseCoordinates(day.hotel.geoCoordinates);
           if (coords) return coords;
-        }
-        if (day.dining && day.dining.length > 0) {
-          for (let meal of day.dining) {
-            if (meal.geoCoordinates) {
-              let coords = parseCoordinates(meal.geoCoordinates);
-              if (coords) return coords;
-            }
-          }
         }
         if (day.activities && day.activities.length > 0) {
           for (let activity of day.activities) {
@@ -322,12 +305,12 @@ const AiFinalize = () => {
                         <h4 className="font-medium">Dining:</h4>
                         {day.dining.map((meal, mealIndex) => (
                           <div key={mealIndex} className="mb-2">
-                            <p>{meal.time}: {meal.name}</p>
+                            <p>{meal.time}: {meal.restaurant}</p>
                             <p>Address: {meal.address}</p>
                             <p>Price: {meal.price}</p>
                             <p>Rating: {meal.rating}</p>
                             <p>{meal.description}</p>
-                            {meal.imageUrl && <img src={meal.imageUrl} alt={meal.name} className="mt-2 max-w-full h-auto" />}
+                            {meal.imageUrl && <img src={meal.imageUrl} alt={meal.restaurant} className="mt-2 max-w-full h-auto" />}
                           </div>
                         ))}
                       </div>
