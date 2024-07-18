@@ -51,12 +51,7 @@ const AiFinalize = () => {
 
   useEffect(() => {
     if (mapContainer.current && !map.current && itineraryData) {
-      let coordinates = [0, 0]; // Default coordinates
-      if (itineraryData.hotelOptions && 
-          itineraryData.hotelOptions.length > 0 && 
-          itineraryData.hotelOptions[0].geoCoordinates) {
-        coordinates = itineraryData.hotelOptions[0].geoCoordinates.split(',').map(coord => parseFloat(coord.trim()));
-      }
+      let coordinates = getValidCoordinates(itineraryData);
       
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
@@ -66,6 +61,45 @@ const AiFinalize = () => {
       });
     }
   }, [itineraryData]);
+
+  const getValidCoordinates = (data) => {
+    if (data.hotelOptions && data.hotelOptions.length > 0) {
+      for (let hotel of data.hotelOptions) {
+        if (hotel.geoCoordinates) {
+          let coords = parseCoordinates(hotel.geoCoordinates);
+          if (coords) return coords;
+        }
+      }
+    }
+    if (data.placesToVisit && data.placesToVisit.length > 0) {
+      for (let place of data.placesToVisit) {
+        if (place.geoCoordinates) {
+          let coords = parseCoordinates(place.geoCoordinates);
+          if (coords) return coords;
+        }
+      }
+    }
+    // Fallback to a default location (e.g., center of India)
+    return [78.9629, 20.5937];
+  };
+
+  const parseCoordinates = (coords) => {
+    if (typeof coords === 'string') {
+      const parts = coords.split(',').map(part => parseFloat(part.trim()));
+      if (parts.length === 2 && isValidLatLng(parts[0], parts[1])) {
+        return [parts[1], parts[0]]; // Mapbox uses [lng, lat]
+      }
+    } else if (Array.isArray(coords) && coords.length === 2) {
+      if (isValidLatLng(coords[0], coords[1])) {
+        return [coords[1], coords[0]]; // Mapbox uses [lng, lat]
+      }
+    }
+    return null;
+  };
+
+  const isValidLatLng = (lat, lng) => {
+    return lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180;
+  };
 
   const formatDateRange = (startDate, endDate) => {
     const start = new Date(startDate);
@@ -105,12 +139,26 @@ const AiFinalize = () => {
   };
 
   const cleanJSONString = (jsonString) => {
-    return jsonString.trim().replace(/(\r\n|\n|\r|\t)/gm, "");
+    return jsonString
+      .replace(/\\n/g, "\\n")
+      .replace(/\\'/g, "\\'")
+      .replace(/\\"/g, '\\"')
+      .replace(/\\&/g, "\\&")
+      .replace(/\\r/g, "\\r")
+      .replace(/\\t/g, "\\t")
+      .replace(/\\b/g, "\\b")
+      .replace(/\\f/g, "\\f")
+      .replace(/[\u0000-\u0019]+/g, "");
   };
 
   const parseResponse = (rawResponse) => {
     try {
-      const parsedData = JSON.parse(rawResponse);
+      console.log("Raw response:", rawResponse);
+      const extractedJSON = extractJSONFromText(rawResponse);
+      console.log("Extracted JSON:", extractedJSON);
+      const cleanedJSON = cleanJSONString(extractedJSON);
+      console.log("Cleaned JSON:", cleanedJSON);
+      const parsedData = JSON.parse(cleanedJSON);
       console.log("Parsed data:", parsedData);
 
       if (parsedData && typeof parsedData === 'object') {
@@ -132,8 +180,42 @@ const AiFinalize = () => {
       }
     } catch (error) {
       console.error("JSON parsing error:", error);
-      return null;
+      // Attempt to salvage partial data
+      return salvagePartialData(rawResponse);
     }
+  };
+
+  const salvagePartialData = (rawResponse) => {
+    // This function attempts to extract useful information even if the JSON is malformed
+    const data = {
+      flightDetails: [],
+      hotelOptions: [],
+      diningOptions: [],
+      placesToVisit: [],
+      dailyItinerary: []
+    };
+
+    // Use regex to extract information
+    const flightRegex = /Flight Price:\s*([^\n]+)/;
+    const hotelRegex = /Hotel Name:\s*([^\n]+).*?Address:\s*([^\n]+)/s;
+    const placeRegex = /Place Name:\s*([^\n]+).*?Details:\s*([^\n]+)/s;
+
+    const flightMatch = rawResponse.match(flightRegex);
+    if (flightMatch) {
+      data.flightDetails.push({ flightPrice: flightMatch[1] });
+    }
+
+    const hotelMatches = rawResponse.matchAll(new RegExp(hotelRegex, 'g'));
+    for (const match of hotelMatches) {
+      data.hotelOptions.push({ hotelName: match[1], hotelAddress: match[2] });
+    }
+
+    const placeMatches = rawResponse.matchAll(new RegExp(placeRegex, 'g'));
+    for (const match of placeMatches) {
+      data.placesToVisit.push({ placeName: match[1], placeDetails: match[2] });
+    }
+
+    return data;
   };
 
   const toggleDay = (index) => {
