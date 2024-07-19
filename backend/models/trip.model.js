@@ -2,33 +2,30 @@
 import mongoose from 'mongoose';
 
 const travelSchema = new mongoose.Schema({
-  destination: {
-    type: String,
-    required: true,
-  },
+  destination: String,
+  destinationCoordinates: [Number],
   travelers: {
-    type: String,
-    required: true,
+    type: { type: String },
+    count: Number
   },
-  startDate: {
-    type: String,
-    required: true,
+  tripDates: {
+    startDate: Date,
+    endDate: Date
   },
-  endDate: {
-    type: String,
-    required: true,
+  tripType: String,
+  budget: String,
+  accommodation: {
+    name: String,
+    location: String,
+    roomType: String
   },
-  preferences: {
-    type: [String],
-    required: true,
-  },
-  budget: {
-    type: String,
-    required: true,
-  },
-  destinationImage: {
-    type: String,
-  },
+  dining: {
+    name: String,
+    location: String,
+    cuisine: String,
+    mealTime: String
+  }
+
 });
 
 const Travel = mongoose.model('Travel', travelSchema);

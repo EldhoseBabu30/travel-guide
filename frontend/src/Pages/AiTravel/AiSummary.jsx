@@ -2,9 +2,19 @@ import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { TripContext } from "../AiTravel/context/TripContext";
 import { motion } from "framer-motion";
+import { useSelector, useDispatch } from 'react-redux';
+
 
 const AiSummary = () => {
-  const { tripData } = useContext(TripContext);
+  const { tripData } = useContext(TripContext); 
+   const dispatch = useDispatch();
+
+
+  const { currentUser } = useSelector((state) => state.user);
+  console.log(currentUser);
+
+
+
   const navigate = useNavigate();
 
   const handleBuildItinerary = () => {
