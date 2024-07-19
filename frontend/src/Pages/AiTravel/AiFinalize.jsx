@@ -5,8 +5,14 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { motion } from 'framer-motion';
 import { FaDownload, FaFacebookF, FaTwitter, FaWhatsapp } from 'react-icons/fa';
-import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import Lottie from 'react-lottie';
+
+// Import your Lottie animations here
+import manAnimation from '../../assets/Lottiefiles/man.json';
+import coupleAnimation from '../../assets/Lottiefiles/couple.json';
+import carAnimation from '../../assets/Lottiefiles/car.json';
+import flightAnimation from '../../assets/Lottiefiles/flight.json';
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiYWJzaGFuIiwiYSI6ImNseHZ1ajUybTBtbGcyanF6eGFid216OHAifQ.1AXCW22VbJsmDC-2oIm0yw';
 const API_KEY = "AIzaSyBtLgAkzdaEGVytlLaKlZvGW3LtYTeM8z8";
@@ -64,6 +70,16 @@ const AiFinalize = () => {
         center: coordinates,
         zoom: 12
       });
+
+      const resizeMap = () => {
+        map.current.resize();
+      };
+
+      window.addEventListener('resize', resizeMap);
+
+      return () => {
+        window.removeEventListener('resize', resizeMap);
+      };
     }
 
     if (map.current && selectedDay) {
@@ -115,7 +131,7 @@ const AiFinalize = () => {
         const coordinatesQuery = coordinates.map(coord => coord.join(',')).join(';');
         const response = await fetch(`https://api.mapbox.com/directions/v5/mapbox/walking/${coordinatesQuery}?geometries=geojson&access_token=${mapboxgl.accessToken}`);
         const data = await response.json();
-        
+
         if (data.routes && data.routes.length > 0) {
           const route = data.routes[0].geometry;
 
@@ -279,43 +295,48 @@ const AiFinalize = () => {
     return `${dayOfWeek}, ${formattedDate}`;
   };
 
-
-  const downloadPDF = async () => {
-    const element = itineraryRef.current;
-    const canvas = await html2canvas(element, {
-      scale: 2,
-      useCORS: true,
-      logging: true,
-      scrollY: -window.scrollY
-    });
-    const imgData = canvas.toDataURL('image/png');
-
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = pdf.internal.pageSize.getHeight();
-    const imgWidth = canvas.width;
-    const imgHeight = canvas.height;
-    const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
-    const imgX = (pdfWidth - imgWidth * ratio) / 2;
-    const imgY = 30;
-
-    pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
+  const downloadPDF = () => {
+    const pdf = new jsPDF();
+    let yOffset = 20;
 
     // Add title
-    pdf.setFontSize(24);
-    pdf.setTextColor(0, 0, 0);
-    pdf.text('Your Travel Itinerary', pdfWidth / 2, 20, { align: 'center' });
+    pdf.setFontSize(18);
+    pdf.text(`Travel Itinerary for ${tripData.destination}`, 105, yOffset, { align: 'center' });
+    yOffset += 15;
+
+    // Add date range
+    pdf.setFontSize(12);
+    pdf.text(`${formatDateRange(tripData.tripDates?.startDate, tripData.tripDates?.endDate)}`, 105, yOffset, { align: 'center' });
+    yOffset += 15;
+
+    // Add daily itinerary
+    pdf.setFontSize(14);
+    itineraryData.dailyItinerary.forEach((day, index) => {
+      pdf.text(`Day ${index + 1}: ${formatDayHeadline(day.date)}`, 10, yOffset);
+      yOffset += 10;
+
+      pdf.setFontSize(12);
+      day.activities.forEach((activity, actIndex) => {
+        const activityText = `${activity.time}: ${activity.activity}`;
+        pdf.text(activityText, 20, yOffset);
+        yOffset += 7;
+
+        if (yOffset > 280) {
+          pdf.addPage();
+          yOffset = 20;
+        }
+      });
+
+      yOffset += 5;
+      if (yOffset > 280) {
+        pdf.addPage();
+        yOffset = 20;
+      }
+    });
 
     // Add copyright text
     pdf.setFontSize(10);
-    pdf.setTextColor(100);
-    const copyrightText = 'Itinerary made with NjanSanchari';
-    const textWidth = pdf.getStringUnitWidth(copyrightText) * pdf.internal.getFontSize() / pdf.internal.scaleFactor;
-    const textX = (pdfWidth - textWidth) / 2;
-    pdf.text(copyrightText, textX, pdfHeight - 10);
-
-    // Add clickable link
-    pdf.link(textX, pdfHeight - 15, textWidth, 10, { url: 'https://www.njansanchari.com' });
+    pdf.text('Itinerary made with NjanSanchari', 105, 290, { align: 'center' });
 
     pdf.save('itinerary.pdf');
   };
@@ -337,27 +358,44 @@ const AiFinalize = () => {
     window.open(`https://wa.me/?text=${text} ${url}`, '_blank');
   };
 
+  const getLoadingAnimation = () => {
+    const travelerCount = tripData.travelers?.count || 1;
+    const isInternational = !['India', 'india'].includes(tripData.destination);
+
+    let animationData;
+    let animationWidth = 200;
+    let animationHeight = 200;
+
+    if (isInternational) {
+      animationData = flightAnimation;
+    } else if (travelerCount === 1) {
+      animationData = manAnimation;
+    } else if (travelerCount === 2) {
+      animationData = coupleAnimation;
+    } else {
+      animationData = carAnimation;
+    }
+
+    const defaultOptions = {
+      loop: true,
+      autoplay: true,
+      animationData: animationData,
+      rendererSettings: {
+        preserveAspectRatio: 'xMidYMid slice'
+      }
+    };
+
+    return (
+      <div className="w-48 h-48 mb-8 mx-auto">
+        <Lottie options={defaultOptions} height={animationHeight} width={animationWidth} />
+      </div>
+    );
+  };
+
   if (loading) return (
     <div className="flex items-center justify-center h-screen bg-gradient-to-r from-orange-400 to-yellow-300">
       <div className="text-center text-white">
-        <motion.div
-          className="w-24 h-12 mb-8 mx-auto"
-          animate={{
-            x: ["-100%", "100%"],
-            rotateY: [0, 180]
-          }}
-          transition={{
-            duration: 2,
-            ease: "linear",
-            repeat: Infinity,
-            repeatType: "loop"
-          }}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M0 0h24v24H0z" fill="none"/>
-            <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
-          </svg>
-        </motion.div>
+        {getLoadingAnimation()}
         <p className="text-2xl font-semibold">Creating your perfect itinerary...</p>
         <p className="text-lg">Fasten your seatbelt, we're almost there!</p>
       </div>
@@ -368,24 +406,14 @@ const AiFinalize = () => {
   if (!itineraryData) return <div className="text-center py-10">No itinerary data available</div>;
 
   return (
-   <div className="flex flex-col md:flex-row h-screen bg-orange-50">
+    <div className="flex flex-col md:flex-row h-screen bg-orange-50">
       <div className="w-full md:w-1/2 overflow-y-auto p-6" ref={itineraryRef}>
-        <div 
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="bg-gradient-to-r from-orange-400 to-yellow-300 rounded-lg shadow-lg p-8 mb-6"
-        >
+        <div className="bg-gradient-to-r from-orange-400 to-yellow-300 rounded-lg shadow-lg p-8 mb-6">
           <h1 className="text-4xl font-bold text-white">{tripData.destination}</h1>
           <p className="text-xl text-white mt-2">{formatDateRange(tripData.tripDates?.startDate, tripData.tripDates?.endDate)}</p>
         </div>
 
-        <div 
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="mb-4 flex space-x-4"
-        >
+        <div className="mb-4 flex space-x-4">
           <button onClick={downloadPDF} className="flex items-center bg-orange-500 text-white px-4 py-2 rounded-full hover:bg-orange-600 transition duration-300">
             <FaDownload className="mr-2" /> Download PDF
           </button>
@@ -400,22 +428,11 @@ const AiFinalize = () => {
           </button>
         </div>
 
-        <section 
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="mb-8 bg-white rounded-lg shadow-md p-6"
-        >
+        <section className="mb-8 bg-white rounded-lg shadow-md p-6">
           <h2 className="text-2xl font-semibold mb-4 text-orange-800">Flight Details</h2>
           {itineraryData.flightDetails && itineraryData.flightDetails.length > 0 ? (
             itineraryData.flightDetails.map((flight, index) => (
-              <div 
-                key={index} 
-                className="mb-4 p-4 border rounded-lg bg-orange-50"
-                initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
-              >
+              <div key={index} className="mb-4 p-4 border rounded-lg bg-orange-50">
                 <p className="text-lg"><span className="font-semibold">Price:</span> {flight.flightPrice || 'Not available'}</p>
                 <p className="text-lg">
                   <span className="font-semibold">Booking URL:</span> {flight.bookingUrl ?
@@ -429,68 +446,62 @@ const AiFinalize = () => {
           )}
         </section>
 
-        <section 
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-          className="mb-8"
-        >
+        <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4 text-orange-800">Daily Itinerary</h2>
           {itineraryData.dailyItinerary && itineraryData.dailyItinerary.length > 0 ? (
             itineraryData.dailyItinerary.map((day, index) => (
-              <div 
-                key={index} 
-                className="mb-4 bg-white rounded-lg shadow-md overflow-hidden"
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                <div className="w-full text-left p-4 bg-orange-100">
+              <div key={index} className="mb-4 bg-white rounded-lg shadow-md overflow-hidden">
+                <div
+                  className="w-full text-left p-4 bg-orange-100 cursor-pointer"
+                  onClick={() => toggleDay(index)}
+                >
                   <h3 className="text-xl font-semibold text-orange-800">{formatDayHeadline(day.date)}</h3>
                 </div>
-                <div className="p-4 border-t border-orange-200">
-                  {day.hotel && (
-                    <div className="mb-4 p-3 bg-orange-50 rounded-lg">
-                      <h4 className="font-medium text-lg text-orange-800">Hotel:</h4>
-                      <p className="text-gray-700">{day.hotel.name}</p>
-                      <p className="text-gray-600">{day.hotel.address}</p>
-                      <p className="text-gray-600">Price: {day.hotel.price}</p>
-                      <p className="text-gray-600">Rating: {day.hotel.rating}</p>
-                      <p className="text-gray-700 mt-2">{day.hotel.description}</p>
-                      {day.hotel.imageUrl && <img src={day.hotel.imageUrl} alt={day.hotel.name} className="mt-2 max-w-full h-auto rounded-lg shadow" />}
-                    </div>
-                  )}
-                  {day.dining && day.dining.length > 0 && (
-                    <div className="mb-4">
-                      <h4 className="font-medium text-lg text-orange-800">Dining:</h4>
-                      {day.dining.map((meal, mealIndex) => (
-                        <div key={mealIndex} className="mb-2 p-3 bg-yellow-50 rounded-lg">
-                          <p className="font-semibold text-yellow-800">{meal.time}: {meal.restaurant}</p>
-                          <p className="text-gray-600">Address: {meal.address}</p>
-                          <p className="text-gray-600">Price: {meal.price}</p>
-                          <p className="text-gray-600">Rating: {meal.rating}</p>
-                          <p className="text-gray-700 mt-2">{meal.description}</p>
-                          {meal.imageUrl && <img src={meal.imageUrl} alt={meal.restaurant} className="mt-2 max-w-full h-auto rounded-lg shadow" />}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  <h4 className="font-medium text-lg text-orange-800">Activities:</h4>
-                  {day.activities && day.activities.length > 0 ? (
-                    day.activities.map((activity, actIndex) => (
-                      <div key={actIndex} className="mb-2 p-3 bg-orange-50 rounded-lg">
-                        <p className="font-semibold text-orange-800">{actIndex + 1}. {activity.time}: {activity.activity}</p>
-                        <p className="text-gray-700">{activity.placeDetails}</p>
-                        <p className="text-gray-600">Ticket Price: {activity.ticketPricing}</p>
-                        <p className="text-gray-600">Time to Travel: {activity.timeToTravel}</p>
-                        <p className="text-gray-600">Best Time to Visit: {activity.bestTimeToVisit}</p>
-                        {activity.imageUrl && <img src={activity.imageUrl} alt={activity.activity} className="mt-2 max-w-full h-auto rounded-lg shadow" />}
+                {selectedDay === day && (
+                  <div className="p-4 border-t border-orange-200">
+                    {day.hotel && (
+                      <div className="mb-4 p-3 bg-orange-50 rounded-lg">
+                        <h4 className="font-medium text-lg text-orange-800">Hotel:</h4>
+                        <p className="text-gray-700">{day.hotel.name}</p>
+                        <p className="text-gray-600">{day.hotel.address}</p>
+                        <p className="text-gray-600">Price: {day.hotel.price}</p>
+                        <p className="text-gray-600">Rating: {day.hotel.rating}</p>
+                        <p className="text-gray-700 mt-2">{day.hotel.description}</p>
+                        {day.hotel.imageUrl && <img src={day.hotel.imageUrl} alt={day.hotel.name} className="mt-2 max-w-full h-auto rounded-lg shadow" />}
                       </div>
-                    ))
-                  ) : (
-                    <p className="text-gray-600">No activities available for this day</p>
-                  )}
-                </div>
+                    )}
+                    {day.dining && day.dining.length > 0 && (
+                      <div className="mb-4">
+                        <h4 className="font-medium text-lg text-orange-800">Dining:</h4>
+                        {day.dining.map((meal, mealIndex) => (
+                          <div key={mealIndex} className="mb-2 p-3 bg-yellow-50 rounded-lg">
+                            <p className="font-semibold text-yellow-800">{meal.time}: {meal.restaurant}</p>
+                            <p className="text-gray-600">Address: {meal.address}</p>
+                            <p className="text-gray-600">Price: {meal.price}</p>
+                            <p className="text-gray-600">Rating: {meal.rating}</p>
+                            <p className="text-gray-700 mt-2">{meal.description}</p>
+                            {meal.imageUrl && <img src={meal.imageUrl} alt={meal.restaurant} className="mt-2 max-w-full h-auto rounded-lg shadow" />}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <h4 className="font-medium text-lg text-orange-800">Activities:</h4>
+                    {day.activities && day.activities.length > 0 ? (
+                      day.activities.map((activity, actIndex) => (
+                        <div key={actIndex} className="mb-2 p-3 bg-orange-50 rounded-lg">
+                          <p className="font-semibold text-orange-800">{actIndex + 1}. {activity.time}: {activity.activity}</p>
+                          <p className="text-gray-700">{activity.placeDetails}</p>
+                          <p className="text-gray-600">Ticket Price: {activity.ticketPricing}</p>
+                          <p className="text-gray-600">Time to Travel: {activity.timeToTravel}</p>
+                          <p className="text-gray-600">Best Time to Visit: {activity.bestTimeToVisit}</p>
+                          {activity.imageUrl && <img src={activity.imageUrl} alt={activity.activity} className="mt-2 max-w-full h-auto rounded-lg shadow" />}
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-gray-600">No activities available for this day</p>
+                    )}
+                  </div>
+                )}
               </div>
             ))
           ) : (
@@ -500,7 +511,7 @@ const AiFinalize = () => {
       </div>
 
       <div className="w-full md:w-1/2 h-64 md:h-full">
-        <div ref={mapContainer} className="h-full"></div>
+        <div ref={mapContainer} className="w-full h-full"></div>
       </div>
     </div>
   );
