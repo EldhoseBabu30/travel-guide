@@ -26,6 +26,8 @@ import AiFood from './Pages/AiTravel/AiFood';
 import AiSummary from './Pages/AiTravel/AiSummary';
 import AiFinalize from './Pages/AiTravel/AiFinalize';
 import { TripProvider } from './Pages/AiTravel/context/TripContext';
+import TripDetails from './Pages/Trip/TripDetails';
+
 
 function App() {
   return (
@@ -56,6 +58,8 @@ function App() {
           <Route path="/food" element={<AiFood />} />
           <Route path="/summary" element={<AiSummary />} />
           <Route path="/finalize" element={<AiFinalize />} />
+          <Route path="/trip-details" element={<TripDetails />} />
+
 
 
         </Routes>
