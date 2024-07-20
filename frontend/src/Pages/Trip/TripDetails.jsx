@@ -53,19 +53,29 @@ function TripDetails() {
         'x-rapidapi-host': 'sky-scanner3.p.rapidapi.com'
       }
     };
-    const response = await fetch(url, options);
-    const result = await response.json();
-    return result.map(flight => ({
-      company: flight.carrier.name,
-      type: flight.direct ? 'Direct' : 'With stops',
-      price: flight.price.amount,
-      duration: `${Math.floor(flight.duration / 60)}h ${flight.duration % 60}m`,
-      departureTime: new Date(flight.departureTime).toLocaleTimeString(),
-      arrivalTime: new Date(flight.arrivalTime).toLocaleTimeString(),
-      origin: flight.origin.iata,
-      destination: flight.destination.iata,
-      stops: flight.direct ? 0 : 1
-    })).slice(0, 5);
+    try {
+      const response = await fetch(url, options);
+      const result = await response.json();
+      if (Array.isArray(result)) {
+        return result.slice(0, 5).map(flight => ({
+          company: flight.carrier?.name || 'Unknown Airline',
+          type: flight.direct ? 'Direct' : 'With stops',
+          price: flight.price?.amount || 'N/A',
+          duration: flight.duration ? `${Math.floor(flight.duration / 60)}h ${flight.duration % 60}m` : 'N/A',
+          departureTime: flight.departureTime ? new Date(flight.departureTime).toLocaleTimeString() : 'N/A',
+          arrivalTime: flight.arrivalTime ? new Date(flight.arrivalTime).toLocaleTimeString() : 'N/A',
+          origin: flight.origin?.iata || travelData.from,
+          destination: flight.destination?.iata || travelData.whereTo,
+          stops: flight.direct ? 0 : 1
+        }));
+      } else {
+        // Handle case where result is not an array
+        return [];
+      }
+    } catch (error) {
+      console.error('Error fetching flight options:', error);
+      return [];
+    }
   }
 
   async function fetchTrainOptions() {
@@ -77,19 +87,29 @@ function TripDetails() {
         'x-rapidapi-host': 'irctc1.p.rapidapi.com'
       }
     };
-    const response = await fetch(url, options);
-    const result = await response.json();
-    return (result.data || []).slice(0, 5).map(train => ({
-      company: 'Indian Railways',
-      type: 'Train',
-      price: 'N/A',
-      duration: 'N/A',
-      departureTime: train.scheduledDeparture,
-      arrivalTime: 'N/A',
-      origin: train.stationCode,
-      destination: travelData.whereTo,
-      stops: 'N/A'
-    }));
+    try {
+      const response = await fetch(url, options);
+      const result = await response.json();
+      if (Array.isArray(result.data)) {
+        return result.data.slice(0, 5).map(train => ({
+          company: 'Indian Railways',
+          type: 'Train',
+          price: 'N/A',
+          duration: 'N/A',
+          departureTime: train.scheduledDeparture || 'N/A',
+          arrivalTime: 'N/A',
+          origin: train.stationCode || travelData.from,
+          destination: travelData.whereTo,
+          stops: 'N/A'
+        }));
+      } else {
+        // Handle case where result.data is not an array
+        return [];
+      }
+    } catch (error) {
+      console.error('Error fetching train options:', error);
+      return [];
+    }
   }
 
   async function fetchCarRentalOptions() {
@@ -101,19 +121,29 @@ function TripDetails() {
         'x-rapidapi-host': 'booking-com15.p.rapidapi.com'
       }
     };
-    const response = await fetch(url, options);
-    const result = await response.json();
-    return (result.data || []).slice(0, 5).map(car => ({
-      company: car.name,
-      type: 'Car Rental',
-      price: `${car.price_breakdown.gross_price} ${car.price_breakdown.currency}`,
-      duration: 'N/A',
-      departureTime: 'N/A',
-      arrivalTime: 'N/A',
-      origin: travelData.from,
-      destination: travelData.whereTo,
-      stops: 'N/A'
-    }));
+    try {
+      const response = await fetch(url, options);
+      const result = await response.json();
+      if (Array.isArray(result.data)) {
+        return result.data.slice(0, 5).map(car => ({
+          company: car.name || 'Unknown Company',
+          type: 'Car Rental',
+          price: car.price_breakdown ? `${car.price_breakdown.gross_price} ${car.price_breakdown.currency}` : 'N/A',
+          duration: 'N/A',
+          departureTime: 'N/A',
+          arrivalTime: 'N/A',
+          origin: travelData.from,
+          destination: travelData.whereTo,
+          stops: 'N/A'
+        }));
+      } else {
+        // Handle case where result.data is not an array
+        return [];
+      }
+    } catch (error) {
+      console.error('Error fetching car rental options:', error);
+      return [];
+    }
   }
 
   if (loading) {
