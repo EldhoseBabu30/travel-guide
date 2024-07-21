@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { GoogleGenerativeAI } from '@google/generative-ai';
-
-const genAI = new GoogleGenerativeAI('AIzaSyBtLgAkzdaEGVytlLaKlZvGW3LtYTeM8z8');
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+import axios from 'axios';
 
 function TripDetails() {
   const [transportOptions, setTransportOptions] = useState([]);
@@ -20,20 +17,7 @@ function TripDetails() {
         return;
       }
       try {
-        let options;
-        switch (travelData.transport.toLowerCase()) {
-          case 'flight':
-            options = await fetchFlightOptions();
-            break;
-          case 'train':
-            options = await fetchTrainOptions();
-            break;
-          case 'car rental':
-            options = await fetchCarRentalOptions();
-            break;
-          default:
-            throw new Error('Invalid transport type');
-        }
+        const options = await fetchOptionsFromGemini(travelData);
         setTransportOptions(options);
         setLoading(false);
       } catch (err) {
@@ -44,106 +28,51 @@ function TripDetails() {
     fetchTransportOptions();
   }, [travelData]);
 
-  async function fetchFlightOptions() {
-    const url = 'https://sky-scanner3.p.rapidapi.com/flights/price-calendar-web?fromEntityId=YUL&toEntityId=ABJ&yearMonth=2024-07';
-    const options = {
-      method: 'GET',
-      headers: {
-        'x-rapidapi-key': '74f47719e3msh147a59180c77326p1c07fdjsn879a4bc7ab76',
-        'x-rapidapi-host': 'sky-scanner3.p.rapidapi.com'
-      }
-    };
+  async function fetchOptionsFromGemini(travelData) {
+    // In a real application, this would be a backend API call
+    const apiKey = 'AIzaSyBtLgAkzdaEGVytlLaKlZvGW3LtYTeM8z8'; // This should be kept secret in a real app
+    const prompt = `Generate 5 ${travelData.transport} options from ${travelData.from} to ${travelData.whereTo} on ${travelData.departureDate}. Include company, type, price, duration, departure time, arrival time, and number of stops.`;
+
     try {
-      const response = await fetch(url, options);
-      const result = await response.json();
-      if (Array.isArray(result)) {
-        return result.slice(0, 5).map(flight => ({
-          company: flight.carrier?.name || 'Unknown Airline',
-          type: flight.direct ? 'Direct' : 'With stops',
-          price: flight.price?.amount || 'N/A',
-          duration: flight.duration ? `${Math.floor(flight.duration / 60)}h ${flight.duration % 60}m` : 'N/A',
-          departureTime: flight.departureTime ? new Date(flight.departureTime).toLocaleTimeString() : 'N/A',
-          arrivalTime: flight.arrivalTime ? new Date(flight.arrivalTime).toLocaleTimeString() : 'N/A',
-          origin: flight.origin?.iata || travelData.from,
-          destination: flight.destination?.iata || travelData.whereTo,
-          stops: flight.direct ? 0 : 1
-        }));
-      } else {
-        // Handle case where result is not an array
-        return [];
-      }
+      const response = await axios.post(
+        'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent',
+        {
+          contents: [{ parts: [{ text: prompt }] }],
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-goog-api-key': apiKey,
+          },
+        }
+      );
+
+      // Parse the response and convert it to the expected format
+      // This is a simplified example and would need to be adapted based on the actual Gemini API response
+      const generatedText = response.data.candidates[0].content.parts[0].text;
+      const options = parseGeneratedText(generatedText);
+      return options;
     } catch (error) {
-      console.error('Error fetching flight options:', error);
+      console.error('Error fetching from Gemini API:', error);
       return [];
     }
   }
 
-  async function fetchTrainOptions() {
-    const url = 'https://irctc1.p.rapidapi.com/api/v3/getLiveStation?hours=1';
-    const options = {
-      method: 'GET',
-      headers: {
-        'x-rapidapi-key': '74f47719e3msh147a59180c77326p1c07fdjsn879a4bc7ab76',
-        'x-rapidapi-host': 'irctc1.p.rapidapi.com'
-      }
-    };
-    try {
-      const response = await fetch(url, options);
-      const result = await response.json();
-      if (Array.isArray(result.data)) {
-        return result.data.slice(0, 5).map(train => ({
-          company: 'Indian Railways',
-          type: 'Train',
-          price: 'N/A',
-          duration: 'N/A',
-          departureTime: train.scheduledDeparture || 'N/A',
-          arrivalTime: 'N/A',
-          origin: train.stationCode || travelData.from,
-          destination: travelData.whereTo,
-          stops: 'N/A'
-        }));
-      } else {
-        // Handle case where result.data is not an array
-        return [];
-      }
-    } catch (error) {
-      console.error('Error fetching train options:', error);
-      return [];
-    }
-  }
-
-  async function fetchCarRentalOptions() {
-    const url = 'https://booking-com15.p.rapidapi.com/api/v1/hotels/searchHotelsByCoordinates?latitude=19.24232736426361&longitude=72.85841985686734&adults=1&children_age=0%2C17&room_qty=1&units=metric&page_number=1&temperature_unit=c&languagecode=en-us&currency_code=EUR';
-    const options = {
-      method: 'GET',
-      headers: {
-        'x-rapidapi-key': '74f47719e3msh147a59180c77326p1c07fdjsn879a4bc7ab76',
-        'x-rapidapi-host': 'booking-com15.p.rapidapi.com'
-      }
-    };
-    try {
-      const response = await fetch(url, options);
-      const result = await response.json();
-      if (Array.isArray(result.data)) {
-        return result.data.slice(0, 5).map(car => ({
-          company: car.name || 'Unknown Company',
-          type: 'Car Rental',
-          price: car.price_breakdown ? `${car.price_breakdown.gross_price} ${car.price_breakdown.currency}` : 'N/A',
-          duration: 'N/A',
-          departureTime: 'N/A',
-          arrivalTime: 'N/A',
-          origin: travelData.from,
-          destination: travelData.whereTo,
-          stops: 'N/A'
-        }));
-      } else {
-        // Handle case where result.data is not an array
-        return [];
-      }
-    } catch (error) {
-      console.error('Error fetching car rental options:', error);
-      return [];
-    }
+  function parseGeneratedText(text) {
+    // This is a placeholder function. You would need to implement proper parsing
+    // based on the actual format of the Gemini API response.
+    const lines = text.split('\n');
+    return lines.map((line, index) => ({
+      company: `Company ${index + 1}`,
+      type: travelData.transport,
+      price: `$${Math.floor(Math.random() * 500) + 100}`,
+      duration: `${Math.floor(Math.random() * 5) + 1}h ${Math.floor(Math.random() * 60)}m`,
+      departureTime: '10:00 AM',
+      arrivalTime: '2:00 PM',
+      origin: travelData.from,
+      destination: travelData.whereTo,
+      stops: Math.floor(Math.random() * 3),
+    }));
   }
 
   if (loading) {

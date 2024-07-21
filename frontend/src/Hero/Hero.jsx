@@ -39,9 +39,9 @@ const Hero = () => {
         className="absolute top-0 left-0 w-full h-full object-cover z-10"
       />
       <div className="relative top-0 left-0 w-full h-full bg-black/50 dark:bg-black/70 z-20">
-        <div className="flex items-center justify-center w-full h-full relative z-30 flex-col">
-          <div className="my-20 text-center sm:text-left w-full px-4 md:px-20">
-            <h1 className="text-white text-3xl sm:text-5xl md:text-5xl lg:text-7xl font-bold mb-4 mt-24 sm:mt-0">
+        <div className="flex flex-col justify-center w-full h-full relative z-30 px-4 md:px-20">
+          <div className="my-20 text-left w-full">
+            <h1 className="text-white text-3xl sm:text-5xl md:text-5xl lg:text-7xl font-bold mb-4">
               Discover Mesmerizing India <br />
               with{" "} 
               <span className="text-white">Njan</span>
@@ -53,15 +53,11 @@ const Hero = () => {
               and unforgettable memories.
             </p>
           </div>
-          <div className="w-full px-4 md:w-auto md:absolute md:bottom-20 md:left-12">
-            <div className="flex flex-col items-center md:items-start">
-              <SearchBar />
-              <div className="w-full px-4 md:w-auto md:absolute md:top-24 md:left-12">
-                <p className="text-gray-300 dark:text-gray-400 opacity-50 font-thin text-center md:text-left ">
-                  Popular places: Munnar, Lakshadweep, Ooty
-                </p>
-              </div>
-            </div>
+          <div className="w-full md:w-3/4">
+            <SearchBar />
+            <p className="text-gray-300 dark:text-gray-400 opacity-50 font-thin text-left mt-2">
+              Popular places: Munnar, Lakshadweep, Ooty
+            </p>
           </div>
         </div>
       </div>
