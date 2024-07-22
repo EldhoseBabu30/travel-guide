@@ -1,13 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import mapboxgl from 'mapbox-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import munnar from '../../assets/munnar.jpg';
 import varkala from '../../assets/varkala.jpg';
 import kodai from '../../assets/kodai.jpg';
 import ooty from '../../assets/ooty.jpg';
 import fort from '../../assets/fort.jpg';
+
+mapboxgl.accessToken = 'pk.eyJ1IjoiYWJzaGFuIiwiYSI6ImNseHZ1ajUybTBtbGcyanF6eGFid216OHAifQ.1AXCW22VbJsmDC-2oIm0yw';
+const genAI = new GoogleGenerativeAI("AIzaSyBtLgAkzdaEGVytlLaKlZvGW3LtYTeM8z8");
 
 const DestinationCard = ({ image, title, description, price, rating, isActive, link }) => (
   <Link to={link} className="card-link">
@@ -73,11 +79,15 @@ const PrevArrow = ({ onClick }) => (
 
 const App = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const destinations = [
+  const [searchTerm, setSearchTerm] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
+  const [filteredDestinations, setFilteredDestinations] = useState([]);
+
+  const originalDestinations = [
     {
       image: munnar,
       title: 'Munnar best tour',
-      description: 'Hiking our | Stoke on Trent',
+      description: 'Hiking tour | Stoke on Trent',
       price: '250.00',
       rating: '4.4/5 Ratings',
       link: '/munnar'
@@ -85,7 +95,7 @@ const App = () => {
     {
       image: varkala,
       title: 'Varkala best tour',
-      description: 'Hiking our | Stoke on Trent',
+      description: 'Hiking tour | Stoke on Trent',
       price: '803.50',
       rating: '4.4/5 Ratings',
       link: '/kovalam'
@@ -93,7 +103,7 @@ const App = () => {
     {
       image: kodai,
       title: 'Kodaikanal tour',
-      description: 'Hiking our | Stoke on Trent',
+      description: 'Hiking tour | Stoke on Trent',
       price: '360.00',
       rating: '4.4/5 Ratings',
       link: '/kodaikanal'
@@ -101,7 +111,7 @@ const App = () => {
     {
       image: ooty,
       title: 'Ooty tour',
-      description: 'Hiking our | Stoke on Trent',
+      description: 'Hiking tour | Stoke on Trent',
       price: '250.00',
       rating: '4.4/5 Ratings',
       link: '/ooty'
@@ -109,12 +119,60 @@ const App = () => {
     {
       image: fort,
       title: 'Fort Kochi tour',
-      description: 'Hiking our | Stoke on Trent',
+      description: 'Hiking tour | Stoke on Trent',
       price: '299.99',
       rating: '4.5/5 Ratings',
       link: '/destinations/fort'
     }
   ];
+
+  useEffect(() => {
+    setFilteredDestinations(originalDestinations);
+  }, []);
+
+  const getSuggestions = async (input) => {
+    if (input.length > 2) {
+      const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+        input
+      )}.json?access_token=${mapboxgl.accessToken}&types=place`;
+
+      const response = await fetch(endpoint);
+      const data = await response.json();
+      setSuggestions(data.features.map((feature) => feature.place_name));
+    } else {
+      setSuggestions([]);
+    }
+  };
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    getSuggestions(value);
+  };
+
+  const handleSuggestionClick = async (suggestion) => {
+    setSearchTerm(suggestion);
+    setSuggestions([]);
+    await filterDestinations(suggestion);
+  };
+
+  const filterDestinations = async (query) => {
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    const prompt = `Given the following destinations:
+    ${JSON.stringify(originalDestinations)}
+    
+    Please filter and rank these destinations based on their relevance to the search query: "${query}".
+    Return the result as a JSON array of destination objects, ordered by relevance.`;
+
+    try {
+      const result = await model.generateContent(prompt);
+      const filteredResults = JSON.parse(result.response.text());
+      setFilteredDestinations(filteredResults);
+    } catch (error) {
+      console.error("Error filtering destinations:", error);
+    }
+  };
 
   const settings = {
     dots: true,
@@ -129,7 +187,7 @@ const App = () => {
     prevArrow: <PrevArrow />,
     responsive: [
       {
-        breakpoint: 1280, // Large screens (lg)
+        breakpoint: 1280,
         settings: {
           slidesToShow: 3,
           slidesToScroll: 1,
@@ -138,7 +196,7 @@ const App = () => {
         }
       },
       {
-        breakpoint: 1024, // Medium screens (md)
+        breakpoint: 1024,
         settings: {
           slidesToShow: 2,
           slidesToScroll: 1,
@@ -147,7 +205,7 @@ const App = () => {
         }
       },
       {
-        breakpoint: 640, // Small screens (sm)
+        breakpoint: 640,
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
@@ -165,9 +223,11 @@ const App = () => {
       </h1>
       <p className="text-center mb-12 text-gray-700 dark:text-gray-300">We have more than 350+ destinations you can choose</p>
       <div className="flex justify-center mb-12">
-        <div className="relative">
+        <div className="relative w-full max-w-md">
           <input
             type="text"
+            value={searchTerm}
+            onChange={handleSearchChange}
             placeholder="Search Destinations..."
             className="w-full py-2 pl-10 pr-4 border border-gray-300 dark:border-gray-700 rounded-full focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-800 dark:text-gray-300"
           />
@@ -183,10 +243,23 @@ const App = () => {
               clipRule="evenodd"
             />
           </svg>
+          {suggestions.length > 0 && (
+            <ul className="absolute z-10 w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md mt-1 max-h-60 overflow-auto">
+              {suggestions.map((suggestion, index) => (
+                <li
+                  key={index}
+                  className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                  onClick={() => handleSuggestionClick(suggestion)}
+                >
+                  {suggestion}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
       <Slider {...settings}>
-        {destinations.map((destination, index) => (
+        {filteredDestinations.map((destination, index) => (
           <DestinationCard key={index} {...destination} isActive={currentSlide === index} />
         ))}
       </Slider>
