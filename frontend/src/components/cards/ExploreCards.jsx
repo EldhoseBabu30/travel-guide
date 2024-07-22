@@ -6,43 +6,36 @@ import 'slick-carousel/slick/slick-theme.css';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import munnar from '../../assets/munnar.jpg';
-import varkala from '../../assets/varkala.jpg';
-import kodai from '../../assets/kodai.jpg';
-import ooty from '../../assets/ooty.jpg';
-import fort from '../../assets/fort.jpg';
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiYWJzaGFuIiwiYSI6ImNseHZ1ajUybTBtbGcyanF6eGFid216OHAifQ.1AXCW22VbJsmDC-2oIm0yw';
-const genAI = new GoogleGenerativeAI("AIzaSyBtLgAkzdaEGVytlLaKlZvGW3LtYTeM8z8");
+const genAI = new GoogleGenerativeAI("AIzaSyBcqgvhFPrI5WlRxVbRZpmqki34rbc0lq8");
 
-const DestinationCard = ({ image, title, description, price, rating, isActive, link }) => (
-  <Link to={link} className="card-link">
-    <div className={`card bg-white dark:bg-gray-800 shadow-xl rounded-lg overflow-hidden m-2 transform transition-transform duration-300 ${isActive ? 'scale-105 shadow-2xl' : ''}`}>
-      <div className={`relative ${isActive ? 'h-48' : 'h-full'}`}>
-        <img src={image} alt={title} className="w-full h-full object-cover" />
-      </div>
-      {isActive && (
-        <div className="p-4 transition-opacity duration-300">
-          <h3 className="font-bold text-xl mb-2 text-gray-900 dark:text-white">{title}</h3>
-          <p className="text-gray-700 dark:text-gray-400 mb-4">{description}</p>
-          <div className="flex justify-between items-center">
-            <span className="text-orange-400 font-bold">${price}</span>
-            <span className="flex items-center">
-              <svg
-                className="w-5 h-5 text-yellow-500"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M10 15l-5.878 3.09 1.122-6.545L.367 7.09l6.564-.955L10 0l2.09 6.135 6.543.955-4.874 4.455 1.122 6.545L10 15z" />
-              </svg>
-              <span className="ml-1 text-gray-900 dark:text-white">{rating}</span>
-            </span>
-          </div>
-        </div>
-      )}
+const DestinationCard = ({ title, description, price, rating, isActive }) => (
+  <div className={`card bg-white dark:bg-gray-800 shadow-xl rounded-lg overflow-hidden m-2 transform transition-transform duration-300 ${isActive ? 'scale-105 shadow-2xl' : ''}`}>
+    <div className={`relative ${isActive ? 'h-48' : 'h-full'}`}>
+      <img src="https://via.placeholder.com/300x200" alt={title} className="w-full h-full object-cover" />
     </div>
-  </Link>
+    {isActive && (
+      <div className="p-4 transition-opacity duration-300">
+        <h3 className="font-bold text-xl mb-2 text-gray-900 dark:text-white">{title}</h3>
+        <p className="text-gray-700 dark:text-gray-400 mb-4">{description}</p>
+        <div className="flex justify-between items-center">
+          <span className="text-orange-400 font-bold">${price.toFixed(2)}</span>
+          <span className="flex items-center">
+            <svg
+              className="w-5 h-5 text-yellow-500"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M10 15l-5.878 3.09 1.122-6.545L.367 7.09l6.564-.955L10 0l2.09 6.135 6.543.955-4.874 4.455 1.122 6.545L10 15z" />
+            </svg>
+            <span className="ml-1 text-gray-900 dark:text-white">{rating}/5 Ratings</span>
+          </span>
+        </div>
+      </div>
+    )}
+  </div>
 );
 
 const NextArrow = ({ onClick }) => (
@@ -81,68 +74,13 @@ const App = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState([]);
-  const [filteredDestinations, setFilteredDestinations] = useState([]);
-
-  const originalDestinations = [
-    {
-      image: munnar,
-      title: 'Munnar best tour',
-      description: 'Hiking tour | Stoke on Trent',
-      price: '250.00',
-      rating: '4.4/5 Ratings',
-      link: '/munnar'
-    },
-    {
-      image: varkala,
-      title: 'Varkala best tour',
-      description: 'Hiking tour | Stoke on Trent',
-      price: '803.50',
-      rating: '4.4/5 Ratings',
-      link: '/kovalam'
-    },
-    {
-      image: kodai,
-      title: 'Kodaikanal tour',
-      description: 'Hiking tour | Stoke on Trent',
-      price: '360.00',
-      rating: '4.4/5 Ratings',
-      link: '/kodaikanal'
-    },
-    {
-      image: ooty,
-      title: 'Ooty tour',
-      description: 'Hiking tour | Stoke on Trent',
-      price: '250.00',
-      rating: '4.4/5 Ratings',
-      link: '/ooty'
-    },
-    {
-      image: fort,
-      title: 'Fort Kochi tour',
-      description: 'Hiking tour | Stoke on Trent',
-      price: '299.99',
-      rating: '4.5/5 Ratings',
-      link: '/destinations/fort'
-    }
-  ];
+  const [destinations, setDestinations] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setFilteredDestinations(originalDestinations);
+    // Load initial destinations when the component mounts
+    fetchDestinations("popular travel destinations");
   }, []);
-
-  const getSuggestions = async (input) => {
-    if (input.length > 2) {
-      const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
-        input
-      )}.json?access_token=${mapboxgl.accessToken}&types=place`;
-
-      const response = await fetch(endpoint);
-      const data = await response.json();
-      setSuggestions(data.features.map((feature) => feature.place_name));
-    } else {
-      setSuggestions([]);
-    }
-  };
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
@@ -150,27 +88,68 @@ const App = () => {
     getSuggestions(value);
   };
 
+  const getSuggestions = async (input) => {
+    if (input.length > 2) {
+      const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+        input
+      )}.json?access_token=${mapboxgl.accessToken}&types=place`;
+
+      try {
+        const response = await fetch(endpoint);
+        const data = await response.json();
+        setSuggestions(data.features.map((feature) => feature.place_name));
+      } catch (error) {
+        console.error("Error fetching suggestions:", error);
+        setSuggestions([]);
+      }
+    } else {
+      setSuggestions([]);
+    }
+  };
+
+  const handleSearchSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    await fetchDestinations(searchTerm);
+    setLoading(false);
+  };
+
   const handleSuggestionClick = async (suggestion) => {
     setSearchTerm(suggestion);
     setSuggestions([]);
-    await filterDestinations(suggestion);
+    setLoading(true);
+    await fetchDestinations(suggestion);
+    setLoading(false);
   };
 
-  const filterDestinations = async (query) => {
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  const fetchDestinations = async (query) => {
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
-    const prompt = `Given the following destinations:
-    ${JSON.stringify(originalDestinations)}
+    const prompt = `Generate 5 travel destination suggestions based on the search query: "${query}".
+    For each destination, provide:
+    1. Title (destination name)
+    2. Brief description (20-30 words)
+    3. Estimated price (as a number)
+    4. Rating (as a number out of 5)
     
-    Please filter and rank these destinations based on their relevance to the search query: "${query}".
-    Return the result as a JSON array of destination objects, ordered by relevance.`;
+    Return the results as a JSON array of objects with the following structure:
+    [
+      {
+        "title": "Destination Name",
+        "description": "Brief description of the destination",
+        "price": 1234.56,
+        "rating": 4.5
+      },
+      ...
+    ]`;
 
     try {
       const result = await model.generateContent(prompt);
-      const filteredResults = JSON.parse(result.response.text());
-      setFilteredDestinations(filteredResults);
+      const destinationsData = JSON.parse(result.response.text());
+      setDestinations(destinationsData);
     } catch (error) {
-      console.error("Error filtering destinations:", error);
+      console.error("Error fetching destinations:", error);
+      setDestinations([]);
     }
   };
 
@@ -221,9 +200,9 @@ const App = () => {
       <h1 className="text-4xl font-bold mb-4 text-center text-gray-900 dark:text-white">
         Find your best <span className="text-orange-400">destination</span>
       </h1>
-      <p className="text-center mb-12 text-gray-700 dark:text-gray-300">We have more than 350+ destinations you can choose</p>
+      <p className="text-center mb-12 text-gray-700 dark:text-gray-300">Search for your dream destinations</p>
       <div className="flex justify-center mb-12">
-        <div className="relative w-full max-w-md">
+        <form onSubmit={handleSearchSubmit} className="relative w-full max-w-md">
           <input
             type="text"
             value={searchTerm}
@@ -231,18 +210,20 @@ const App = () => {
             placeholder="Search Destinations..."
             className="w-full py-2 pl-10 pr-4 border border-gray-300 dark:border-gray-700 rounded-full focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-800 dark:text-gray-300"
           />
-          <svg
-            className="w-5 h-5 text-gray-500 dark:text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fillRule="evenodd"
-              d="M12.9 14.32a8 8 0 111.42-1.42l4.38 4.37-1.42 1.42-4.38-4.37zm-6.4-11.44a6 6 0 100 12 6 6 0 000-12z"
-              clipRule="evenodd"
-            />
-          </svg>
+          <button type="submit" className="absolute right-3 top-1/2 transform -translate-y-1/2">
+            <svg
+              className="w-5 h-5 text-gray-500 dark:text-gray-400"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fillRule="evenodd"
+                d="M12.9 14.32a8 8 0 111.42-1.42l4.38 4.37-1.42 1.42-4.38-4.37zm-6.4-11.44a6 6 0 100 12 6 6 0 000-12z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </button>
           {suggestions.length > 0 && (
             <ul className="absolute z-10 w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md mt-1 max-h-60 overflow-auto">
               {suggestions.map((suggestion, index) => (
@@ -256,13 +237,23 @@ const App = () => {
               ))}
             </ul>
           )}
-        </div>
+        </form>
       </div>
-      <Slider {...settings}>
-        {filteredDestinations.map((destination, index) => (
-          <DestinationCard key={index} {...destination} isActive={currentSlide === index} />
-        ))}
-      </Slider>
+      {loading ? (
+        <p className="text-center">Loading destinations...</p>
+      ) : destinations.length > 0 ? (
+        <Slider {...settings}>
+          {destinations.map((destination, index) => (
+            <DestinationCard
+              key={index}
+              {...destination}
+              isActive={currentSlide === index}
+            />
+          ))}
+        </Slider>
+      ) : (
+        <p className="text-center">Search for a destination to see suggestions!</p>
+      )}
     </div>
   );
 };
