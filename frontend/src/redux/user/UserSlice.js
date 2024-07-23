@@ -58,6 +58,12 @@ const userSlice = createSlice({
       state.error = action.payload;
       state.loading = false;
     },
+    // New reducer for updating user trip
+    updateUserTrip: (state, action) => {
+      if (state.currentUser) {
+        state.currentUser.trip = action.payload;
+      }
+    },
   },
 });
 
@@ -74,6 +80,7 @@ export const {
   updateUserFailure,
   updateUserSuccess,
   updateUserStart,
+  updateUserTrip, // Export the new action
 } = userSlice.actions;
 
 export default userSlice.reducer;

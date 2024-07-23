@@ -1,11 +1,14 @@
-import React, { createContext, useState } from "react";
+// TripContext.jsx
+import React, { createContext, useState, useContext } from 'react';
+import { useSelector } from 'react-redux';
 
-export const TripContext = createContext();
+const TripContext = createContext();
 
 export const TripProvider = ({ children }) => {
-  const [tripData, setTripData] = useState({
+  const { currentUser } = useSelector((state) => state.user);
+
+  const [tripData, setTripData] = useState(currentUser?.trip || {
     destination: "",
-    destinationCoordinates: [],
     travelers: { type: "", count: 1 },
     tripDates: { startDate: null, endDate: null },
     tripType: "",
@@ -24,3 +27,14 @@ export const TripProvider = ({ children }) => {
     </TripContext.Provider>
   );
 };
+
+export const useTripContext = () => {
+  const context = useContext(TripContext);
+  if (context === undefined) {
+    throw new Error('useTripContext must be used within a TripProvider');
+  }
+  return context;
+};
+
+// Make sure to export TripContext as well
+export { TripContext };

@@ -3,23 +3,33 @@ import { useNavigate } from "react-router-dom";
 import { TripContext } from "../AiTravel/context/TripContext";
 import { motion } from "framer-motion";
 import { useSelector, useDispatch } from 'react-redux';
+import { updateUserTrip } from '../../redux/user/UserSlice';
 
 
 const AiSummary = () => {
-  const { tripData } = useContext(TripContext); 
-   const dispatch = useDispatch();
-
-
+  const { tripData: contextTripData } = React.useContext(TripContext);
+  const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
-  console.log(currentUser);
-
-
-
   const navigate = useNavigate();
 
+  const tripData = contextTripData || currentUser?.trip || {};
   const handleBuildItinerary = () => {
+    const tripSummary = {
+      destination: tripData.destination,
+      travelers: tripData.travelers,
+      tripDates: tripData.tripDates,
+      tripType: tripData.tripType,
+      budget: tripData.budget,
+      accommodation: tripData.accommodation,
+      dining: tripData.dining
+    };
+
+    dispatch(updateUserTrip(tripSummary));
     navigate("/finalize");
+    console.log(tripData);
   };
+
+ 
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
