@@ -128,8 +128,9 @@ const Nav = () => {
               {currentUser ? (
                 <>
                   <NavLink to="/profile" className="block px-4 py-2 rounded-lg hover:text-orange-400">Profile</NavLink>
+                  <NavLink to="/my-trips" className="block px-4 py-2 rounded-lg hover:text-orange-400">My Trips</NavLink>
                   <button
-                    onClick={openModal} // Open modal on click
+                    onClick={openModal}
                     className="block w-full text-left px-4 py-2 rounded-lg hover:text-orange-400"
                   >
                     Sign Out
@@ -218,8 +219,9 @@ const Nav = () => {
               {currentUser ? (
                 <>
                   <NavLink to="/profile" className="block px-4 py-2 rounded-lg hover:text-orange-400">Profile</NavLink>
+                  <NavLink to="/my-trips" className="block px-4 py-2 rounded-lg hover:text-orange-400">My Trips</NavLink>
                   <button
-                    onClick={openModal} // Open modal on click
+                    onClick={openModal}
                     className="block w-full text-left px-4 py-2 rounded-lg hover:text-orange-400"
                   >
                     Sign Out

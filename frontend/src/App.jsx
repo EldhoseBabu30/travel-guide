@@ -27,7 +27,7 @@ import AiSummary from './Pages/AiTravel/AiSummary';
 import AiFinalize from './Pages/AiTravel/AiFinalize';
 import { TripProvider } from './Pages/AiTravel/context/TripContext';
 import TripDetails from './Pages/Trip/TripDetails';
-
+import MyTrips from './Pages/AiTravel/MyTrips/MyTrips';
 
 function App() {
   return (
@@ -59,6 +59,7 @@ function App() {
           <Route path="/travelplanner/summary" element={<AiSummary />} />
           <Route path="/travelplanner/finalize" element={<AiFinalize />} />
           <Route path="/trip-details" element={<TripDetails />} />
+          <Route path="/my-trips" element={<MyTrips />} />
 
 
 
