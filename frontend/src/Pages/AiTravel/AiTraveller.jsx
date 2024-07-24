@@ -20,13 +20,13 @@ const AiTraveller = () => {
         ...tripData,
         travelers: { type: travelerType, count: 1 },
       });
-      navigate('/select');
+      navigate('/travelplanner/select');
     } else {
       updateTripData({
         ...tripData,
         travelers: { type: travelerType, count: travelerType === 'A Couple' ? 2 : peopleCount },
       });
-      navigate('/select');
+      navigate('/travelplanner/select');
     }
   };
 

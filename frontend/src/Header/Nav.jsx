@@ -182,7 +182,7 @@ const Nav = () => {
           Community
         </NavLink>
         <NavLink
-          to="/ai-home"
+          to="/travelplanner/ai-home"
           className="text-white font-semibold cursor-pointer transition-transform duration-500 ease-in-out transform hover:text-orange-400 hover:scale-110"
         >
           Travel Planner

@@ -83,7 +83,7 @@ const AiTravelHome = () => {
     setTimeout(() => {
       setShowModal(false);
       setIsLoading(false);
-      navigate('/traveller');
+      navigate('/travelplanner/traveller');
     }, 1000);
   };
 

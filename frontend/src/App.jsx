@@ -50,14 +50,14 @@ function App() {
           <Route path="/hotels" element={<HotelMap />} />
           <Route path="/food-spots" element={<FoodSpots />} />
           <Route path="/community" element={<Community />} />
-          <Route path="/ai-home" element={<AiTravelHome />} />
-          <Route path="/traveller" element={<AiTraveller />} />
-          <Route path="/select" element={<AiSelect />} />
-          <Route path="/schedule" element={<AiSchedule />} />
-          <Route path="/hotel" element={<AiHotel />} />
-          <Route path="/food" element={<AiFood />} />
-          <Route path="/summary" element={<AiSummary />} />
-          <Route path="/finalize" element={<AiFinalize />} />
+          <Route path="/travelplanner/ai-home" element={<AiTravelHome />} />
+          <Route path="/travelplanner/traveller" element={<AiTraveller />} />
+          <Route path="/travelplanner/select" element={<AiSelect />} />
+          <Route path="/travelplanner/schedule" element={<AiSchedule />} />
+          <Route path="/travelplanner/hotel" element={<AiHotel />} />
+          <Route path="/travelplanner/food" element={<AiFood />} />
+          <Route path="/travelplanner/summary" element={<AiSummary />} />
+          <Route path="/travelplanner/finalize" element={<AiFinalize />} />
           <Route path="/trip-details" element={<TripDetails />} />
 
 

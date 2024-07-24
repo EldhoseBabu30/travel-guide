@@ -128,12 +128,12 @@ const AiFood = () => {
     if (!selectedSpot) {
       alert("Please select a food spot.");
     } else {
-      navigate("/summary");
+      navigate("/travelplanner/summary");
     }
   };
 
   const handleContinueWithoutFood = () => {
-    navigate("/summary");
+    navigate("/travelplanner/summary");
   };
 
   const handleRadiusChange = (value) => {

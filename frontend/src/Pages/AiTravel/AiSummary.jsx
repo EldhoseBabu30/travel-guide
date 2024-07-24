@@ -25,7 +25,7 @@ const AiSummary = () => {
     };
 
     dispatch(updateUserTrip(tripSummary));
-    navigate("/finalize");
+    navigate("/travelplanner/finalize");
     console.log(tripData);
   };
 

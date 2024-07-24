@@ -114,12 +114,12 @@ const AiHotel = () => {
     if (!selectedHotel) {
       alert("Please select a hotel.");
     } else {
-      navigate("/food");
+      navigate("/travelplanner/food");
     }
   };
 
   const handleContinueWithoutHotel = () => {
-    navigate("/food");
+    navigate("/travelplanner/food");
   };
 
   const handleRadiusChange = (value) => {

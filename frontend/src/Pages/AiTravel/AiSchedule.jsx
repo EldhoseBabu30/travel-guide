@@ -19,7 +19,7 @@ const AiSchedule = () => {
       alert('Please select start and end dates for your trip.');
     } else {
       updateTripData({ ...tripData, tripDates: { startDate, endDate } });
-      navigate('/hotel');
+      navigate('/travelplanner/hotel');
     }
   };
 

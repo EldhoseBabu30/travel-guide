@@ -46,7 +46,7 @@ const AiSelect = () => {
         tripType: selectedPreferences.join(', '),
         budget
       });
-      navigate('/schedule');
+      navigate('/travelplanner/schedule');
     }
   };
 
