@@ -5,7 +5,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import authRouter from './routes/auth.route.js';
 import userRouter from './routes/user.route.js';
-import travelPlannerRouter from './routes/travelPlanner.route.js';
+// import travelPlannerRouter from './routes/travelPlanner.route.js';
 
 dotenv.config();
 
@@ -30,7 +30,7 @@ app.listen(3000, () => {
 
 app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter);
-app.use('/api/travelplanner', travelPlannerRouter);
+// app.use('/api/travelplanner', travelPlannerRouter);
 
 
 
