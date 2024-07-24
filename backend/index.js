@@ -5,7 +5,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import authRouter from './routes/auth.route.js';
 import userRouter from './routes/user.route.js';
-// import travelPlannerRouter from './routes/travelPlanner.route.js';
+import travelPlannerRouter from './routes/travelPlanner.route.js';  // Uncomment this line
 
 dotenv.config();
 
@@ -22,19 +22,13 @@ app.use(cors({
   credentials: true, // Enable credentials (cookies, authorization headers, etc.)
 }));
 
-
-
 app.listen(3000, () => {
   console.log("Server running on port 3000");
 });
 
 app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter);
-// app.use('/api/travelplanner', travelPlannerRouter);
-
-
-
-
+app.use('/api/travelplanner', travelPlannerRouter);  // Add this line
 
 // Error-handling middleware
 app.use((err, req, res, next) => {

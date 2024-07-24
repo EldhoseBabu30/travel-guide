@@ -4,16 +4,17 @@ import { TripContext } from "../AiTravel/context/TripContext";
 import { motion } from "framer-motion";
 import { useSelector, useDispatch } from 'react-redux';
 import { updateUserTrip } from '../../redux/user/UserSlice';
-
+import axios from 'axios';
 
 const AiSummary = () => {
-  const { tripData: contextTripData } = React.useContext(TripContext);
+  const { tripData: contextTripData } = useContext(TripContext);
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
   const navigate = useNavigate();
 
   const tripData = contextTripData || currentUser?.trip || {};
-  const handleBuildItinerary = () => {
+
+  const handleBuildItinerary = async () => {
     const tripSummary = {
       destination: tripData.destination,
       travelers: tripData.travelers,
@@ -24,12 +25,21 @@ const AiSummary = () => {
       dining: tripData.dining
     };
 
-    dispatch(updateUserTrip(tripSummary));
-    navigate("/travelplanner/finalize");
-    console.log(tripData);
+    try {
+      const token = localStorage.getItem('authorization');  
+      const response = await axios.post("http://localhost:3000/api/travelplanner", tripSummary, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `${token}`,
+        },
+      });
+      dispatch(updateUserTrip(response.data));
+      navigate("/travelplanner/finalize");
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error saving trip data:", error);
+    }
   };
-
- 
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -42,8 +52,7 @@ const AiSummary = () => {
       label: "Travelers",
       value:
         tripData.travelers?.count > 0
-          ? `${tripData.travelers.type} - ${tripData.travelers.count} ${tripData.travelers.count === 1 ? "person" : "people"
-          }`
+          ? `${tripData.travelers.type} - ${tripData.travelers.count} ${tripData.travelers.count === 1 ? "person" : "people"}`
           : "N/A",
       icon: "👥",
     },
@@ -51,9 +60,7 @@ const AiSummary = () => {
       label: "Trip Dates",
       value:
         tripData.tripDates?.startDate && tripData.tripDates?.endDate
-          ? `${formatDate(tripData.tripDates.startDate)} - ${formatDate(
-            tripData.tripDates.endDate
-          )}`
+          ? `${formatDate(tripData.tripDates.startDate)} - ${formatDate(tripData.tripDates.endDate)}`
           : "N/A",
       icon: "📅",
     },
