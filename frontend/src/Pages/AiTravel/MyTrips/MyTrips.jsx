@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaPlane, FaHotel, FaUtensils, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaPlane, FaHotel, FaMapMarkerAlt } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
@@ -18,12 +18,11 @@ const TripCard = ({ destination, date, hotel, activities }) => (
 );
 
 const MyTrips = () => {
-  const [trips, setTrips] = useState([]);
+  const [trips, setTrips] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { currentUser } = useSelector((state) => state.user);
   const navigate = useNavigate();
-  
 
   useEffect(() => {
     const fetchTrips = async () => {
@@ -33,11 +32,16 @@ const MyTrips = () => {
           throw new Error('No authorization token found');
         }
 
-        const response = await axios.get(`http://localhost:3000/api/travelplanner`, {
+        if (!currentUser || !currentUser.id) {
+          return; // Exit if user is not authenticated
+        }
+
+        const response = await axios.get('http://localhost:3000/api/travelplanner', {
           headers: {
             Authorization: `${token}`
           }
         });
+
         setTrips(response.data);
         setLoading(false);
       } catch (err) {
@@ -52,7 +56,11 @@ const MyTrips = () => {
     };
 
     fetchTrips();
-  }, [navigate]);
+  }, [currentUser, navigate]);
+
+  if (!currentUser) {
+    return <div className="text-center mt-20">Please log in to view your trips.</div>;
+  }
 
   if (loading) {
     return <div className="text-center mt-20">Loading...</div>;

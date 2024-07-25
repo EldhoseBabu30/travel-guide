@@ -22,9 +22,10 @@ const AiSummary = () => {
       tripType: tripData.tripType,
       budget: tripData.budget,
       accommodation: tripData.accommodation,
-      dining: tripData.dining
+      dining: tripData.dining,
+      creatorId: currentUser.id, // Include the user ID
     };
-
+  
     try {
       const token = localStorage.getItem('authorization');  
       const response = await axios.post("http://localhost:3000/api/travelplanner", tripSummary, {
@@ -38,8 +39,12 @@ const AiSummary = () => {
       console.log(response.data);
     } catch (error) {
       console.error("Error saving trip data:", error);
+      if (error.response) {
+        console.error("Error response:", error.response.data);
+      }
     }
   };
+  
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
